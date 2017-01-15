@@ -58,7 +58,8 @@ play along! :tada:
 
 1. Clone this repo.
 2. Get [Node/NPM](https://nodejs.org).
-3. Run `make`.
+3. Point to folder with `cd folderpath` and then run `npm install`
+3. Run `npm run build`.
 4. Load it in Firefox or Chromium/Chrome:
     * In Firefox ([≥45](https://blog.mozilla.org/addons/2015/12/23/loading-temporary-add-ons/)):
       go to [`about:debugging`](about:debugging), choose 'Load Temporary
