@@ -1,4 +1,9 @@
 import './activity-logger/background'
+import './create-links/background'
+
+// Not required, already included by others
+//import './page-analysis/background'
+//import './session-state/background'
 
 function openOverview() {
     browser.tabs.create({
