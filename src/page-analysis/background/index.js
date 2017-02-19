@@ -11,6 +11,7 @@ import makeScreenshot from './make-screenshot'
 
 // Extract interesting stuff from the current page and store it.
 export default function performPageAnalysis({pageId, tabId}) {
+    // TODO first check, for each field, if it was already there.
 
     // Run these functions in the content script in the tab.
     const extractPageText = remoteFunction('extractPageText', {tabId})

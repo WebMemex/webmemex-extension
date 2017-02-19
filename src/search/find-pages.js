@@ -1,7 +1,6 @@
 import update from 'lodash/fp/update'
 
-import db from '../pouchdb'
-import { keyRangeForPrefix } from '../pouchdb'
+import db, { keyRangeForPrefix, normaliseFindResult } from '../pouchdb'
 import { pageKeyPrefix } from '../activity-logger'
 import { searchableTextFields, revisePageFields } from '../page-analysis'
 
@@ -51,4 +50,14 @@ export function updatePageSearchIndex() {
         ...pageSearchIndexParams,
         build: true
     })
+}
+
+export function findPagesByUrl({url}) {
+    return db.find({
+        selector: {
+            url,
+        }
+    }).then(
+        normaliseFindResult
+    )
 }
