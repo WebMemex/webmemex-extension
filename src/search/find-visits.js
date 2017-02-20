@@ -1,10 +1,12 @@
 import fromPairs from 'lodash/fp/fromPairs'
 import update from 'lodash/fp/update'
+import unionBy from 'lodash/unionBy'
 import sortBy from 'lodash/fp/sortBy'
+import reverse from 'lodash/fp/reverse'
 
 import db from '../pouchdb'
 import { keyRangeForPrefix } from '../pouchdb'
-import { visitKeyPrefix } from '../activity-logger'
+import { convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
 import { getPages } from './find-pages'
 
 
@@ -24,6 +26,16 @@ const normaliseFindResult = result => ({
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
+    // If pages are not already passed to us, get them and call ourselves again.
+    if (pagesResult === undefined) {
+        // Get the page of each visit.
+        const pageIds = visitsResult.rows.map(row => row.doc.page._id)
+        return getPages({pageIds}).then(pagesResult =>
+            // Invoke ourselves with the found pages.
+            insertPagesIntoVisits({visitsResult, pagesResult, presorted: true})
+        )
+    }
+
     if (presorted) {
         // A small optimisation if the results already match one to one.
         return update('rows', rows => rows.map(
@@ -31,6 +43,7 @@ function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
         ))(visitsResult)
     }
     else {
+        // Read each visit's doc.page._id and replace it with the specified page.
         const pagesById = resultsById(pagesResult)
         return update('rows', rows => rows.map(
             update('doc.page', page => pagesById[page._id].doc)
@@ -51,16 +64,8 @@ export function getLastVisits({
         limit,
     }).then(
         normaliseFindResult
-    ).then(visitsResult => {
-        // Get the page of each visit.
-        const pageIds = visitsResult.rows.map(row => row.doc.page._id)
-        return getPages({pageIds}).then(
-            // Pass on both results to the next step.
-            pagesResult => ({visitsResult, pagesResult})
-        )
-    }).then(({visitsResult, pagesResult}) =>
-        // Return each visit with te page nested at visit.page.
-        insertPagesIntoVisits({visitsResult, pagesResult, presorted: true})
+    ).then(
+        visitsResult => insertPagesIntoVisits({visitsResult})
     ).then(visitsResult =>
         // Find user-created links
         db.allDocs({
@@ -96,5 +101,55 @@ export function findVisitsToPages({pagesResult}) {
         normaliseFindResult
     ).then(visitsResult =>
         insertPagesIntoVisits({visitsResult, pagesResult})
+    )
+}
+
+// Expand the results, adding preceding and succeding visits around each visit.
+export function addRelatedVisits({visitsResult, maxPerVisit=2}) {
+    const promises = visitsResult.rows.map(row => {
+        const timestamp = getTimestamp(row.doc)
+        const timeWindow = 1000*60*20
+        // Get preceding visits
+        return db.allDocs({
+            include_docs: true,
+            // Subtract 1ms to exclude itself (there is no exclude_start option).
+            startkey: convertVisitDocId({timestamp: timestamp-1}),
+            endkey: convertVisitDocId({timestamp: timestamp-timeWindow}),
+            descending: true,
+            limit: maxPerVisit,
+        }).then(prequelResult => {
+            // Get succeeding visits
+            return db.allDocs({
+                include_docs: true,
+                // Add 1ms to exclude itself (there is no exclude_start option).
+                startkey: convertVisitDocId({timestamp: timestamp+1}),
+                endkey: convertVisitDocId({timestamp: timestamp+timeWindow}),
+                limit: maxPerVisit,
+            }).then(sequelResult => ({
+                // Combine them as if they were one result.
+                rows: prequelResult.rows.concat(sequelResult.rows)
+            }))
+        }).then(result =>
+            result // TODO Limit combined results to maxPerVisit?
+        ).then(result =>
+            // Insert pages as usual.
+            insertPagesIntoVisits({visitsResult: result})
+        ).then(
+            // Mark the row (not the doc!) as being a 'contextual result'.
+            update('rows', rows =>
+                rows.map(update('isContextualResult', () => true))
+            )
+        )
+    })
+    return Promise.all(promises).then(contextResults =>
+        // Insert the contexts (prequels+sequels) into the original results
+        update('rows', rows => {
+            // Concat all results and all their contexts, but remove duplicates.
+            const allRows = unionBy(rows,
+                ...contextResults.map(result => result.rows),
+                'doc._id') // id as uniqueness criterion
+            // Sort them again by timestamp (= id)
+            return reverse(sortBy('doc._id')(allRows))
+        })(visitsResult)
     )
 }

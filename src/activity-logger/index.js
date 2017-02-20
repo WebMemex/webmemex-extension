@@ -12,6 +12,9 @@ export const pageKeyPrefix = 'page/'
 export const convertVisitDocId = docuri.route(`${visitKeyPrefix}:timestamp/:nonce`)
 export const convertPageDocId = docuri.route(`${pageKeyPrefix}:timestamp/:nonce`)
 
+export const getTimestamp = doc =>
+    Number.parseInt(convertVisitDocId(doc._id).timestamp)
+
 export function generateVisitDocId({timestamp, nonce}) {
     const date = timestamp ? new Date(timestamp) : new Date()
     return convertVisitDocId({
