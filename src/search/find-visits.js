@@ -4,25 +4,13 @@ import unionBy from 'lodash/unionBy'
 import sortBy from 'lodash/fp/sortBy'
 import reverse from 'lodash/fp/reverse'
 
-import db from '../pouchdb'
-import { keyRangeForPrefix } from '../pouchdb'
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
+import db, { normaliseFindResult, keyRangeForPrefix }  from '../pouchdb'
 import { getPages } from './find-pages'
-
 
 // Get query result indexed by doc id, as an {id: row} object.
 const resultsById = result =>
     fromPairs(result.rows.map(row => [(row.id || row.doc._id), row]))
-
-// Present db.find results in the same structure as other PouchDB results.
-const normaliseFindResult = result => ({
-    rows: result.docs.map(doc => ({
-        doc,
-        id: doc._id,
-        key: doc._id,
-        value: {rev: doc._rev},
-    }))
-})
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
