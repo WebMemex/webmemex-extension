@@ -1,4 +1,4 @@
-import { getLastVisits, findVisitsToPages } from './find-visits'
+import { getLastVisits, findVisitsToPages, addRelatedVisits } from './find-visits'
 import { searchPages } from './find-pages'
 
 const defaultResultLimit = 30
@@ -11,6 +11,8 @@ export function filterVisitsByQuery({query}) {
     else {
         return searchPages({query, limit: defaultResultLimit}).then(
             pagesResult => findVisitsToPages({pagesResult})
+        ).then(
+            visitsResult => addRelatedVisits({visitsResult})
         )
     }
 }
