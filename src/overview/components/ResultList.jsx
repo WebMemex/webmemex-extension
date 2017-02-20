@@ -3,6 +3,7 @@ import React from 'react'
 import { makeRangeTransform, makeNonlinearTransform } from '../../util/make-range-transform'
 import niceTime from '../../util/nice-time'
 import VisitAsListItem from './VisitAsListItem'
+import LinkAsListItem from './LinkAsListItem'
 
 // import { getDomain } from 'tldjs' // https://github.com/oncletom/tld.js/issues/86
 import tldjs from 'tldjs'
@@ -29,8 +30,8 @@ const ResultList = ({searchResult}) => {
     const rowGaps = searchResult.rows.map((row, rowIndex) => {
         // Space between two rows depends on the time between them.
         const prevRow = searchResult.rows[rowIndex-1]
-        const prevTimestamp = prevRow ? prevRow.doc.visitStart : new Date()
-        const timestamp = row.doc.visitStart
+        const prevTimestamp = prevRow ? prevRow.doc.visitStart || prevRow.doc.creationTime: new Date()
+        const timestamp = row.doc.visitStart || row.doc.creationTime
         let spaceGap = 0
         if (timestamp) {
             spaceGap = timeGapToSpaceGap(prevTimestamp - timestamp)
@@ -58,6 +59,11 @@ const ResultList = ({searchResult}) => {
     return <ul className="ResultList">
         {searchResult.rows.map((row, rowIndex) => {
             let { marginTop, timestampComponent } = rowGaps[rowIndex]
+            if (row.doc._id.startsWith('link')) {
+                return <li key={row.doc._id}>
+                    <LinkAsListItem doc={row.doc} />
+                </li>
+            }
 
             // Cluster successive & related visits closer together.
             const nextRow = searchResult.rows[rowIndex+1]

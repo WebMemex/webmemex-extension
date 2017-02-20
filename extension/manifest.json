@@ -8,6 +8,11 @@
         "matches": ["<all_urls>"],
         "js": ["browser-polyfill.js", "content_script.js"],
         "run_at": "document_start"
+    },
+    {
+        "matches": ["<all_urls>"],
+        "js": ["quoteurl/quoteurl.min.js"],
+        "run_at": "document_end"
     }],
     "browser_action": {
         "default_title": "Memory overview"
@@ -22,6 +27,7 @@
     },
     "permissions": [
         "<all_urls>",
+        "contextMenus",
         "history",
         "tabs",
         "webNavigation"

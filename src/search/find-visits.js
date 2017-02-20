@@ -1,7 +1,9 @@
 import fromPairs from 'lodash/fp/fromPairs'
 import update from 'lodash/fp/update'
+import sortBy from 'lodash/fp/sortBy'
 
 import db from '../pouchdb'
+import { keyRangeForPrefix } from '../pouchdb'
 import { visitKeyPrefix } from '../activity-logger'
 import { getPages } from './find-pages'
 
@@ -59,6 +61,20 @@ export function getLastVisits({
     }).then(({visitsResult, pagesResult}) =>
         // Return each visit with te page nested at visit.page.
         insertPagesIntoVisits({visitsResult, pagesResult, presorted: true})
+    ).then(visitsResult =>
+        // Find user-created links
+        db.allDocs({
+            include_docs: true,
+            // XXX Quick hack.
+            startkey: `link/${visitsResult.rows.length ? encodeURIComponent(new Date(visitsResult.rows.slice(-1)[0].doc.visitStart).toISOString()) : ''}`,
+            endkey: 'link/\uffff',
+            limit: 30,
+        }).then(linksResult => ({
+            rows: sortBy(
+                row => -row.doc.visitStart || -row.doc.creationTime,
+                visitsResult.rows.concat(linksResult.rows)
+            )
+        }))
     )
 }
 
