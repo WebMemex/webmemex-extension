@@ -55,19 +55,21 @@ export function getLastVisits({
     ).then(
         visitsResult => insertPagesIntoVisits({visitsResult})
     ).then(visitsResult =>
-        // Find user-created links
-        db.allDocs({
-            include_docs: true,
-            // XXX Quick hack.
-            startkey: `link/${visitsResult.rows.length ? encodeURIComponent(new Date(visitsResult.rows.slice(-1)[0].doc.visitStart).toISOString()) : ''}`,
-            endkey: 'link/\uffff',
-            limit: 30,
-        }).then(linksResult => ({
-            rows: sortBy(
-                row => -row.doc.visitStart || -row.doc.creationTime,
-                visitsResult.rows.concat(linksResult.rows)
-            )
-        }))
+        (visitsResult.rows.length===0)
+            ? visitsResult
+            : // Find user-created links
+            db.allDocs({
+                include_docs: true,
+                // XXX Quick hack.
+                startkey: `link/${getTimestamp(visitsResult.rows[visitsResult.rows.length-1].doc)}`,
+                endkey: 'link/\uffff',
+                limit: 30,
+            }).then(linksResult => ({
+                rows: sortBy(
+                    row => -getTimestamp(row.doc),
+                    visitsResult.rows.concat(linksResult.rows)
+                )
+            }))
     )
 }
 
@@ -115,7 +117,8 @@ export function addRelatedVisits({visitsResult, maxPerVisit=2}) {
                 limit: maxPerVisit,
             }).then(sequelResult => ({
                 // Combine them as if they were one result.
-                rows: prequelResult.rows.concat(sequelResult.rows)
+                rows: sortBy(row => -getTimestamp(row.doc),
+                    prequelResult.rows.concat(sequelResult.rows))
             }))
         }).then(result =>
             result // TODO Limit combined results to maxPerVisit?
@@ -127,6 +130,22 @@ export function addRelatedVisits({visitsResult, maxPerVisit=2}) {
             update('rows', rows =>
                 rows.map(update('isContextualResult', () => true))
             )
+        ).then(contextResult =>
+            (contextResult.rows.length===0)
+                ? contextResult
+                // Find user-created links
+                : db.allDocs({
+                    include_docs: true,
+                    // XXX Quick hack.
+                    startkey: `link/${(getTimestamp(contextResult.rows[0].doc))}`,
+                    endkey: `link/${(getTimestamp(contextResult.rows[contextResult.rows.length-1].doc))}`,
+                    descending: true,
+                }).then(linksResult => ({
+                    rows: sortBy(
+                        row => -getTimestamp(row.doc),
+                        visitsResult.rows.concat(linksResult.rows)
+                    )
+                }))
         )
     })
     return Promise.all(promises).then(contextResults =>
@@ -137,7 +156,7 @@ export function addRelatedVisits({visitsResult, maxPerVisit=2}) {
                 ...contextResults.map(result => result.rows),
                 'doc._id') // id as uniqueness criterion
             // Sort them again by timestamp (= id)
-            return reverse(sortBy('doc._id')(allRows))
+            return sortBy(row => -getTimestamp(row.doc))(allRows)
         })(visitsResult)
     )
 }

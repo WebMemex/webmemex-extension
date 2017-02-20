@@ -5,8 +5,9 @@ import { linkKeyPrefix, convertLinkDocId } from '..'
 
 
 function generateLinkDocId({timestamp}) {
+    const date = timestamp ? new Date(timestamp) : new Date()
     return convertLinkDocId({
-        timestamp: timestamp.toISOString(),
+        timestamp: date.getTime(),
         // Add a random string to prevent accidental collisions.
         nonce: randomString(),
     })
