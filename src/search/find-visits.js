@@ -143,7 +143,7 @@ export function addRelatedVisits({visitsResult, maxPerVisit=2}) {
                 }).then(linksResult => ({
                     rows: sortBy(
                         row => -getTimestamp(row.doc),
-                        visitsResult.rows.concat(linksResult.rows)
+                        contextResult.rows.concat(linksResult.rows)
                     )
                 }))
         )
