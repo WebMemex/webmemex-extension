@@ -25,6 +25,11 @@
             "description": "Open your memory overview"
         }
     },
+    "applications": {
+        "gecko": {
+            "id": "webmemex-extension@webmemex.org"
+        }
+    },
     "permissions": [
         "<all_urls>",
         "contextMenus",
