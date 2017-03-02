@@ -1,16 +1,17 @@
- import { whenPageDOMLoaded } from '../../util/tab-events'
+import { whenPageDOMLoaded } from '../../util/tab-events'
 import performPageAnalysis from '../../page-analysis/background'
 import performPdfAnalysis from '../../pdf-analysis/background/'
 import storeVisit from './store-visit'
+import { isWorthRemembering } from '..'
 
 // Filter by URL to avoid logging extension pages, newtab, etcetera.
-const loggableUrlPattern = /^https?:\/\//
+
+
+// const loggableUrlPattern = /^https?:\/\//
 const pdfpattern = /(https?:\/\/)?(\w{0,})\.pdf/g;
-
-
-
-const shouldBeLogged = url => loggableUrlPattern.test(url)
 const pdfcheck = url => pdfpattern.test(url)
+
+
 
 
 
@@ -34,7 +35,7 @@ browser.webNavigation.onCommitted.addListener(details => {
     if (details.frameId !== 0)
         return
 
-    if (!shouldBeLogged(details.url))
+    if (!isWorthRemembering({url: details.url}))
         return
     else if (pdfcheck(details.url)){
         
