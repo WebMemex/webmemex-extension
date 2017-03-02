@@ -4,12 +4,14 @@ import performPdfAnalysis from '../../pdf-analysis/background/'
 import storeVisit from './store-visit'
 import { isWorthRemembering } from '..'
 
+
 // Filter by URL to avoid logging extension pages, newtab, etcetera.
 
 
 // const loggableUrlPattern = /^https?:\/\//
 const pdfpattern = /(https?:\/\/)?(\w{0,})\.pdf/g;
 const pdfcheck = url => pdfpattern.test(url)
+
 
 
 

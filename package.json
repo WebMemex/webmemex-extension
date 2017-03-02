@@ -1,6 +1,11 @@
 {
-  "name": "webextension",
+  "name": "webmemex-extension",
   "version": "0.1.0",
+  "homepage": "https://webmemex.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebMemex/webmemex-extension.git"
+  },
   "scripts": {
     "build-prod": "gulp build-prod",
     "build": "gulp build",
@@ -9,6 +14,7 @@
     "fx-build": "npm run build-prod && web-ext -s extension -a dist/firefox build"
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "docuri": "^4.2.1",
     "lodash": "^4.17.4",
     "page-metadata-parser": "git://github.com/Treora/page-metadata-parser.git#npm-testable",
@@ -19,6 +25,7 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-redux": "^5.0.1",
+    "react-router": "^3.0.2",
     "readability": "git://github.com/mozilla/readability.git#2b28d60",
     "redux": "^3.6.0",
     "redux-act": "^1.1.0",
