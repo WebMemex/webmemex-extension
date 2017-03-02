@@ -17,6 +17,7 @@ const pdfcheck = url => pdfpattern.test(url)
 
 
 
+
 // Create a visit/page pair in the database for the given URL.
 function logPageVisit({url}) {
     const timestamp = new Date()
