@@ -1,16 +1,22 @@
-import { whenPageDOMLoaded } from '../../util/tab-events'
+ import { whenPageDOMLoaded } from '../../util/tab-events'
 import performPageAnalysis from '../../page-analysis/background'
+import performPdfAnalysis from '../../pdf-analysis/background/'
 import storeVisit from './store-visit'
-
 
 // Filter by URL to avoid logging extension pages, newtab, etcetera.
 const loggableUrlPattern = /^https?:\/\//
+const pdfpattern = /(https?:\/\/)?(\w{0,})\.pdf/g;
+
+
+
 const shouldBeLogged = url => loggableUrlPattern.test(url)
+const pdfcheck = url => pdfpattern.test(url)
+
+
 
 // Create a visit/page pair in the database for the given URL.
 function logPageVisit({url}) {
     const timestamp = new Date()
-
     const pageInfo = {
         url,
     }
@@ -30,8 +36,27 @@ browser.webNavigation.onCommitted.addListener(details => {
 
     if (!shouldBeLogged(details.url))
         return
+    else if (pdfcheck(details.url)){
+        
+        // pdfsearch(details.url);
+        logPageVisit({
+            url:details.url
+        }).then(
+             // Wait until its DOM has loaded.
+            value => whenPageDOMLoaded({tabId:details.tabId}).then(() => value)
+        ).then(({visitId,pageId}) => {
+            //start pdf analysis (Number of pages , text inside in each page etcetra)
+
+            performPdfAnalysis({pageId, tabId: details.tabId})
+        })
+        
+    }
+
+    
 
     // Consider every navigation a new visit.
+
+
     logPageVisit({
         url: details.url
     }).then(
@@ -39,6 +64,10 @@ browser.webNavigation.onCommitted.addListener(details => {
         value => whenPageDOMLoaded({tabId: details.tabId}).then(()=>value)
     ).then(({visitId, pageId}) => {
         // Start page content analysis (text extraction, etcetera)
+        // gbp.console.log(visitID,pageId);
         performPageAnalysis({pageId, tabId: details.tabId})
     })
+
+
+
 })
