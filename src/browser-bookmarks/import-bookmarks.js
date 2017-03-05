@@ -8,7 +8,7 @@ import { isWorthRemembering, generatePageDocId, generateVisitDocId,
   }
 
   function getVisitItemsForBookmarkItems(bookmarkItems) {
-    console.log("first element" + bookmarkItems);
+    console.log("first element" + bookmarkItems[0].url);
     const promises = bookmarkItems.map(bookmarkItem =>
       browser.history.getVisits({
         url: bookmarkItem.url,
@@ -97,16 +97,23 @@ import { isWorthRemembering, generatePageDocId, generateVisitDocId,
     }
   }
 
-  function logtree(bookmarkItem, indent) {
-    if (bookmarkItem.url) {
-      console.log(makeIndent(indent) + bookmarkItem.url);
-    } else {
-      console.log(makeIndent(indent) + "Folder");
-      indent++;
-    }
-    if (bookmarkItem.children) {
-      for (child of bookmarkItem.children) {
-        bookmarkItems.push(isWorthRemembering(bookmarkItem.url))
+  function logtree(bookmarkResult, indent) {
+    const bookmarkItems =[]
+    for ( var key in bookmarkResult) {
+      if (bookmarkResult[key].url) {
+        console.log("The value key is " + key);
+        console.log("The value of bookmark[key] is " + bookmarkResult[key].url)
+        //console.log(makeIndent(indent) + bookmarkResult[key].url);
+        bookmarkItems.push(isWorthRemembering(bookmarkResult[key].url));
+      }
+      else if (bookmarkResult[key].children) {
+        for (child of bookmarkResult[key].children) {
+          bookmarkItems.push(isWorthRemembering(child.url))
+        }
+      }
+      else {
+        console.log(makeIndent(indent) + "Folder");
+        indent++;
       }
     }
     return bookmarkItems;
@@ -117,13 +124,13 @@ import { isWorthRemembering, generatePageDocId, generateVisitDocId,
   }
 
   function getBookmarkItems() {
-    var bookmarkTree = browser.bookmarks.getRecent();
+    var bookmarkTree = browser.bookmarks.getRecent(5);
     console.log("inside getBookmarkItems");
-    return bookmarkTree.then(logtree(bookmarkTree[0], 0), onRejected);
+    return bookmarkTree.then(result => logtree(result, 0), onRejected);
   }
 
   export default function importBookmarks() {
-    return getBookmarkItems().then(getVisitItemsForBookmarkItems(bookmarkItems)).then(
+    return getBookmarkItems().then(result => console.log("returned array " + result[0].url)).then(
       // Convert everything to our data model
       convertBookmarksToPagesAndVisits
     ).then(({pageDocs, visitDocs}) => {
