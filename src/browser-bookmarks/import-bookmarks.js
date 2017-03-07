@@ -8,7 +8,6 @@ import { isWorthRemembering, generatePageDocId, generateVisitDocId,
   }
 
   function getVisitItemsForBookmarkItems(bookmarkItems) {
-    console.log("first element" + bookmarkItems[0].url);
     const promises = bookmarkItems.map(bookmarkItem =>
       browser.history.getVisits({
         url: bookmarkItem.url,
@@ -16,7 +15,6 @@ import { isWorthRemembering, generatePageDocId, generateVisitDocId,
         visitItems => ({bookmarkItem, visitItems})
       )
     )
-    //console.log(promises);
     return Promise.all(promises)
   }
 
@@ -102,54 +100,68 @@ import { isWorthRemembering, generatePageDocId, generateVisitDocId,
     for ( var key in bookmarkResult) {
       if (bookmarkResult[key].url) {
         console.log("The value key is " + key);
-        console.log("The value of bookmark[key] is " + bookmarkResult[key].url)
+        console.log("The bookmark url is " + bookmarkResult[key].url)
         //console.log(makeIndent(indent) + bookmarkResult[key].url);
-        bookmarkItems.push(isWorthRemembering(bookmarkResult[key].url));
+        if(isWorthRemembering({ url: bookmarkResult[key].url })){
+          bookmarkItems.push({
+            id: bookmarkResult[key].id,
+            url: bookmarkResult[key].url,
+            title: bookmarkResult[key].title
+          })
+        }
+        else { console.log("Not worth remembering"); }
       }
       else if (bookmarkResult[key].children) {
         for (child of bookmarkResult[key].children) {
-          bookmarkItems.push(isWorthRemembering(child.url))
+          if(isWorthRemembering({ url: bookmarkResult[key].url })){
+            bookmarkItems.push({
+              id: bookmarkResult[key].id,
+              url: bookmarkResult[key].url,
+              title: bookmarkResult[key].title,
+            })}
+            else { console.log("Not worth remembering"); }
+          }
+        }
+        else {
+          console.log(makeIndent(indent) + "Folder");
+          indent++;
         }
       }
-      else {
-        console.log(makeIndent(indent) + "Folder");
-        indent++;
-      }
+      return bookmarkItems;
     }
-    return bookmarkItems;
-  }
 
-  function onRejected(error) {
-    console.log(`An error: ${error}`);
-  }
+    function onRejected(error) {
+      console.log(`An error: ${error}`);
+    }
 
-  function getBookmarkItems() {
-    var bookmarkTree = browser.bookmarks.getRecent(5);
-    console.log("inside getBookmarkItems");
-    return bookmarkTree.then(result => logtree(result, 0), onRejected);
-  }
+    function getBookmarkItems() {
+      var bookmarkTree = browser.bookmarks.getRecent(5);
+      console.log("inside getBookmarkItems");
+      return bookmarkTree;
+    }
 
-  export default function importBookmarks() {
-    return getBookmarkItems().then(result => console.log("returned array " + result[0].url)).then(
-      // Convert everything to our data model
-      convertBookmarksToPagesAndVisits
-    ).then(({pageDocs, visitDocs}) => {
-      // Mark and store the pages and visits.
-      let allDocs = pageDocs.concat(visitDocs)
-      // Mark each doc to remember it originated from this import action.
-      const importTimestamp = new Date().getTime()
-      allDocs = allDocs.map(doc => ({
-        ...doc,
-        importedFromBrowserBookmarks: importTimestamp,
-      }))
-      // Store them into the database. Already existing docs will simply be
-      // rejected, because their id (timestamp & bookmark id) already exists.
-      return db.bulkDocs(allDocs)
-    }).then(() => {
-      console.timeEnd('importing bookmarks end')
-      console.time('rebuild search index')
-      return updatePageSearchIndex()
-    }).then(() => {
-      console.timeEnd('rebuild search index')
-    })
-  }
+    export default function importBookmarks() {
+      return getBookmarkItems().then(result => {
+        getVisitItemsForBookmarkItems(logtree(result, 0)).then(
+          res => {
+            var docs = convertBookmarksToPagesAndVisits(res)
+            let allDocs = docs.pageDocs.concat(docs.visitDocs)
+            // Mark each doc to remember it originated from this import action.
+            const importTimestamp = new Date().getTime()
+            allDocs = allDocs.map(doc => ({
+              ...doc,
+              importedFromBrowserBookmarks: importTimestamp,
+            }))
+            // Store them into the database. Already existing docs will simply be
+            // rejected, because their id (timestamp & bookmark id) already exists.
+            return db.bulkDocs(allDocs)
+          }
+        ).then(() => {
+          console.timeEnd('importing bookmarks end')
+          console.time('rebuild search index')
+          return updatePageSearchIndex()
+        }).then(() => {
+          console.timeEnd('rebuild search index')
+        })
+      })
+    }

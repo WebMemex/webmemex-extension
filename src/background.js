@@ -1,5 +1,4 @@
 import './activity-logger/background'
-import importBookmarks from './browser-bookmarks/import-bookmarks'
 
 function openOverview() {
     browser.tabs.create({
@@ -9,9 +8,7 @@ function openOverview() {
 
 // Open the overview when the extension's button is clicked
 browser.browserAction.onClicked.addListener(() => {
-    console.log("Hello World");
-    //openOverview()
-    importBookmarks();
+    openOverview()
 })
 
 browser.commands.onCommand.addListener(command => {
