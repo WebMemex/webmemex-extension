@@ -25,7 +25,7 @@ function getHistoryItems({
 
 // Get the visitItems for each historyItem.
 // Returns them as an array of: {historyItem, visitItems: [visitItem, ...]}.
-function getVisitItemsForHistoryItems(historyItems) {
+export function getVisitItemsForHistoryItems(historyItems) {
     // Get all visits to each of those items.
     const promises = historyItems.map(historyItem =>
         browser.history.getVisits({
@@ -37,7 +37,7 @@ function getVisitItemsForHistoryItems(historyItems) {
     return Promise.all(promises)
 }
 
-function transformToPageDoc({historyItem}) {
+export function transformToPageDoc({historyItem}) {
     const pageDoc = {
         _id: generatePageDocId({
             timestamp: historyItem.lastVisitTime,
@@ -51,7 +51,7 @@ function transformToPageDoc({historyItem}) {
     return pageDoc
 }
 
-function transformToVisitDoc({visitItem, pageDoc}) {
+export function transformToVisitDoc({visitItem, pageDoc}) {
     return {
         _id: generateVisitDocId({
             timestamp: visitItem.visitTime,
@@ -72,7 +72,7 @@ function transformToVisitDoc({visitItem, pageDoc}) {
 
 // Convert the array of {historyItem, visitItems} pairs to our model.
 // Returns two arrays: pageDocs and visitDocs.
-function convertHistoryToPagesAndVisits(fullHistory) {
+export function convertHistoryToPagesAndVisits(fullHistory) {
     const pageDocs = []
     const visitDocs = {}
     fullHistory.forEach(({historyItem, visitItems}) => {
