@@ -9,7 +9,6 @@ function openOverview() {
 
 // Open the overview when the extension's button is clicked
 browser.browserAction.onClicked.addListener(() => {
-    console.log("Hello World");
     openOverview()
 })
 
