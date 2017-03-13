@@ -21,7 +21,6 @@ function logPageVisit({url}) {
 // Listen for navigations to log them and analyse the pages.
 browser.webNavigation.onCommitted.addListener(details => {
     // Ignore pages loaded in frames, it is usually noise.
-    console.log('listening..');
     if (details.frameId !== 0)
         return
 

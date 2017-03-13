@@ -5,8 +5,7 @@ const defaultResultLimit = 30
 
 // Search by keyword query, returning all docs if no query is given
 export function filterVisitsByQuery({query}) {
-    console.log('waiting for the search 123');
-    if (query === '') {
+     if (query === '') {
         return getLastVisits({limit: defaultResultLimit})
     }
     else {
@@ -14,7 +13,6 @@ export function filterVisitsByQuery({query}) {
             pagesResult => findVisitsToPages({pagesResult})
         ).then(
             visitsResult => addVisitsContext({visitsResult})
-            
-        )
+         )
     }
 }

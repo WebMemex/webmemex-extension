@@ -16,9 +16,8 @@ const VisitAsListItem = ({doc, compact}) => {
             className={visitClasses}
             href={doc.page.url}
             title={doc.page.url}
-            // DEBUG Show document props on meta+click
-            onClick={e=>{if (e.metaKey) {console.log(doc); e.preventDefault()}}}
-        >
+            onClick={e=>{if (e.metaKey && e.ctrlKey) {console.log(doc); e.preventDefault()}}}
+         >
 
             {doc.page.screenshot
                 ? <img className={styles.thumbnail} src={doc.page.screenshot} />

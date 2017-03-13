@@ -2,10 +2,10 @@ import fromPairs from 'lodash/fp/fromPairs'
 import update from 'lodash/fp/update'
 import reverse from 'lodash/fp/reverse'
 import unionBy from 'lodash/unionBy' // the fp version does not support >2 inputs (lodash issue #3025)
-import sortBy from 'lodash/fp/sortBy'
+import sortBy from 'lodash/fp/sortBy' 
 import MyClass from '../overview/components/DAte_value_store'
 import db from '../pouchdb'
-import { generatePageDocId, convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
+import { convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
 import { getPages } from './find-pages'
 
 
@@ -36,8 +36,7 @@ function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     }
 
     if (presorted) {
-        
-        // A small optimisation if the results already match one to one.
+         // A small optimisation if the results already match one to one.
         return update('rows', rows => rows.map(
             (row, i) => update('doc.page', ()=>pagesResult.rows[i].doc)(row)
         ))(visitsResult)
@@ -75,7 +74,7 @@ export function getLastVisits({
 // Resulting visits are sorted by time, descending.
 export function findVisitsToPages({pagesResult}) {
     const pageIds = pagesResult.rows.map(row => row.doc._id)
-    console.log('## '+visitKeyPrefix);
+     console.log('## '+visitKeyPrefix);
     /**
      * Here the whole data range values (StartDate and endDates) are accessed that are bieng updated 
      * by Overview.jsx via date-picker . if they are not updated i.e user didn't seleceted any of them 
@@ -101,12 +100,12 @@ export function findVisitsToPages({pagesResult}) {
 
     }
      
-    return db.find({
+     return db.find({
         // Find the visits that contain the pages
         selector: {
             'page._id': {$in: pageIds},
             // workaround for lack of startkey/endkey support
-           // _id: {$gte: generatePageDocId({timestamp: result })}
+            // _id: {$gte: generatePageDocId({timestamp: result })}
         _id: { $gte: convertVisitDocId({timestamp: startDate}),
                          $lte: convertVisitDocId({timestamp:endDate})} 
            
@@ -116,7 +115,7 @@ export function findVisitsToPages({pagesResult}) {
     }).then(
         normaliseFindResult
     ).then( visitsResult =>
-        insertPagesIntoVisits({visitsResult, pagesResult})
+          insertPagesIntoVisits({visitsResult, pagesResult})
     )
 }
 
@@ -132,10 +131,10 @@ export function addVisitsContext({
     // For each visit, get its context.
     const promises = visitsResult.rows.map(row => {
         const timestamp = getTimestamp(row.doc)
-        var compr = new Date();
+         var compr = new Date();
         var result   = (compr.getTime() - timestamp)/1000;
         console.log(result)
-        // Get preceding visits
+         // Get preceding visits
         return db.allDocs({
             include_docs: true,
             // Subtract 1ms to exclude itself (there is no include_start option).
@@ -145,19 +144,16 @@ export function addVisitsContext({
             limit: maxPrecedingVisits,
         }).then(prequelResult => {
             // Get succeeding visits
-            //console.log('in here prequel');
-                
-            return db.allDocs({
+             return db.allDocs({
                 include_docs: true,
                 // Add 1ms to exclude itself (there is no include_start option).
                 startkey: convertVisitDocId({timestamp: timestamp+1}),
-                //endkey: convertVisitDocId({timestamp: timestamp+maxSuccedingTime}),
                  endkey: convertVisitDocId({timestamp: timestamp+maxSuccedingTime}),
                 limit: maxSuccedingVisits,
             }).then(sequelResult => {
                 // Combine them as if they were one result.
                 //console.log('in here sequel');
-                return {
+                 return {
                     rows: prequelResult.rows.concat(reverse(sequelResult.rows))
                 }
             })
@@ -182,8 +178,7 @@ export function addVisitsContext({
                 'doc._id' // Use the id as uniqueness criterion
             )
             // Sort them again by timestamp
-           // console.log('Time Stamp '+getTimestamp(0));
-            return sortBy(row => -getTimestamp(row.doc))(allRows)
+             return sortBy(row => -getTimestamp(row.doc))(allRows)
         })(visitsResult)
     )
 }

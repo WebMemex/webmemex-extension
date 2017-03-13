@@ -7,7 +7,7 @@
 6 silly lifecycle webmemex-extension@0.1.0~prewatch: no script for prewatch, continuing
 7 info lifecycle webmemex-extension@0.1.0~watch: webmemex-extension@0.1.0
 8 verbose lifecycle webmemex-extension@0.1.0~watch: unsafe-perm in lifecycle true
-9 verbose lifecycle webmemex-extension@0.1.0~watch: PATH: /usr/share/npm/bin/node-gyp-bin:/home/raj/webmemex-extension/node_modules/.bin:/opt/apache-maven-3.3.9/bin:/usr/local/java/jdk1.8.0_111/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games::/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+9 verbose lifecycle webmemex-extension@0.1.0~watch: PATH: /usr/share/npm/bin/node-gyp-bin:/home/raj/webmemex-extension/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
 10 verbose lifecycle webmemex-extension@0.1.0~watch: CWD: /home/raj/webmemex-extension
 11 silly lifecycle webmemex-extension@0.1.0~watch: Args: [ '-c', 'gulp watch' ]
 12 silly lifecycle webmemex-extension@0.1.0~watch: Returned: code: 1  signal: null

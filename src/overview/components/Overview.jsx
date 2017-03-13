@@ -64,7 +64,7 @@ class Overview extends React.Component {
             this.refs['inputQuery'].focus()
         }
     }
-   
+    
 }
 
 const mapStateToProps = (state) => ({
@@ -95,6 +95,4 @@ const mapDispatchToProps = (dispatch) => ({
              
       },
 })
-
- 
 export default connect(mapStateToProps, mapDispatchToProps, )(Overview)
