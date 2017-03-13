@@ -16,8 +16,6 @@ export function getVisitItemsForBrowserItems(browserItems) {
 }
 
 export function transformToPageDoc({browserItem}) {
-    console.log(JSON.stringify(browserItem));
-    console.log(browserItem.lastVisitTime);
     const pageDoc = {
         _id: generatePageDocId({
             timestamp: browserItem.lastVisitTime,
