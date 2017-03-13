@@ -1,25 +1,23 @@
 import db from '../pouchdb'
 import { updatePageSearchIndex } from '../search/find-pages'
-import { getVisitItemsForHistoryItems, transformToPageDoc, transformToVisitDoc,
-   convertHistoryToPagesAndVisits } from '../browser-history/import-history'
-import { isWorthRemembering, generatePageDocId, generateVisitDocId,
-  visitKeyPrefix, convertVisitDocId } from '../activity-logger'
+import { getVisitItemsForBrowserItems, transformToPageDoc, transformToVisitDoc,
+   convertbrowserItemToPagesAndVisits } from '../importUtils'
+import { isWorthRemembering } from '../activity-logger'
 
     function onRejected(error) {
       console.log(`An error: ${error}`);
     }
-
+    // Return the bookmarks stored in the browser
     function getBookmarkItems() {
-      var bookmarkTree = browser.bookmarks.getRecent(100000);
-      return bookmarkTree.then(bookmarkItems =>
+      return browser.bookmarks.getRecent(9999999).then(bookmarkItems =>
           bookmarkItems.filter(({url}) => isWorthRemembering({url})));
     }
 
     export default function importBookmarks() {
       return getBookmarkItems().then(result =>
-      getVisitItemsForHistoryItems(result)).then(
+      getVisitItemsForBrowserItems(result)).then(
           res => {
-            var docs = convertHistoryToPagesAndVisits(res)
+            var docs = convertbrowserItemToPagesAndVisits(res)
             let allDocs = docs.pageDocs.concat(docs.visitDocs)
             // Mark each doc to remember it originated from this import action.
             const importTimestamp = new Date().getTime()
