@@ -1,6 +1,6 @@
 import update from 'lodash/fp/update'
 
-import db from '../pouchdb'
+import db, { normaliseFindResult } from '../pouchdb'
 import { keyRangeForPrefix } from '../pouchdb'
 import { pageKeyPrefix } from '../activity-logger'
 import { searchableTextFields, revisePageFields } from '../page-analysis'
@@ -41,7 +41,7 @@ export function searchPages({
         highlighting: true,
         stale: 'update_after',
     }).then(
-        postprocessPagesResult
+        result => {console.log(result)}
     )
 }
 
@@ -51,4 +51,17 @@ export function updatePageSearchIndex() {
         ...pageSearchIndexParams,
         build: true
     })
+}
+
+export function findPagesByUrl({url, ...otherOptions}) {
+    return db.find({
+        selector: {
+            _id: { $gte: pageKeyPrefix, $lte: `${pageKeyPrefix}\uffff`},
+            url,
+        }
+    }).then(
+        normaliseFindResult
+    ).then(
+        postprocessPagesResult
+    )
 }

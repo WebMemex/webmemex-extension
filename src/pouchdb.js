@@ -32,3 +32,12 @@ export const keyRangeForPrefix = prefix => ({
     startkey: `${prefix}`,
     endkey: `${prefix}\uffff`
 })
+
+export const normaliseFindResult = result => ({
+    rows: result.docs.map(doc => ({
+        doc,
+        id: doc._id,
+        key: doc._id,
+        value: {rev: doc._rev},
+    }))
+})
