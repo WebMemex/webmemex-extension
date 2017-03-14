@@ -21,7 +21,7 @@ export function init() {
     return function (dispatch, getState) {
         // Perform an initial search to populate the view (empty query = get all docs)
         dispatch(refreshSearch({loadingIndicator:true}))
- 
+
         // Track database changes, to e.g. trigger search result refresh
         onDatabaseChange(change => dispatch(handlePouchChange({change})))
     }
@@ -32,7 +32,7 @@ export function refreshSearch({loadingIndicator=false}) {
     return function (dispatch, getState) {
         const query = ourState(getState()).query
         const oldResult = ourState(getState()).searchResult
-         const startDate = ourState(getState()).startDate
+        const startDate = ourState(getState()).startDate
         const endDate = ourState(getState()).endDate 
        
         if (loadingIndicator) {
@@ -54,7 +54,7 @@ export function refreshSearch({loadingIndicator=false}) {
                 // ours. So we did all that effort for nothing.
                 return
             }
- 
+
             // Set the result to have it displayed to the user.
             dispatch(setSearchResult({searchResult}))
         })

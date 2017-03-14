@@ -2,7 +2,7 @@ import { createReducer } from 'redux-act'
 import moment from 'moment'
 
 import * as actions from './actions'
- 
+
 const defaultState = {
     searchResult: {rows: []},
     query: '',
@@ -17,7 +17,7 @@ function setQuery(state, {query}) {
 function setSearchResult(state, {searchResult}) {
     return {...state, searchResult}
 }
- 
+
 function showLoadingIndicator(state) {
     // We have to keep a counter, rather than a boolean, as it can currently
     // happen that multiple subsequent searches are running simultaneously. The
@@ -44,4 +44,4 @@ export default createReducer({
     [actions.handleEndChange]:handleEndChange,
     [actions.showLoadingIndicator]: showLoadingIndicator,
     [actions.hideLoadingIndicator]: hideLoadingIndicator,
- }, defaultState)
+}, defaultState)

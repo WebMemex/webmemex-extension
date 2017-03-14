@@ -23,7 +23,7 @@ const normaliseFindResult = result => ({
     }))
 })
 
-  // Nest the page docs into the visit docs, and return the latter.
+// Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     // If pages are not already passed to us, get them and call ourselves again.
     if (pagesResult === undefined) {
