@@ -3,6 +3,9 @@ import { onDatabaseChange } from '../pouchdb'
 import { filterVisitsByQuery } from '../search'
 import { ourState } from './selectors'
 import MyClass from './components/DAte_value_store';
+
+// == Simple commands to change the state in reducers ==
+
 export const setQuery = createAction('overview/setQuery')
 export const setSearchResult = createAction('overview/setSearchResult')
 export const handleStartChange = createAction('overview/handleStartChange')

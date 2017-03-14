@@ -77,10 +77,7 @@ play along! :tada:
       folder from this repo.
     * Others browsers: let know if you have tested it!
 
-<<<<<<< HEAD
-=======
 *If NPM (during `make`) fails to install dependencies because a nasty firewall blocks the `git://` protocol, check [this solution](http://stackoverflow.com/questions/4891527/git-protocol-blocked-by-company-how-can-i-get-around-that/10729634#10729634)*
->>>>>>> 06bf788a001699ef51a89e7d469c3546d8c4a022
 
 ### Automatic recompilation
 
@@ -117,11 +114,7 @@ compilation):
 
 The parts communicate in two ways:
 - Messaging through `browser.sendMessage`, usually done implicitly by using a
-<<<<<<< HEAD
-  remote procedure call ([`util/webextensionRPC.js`](util/webextensionRPC.js)).
-=======
   remote procedure call ([`util/webextensionRPC.js`](src/util/webextensionRPC.js)).
->>>>>>> 06bf788a001699ef51a89e7d469c3546d8c4a022
 - Through the in-browser PouchDB database, they get to see the same data, and
   can react to changes made by other parts.
 

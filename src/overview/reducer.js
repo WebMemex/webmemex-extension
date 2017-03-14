@@ -1,7 +1,7 @@
 import { createReducer } from 'redux-act'
-import MyClass from './components/DAte_value_store'
-import * as actions from './actions'
 import moment from 'moment'
+
+import * as actions from './actions'
  
 const defaultState = {
     searchResult: {rows: []},
@@ -17,7 +17,8 @@ function setQuery(state, {query}) {
 function setSearchResult(state, {searchResult}) {
     return {...state, searchResult}
 }
- function showLoadingIndicator(state) {
+ 
+function showLoadingIndicator(state) {
     // We have to keep a counter, rather than a boolean, as it can currently
     // happen that multiple subsequent searches are running simultaneously. The
     // animation will thus hide again when all of them have completed.
@@ -29,13 +30,11 @@ function hideLoadingIndicator(state) {
 }
 
 function handleStartChange(state, {startDate}) {
-    //MyClss.Global_startDate = startDate;
-    return Object.assign({},state, {startDate :MyClass.Global_startDate})
+    return {...state, startDate}
 }
 
-function handleEndChange(state, {endDate}) {
-    //MyClss.Global_endDate = endDate;
-     return Object.assign({},state, {endDate : MyClass.Global_endDate})
+function handleEndChange(state, {endDate}) { 
+    return {...state, endDate}
 }
  
 export default createReducer({

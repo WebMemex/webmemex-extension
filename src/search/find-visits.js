@@ -3,13 +3,13 @@ import update from 'lodash/fp/update'
 import reverse from 'lodash/fp/reverse'
 import unionBy from 'lodash/unionBy' // the fp version does not support >2 inputs (lodash issue #3025)
 import sortBy from 'lodash/fp/sortBy' 
-import MyClass from '../overview/components/DAte_value_store'
 import db from '../pouchdb'
+
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
 import { getPages } from './find-pages'
+import { ourState } from '../overview/selectors'
+import store from '../overview/main'
 
-
-// Get query result indexed by doc id, as an {id: row} object.
 const resultsById = result =>
     fromPairs(result.rows.map(row => [(row.id || row.doc._id), row]))
 
@@ -23,7 +23,7 @@ const normaliseFindResult = result => ({
     }))
 })
 
-// Nest the page docs into the visit docs, and return the latter.
+  // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     // If pages are not already passed to us, get them and call ourselves again.
     if (pagesResult === undefined) {
@@ -85,37 +85,37 @@ export function findVisitsToPages({pagesResult}) {
      */
     
     var comp = new Date();
-    var startDate = comp.getTime() - 100*24*60*60*1000 //100 days old search
-    var endDate =  comp.getTime()
-    if(MyClass.Global_startDate!=null)
+    var sDate = comp.getTime() - 100*24*60*60*1000 //100 days old search
+    var eDate =  comp.getTime()
+   
+    if(ourState(store.getState()).startDate!='')
     {   
-    //if startDate has been updated by user then it's updates else default value is used
-        startDate = MyClass.Global_startDate.format('x');
-
+        //if startDate has been updated by user then it's updates else default value is used
+        sDate = ourState(store.getState()).startDate.format('x');
     }
-    if(MyClass.Global_endDate!=null)
+
+    if(ourState(store.getState()).endDate!='')
     {
-         //if endDate has been updated by user then it's updates else default value is used
-        endDate = MyClass.Global_endDate.format('x');
-
+        //if endDate has been updated by user then it's updates else default value is used
+        eDate = ourState(store.getState()).endDate.format('x');
     }
-     
+    
      return db.find({
         // Find the visits that contain the pages
         selector: {
             'page._id': {$in: pageIds},
             // workaround for lack of startkey/endkey support
             // _id: {$gte: generatePageDocId({timestamp: result })}
-        _id: { $gte: convertVisitDocId({timestamp: startDate}),
-                         $lte: convertVisitDocId({timestamp:endDate})} 
+        _id: { $gte: convertVisitDocId({timestamp: sDate}),
+                         $lte: convertVisitDocId({timestamp:eDate})} 
            
     },
         // Sort them by time, newest first
        sort: [{'_id': 'desc'}],
     }).then(
         normaliseFindResult
-    ).then( visitsResult =>
-          insertPagesIntoVisits({visitsResult, pagesResult})
+    ).then(visitsResult =>
+        insertPagesIntoVisits({visitsResult, pagesResult})
     )
 }
 
@@ -131,7 +131,7 @@ export function addVisitsContext({
     // For each visit, get its context.
     const promises = visitsResult.rows.map(row => {
         const timestamp = getTimestamp(row.doc)
-         var compr = new Date();
+        var compr = new Date();
         var result   = (compr.getTime() - timestamp)/1000;
         console.log(result)
          // Get preceding visits
@@ -144,11 +144,11 @@ export function addVisitsContext({
             limit: maxPrecedingVisits,
         }).then(prequelResult => {
             // Get succeeding visits
-             return db.allDocs({
+            return db.allDocs({
                 include_docs: true,
                 // Add 1ms to exclude itself (there is no include_start option).
                 startkey: convertVisitDocId({timestamp: timestamp+1}),
-                 endkey: convertVisitDocId({timestamp: timestamp+maxSuccedingTime}),
+                endkey: convertVisitDocId({timestamp: timestamp+maxSuccedingTime}),
                 limit: maxSuccedingVisits,
             }).then(sequelResult => {
                 // Combine them as if they were one result.
@@ -178,7 +178,7 @@ export function addVisitsContext({
                 'doc._id' // Use the id as uniqueness criterion
             )
             // Sort them again by timestamp
-             return sortBy(row => -getTimestamp(row.doc))(allRows)
+            return sortBy(row => -getTimestamp(row.doc))(allRows)
         })(visitsResult)
     )
 }
