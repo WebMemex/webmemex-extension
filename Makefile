@@ -16,7 +16,6 @@ node_modules:
 
 
 # Firefox-specific stuff
-
 .PHONY: fx-run
 fx-run:
 	npm run fx-run
