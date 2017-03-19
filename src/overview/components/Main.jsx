@@ -6,8 +6,6 @@ import * as actions from '../actions'
 import { ourState } from '../selectors'
 import Overview from './Overview'
 
-
-
 class Main extends Component {
     render() {
         return (
