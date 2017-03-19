@@ -2,6 +2,7 @@ import React from 'react'
 import createBrowserHistory from 'history/createBrowserHistory'
 
 import ResultList from './ResultList'
+import LoadingIndicator from './LoadingIndicator'
 
 import styles from './Overview.css'
 
@@ -16,7 +17,10 @@ class Overview extends React.Component {
                 ref='inputQuery'
             >
             </input>
-            <ResultList searchResult={this.props.searchResult} />
+            {this.props.waitingForResults
+                ? <LoadingIndicator />
+                : <ResultList searchResult={this.props.searchResult} searchQuery={this.props.query} />
+            }
         </div>
     }
 
@@ -25,7 +29,6 @@ class Overview extends React.Component {
             this.refs['inputQuery'].focus()
         }
     }
-
     componentWillMount() {
         const query = new URLSearchParams(this.props.location.search).get('q')
         if(query) {
