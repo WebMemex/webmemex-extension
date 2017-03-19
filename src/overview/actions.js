@@ -1,7 +1,7 @@
 import { createAction } from 'redux-act'
 
-import { onDatabaseChange } from '../pouchdb'
-import { filterVisitsByQuery } from '../search'
+import { onDatabaseChange } from 'src/pouchdb'
+import { filterVisitsByQuery } from 'src/search'
 import { ourState } from './selectors'
 
 
@@ -37,7 +37,10 @@ export function refreshSearch({loadingIndicator=false}) {
             dispatch(showLoadingIndicator())
         }
 
-        filterVisitsByQuery({query}).then(searchResult => {
+        filterVisitsByQuery({
+            query,
+            includeContext: true,
+        }).then(searchResult => {
 
             if (loadingIndicator) {
                 // Hide our nice loading animation again.

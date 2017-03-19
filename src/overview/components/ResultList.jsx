@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { makeRangeTransform, makeNonlinearTransform } from '../../util/make-range-transform'
-import niceTime from '../../util/nice-time'
+import { makeRangeTransform, makeNonlinearTransform } from 'src/util/make-range-transform'
+import niceTime from 'src/util/nice-time'
 import VisitAsListItem from './VisitAsListItem'
 
 import styles from './ResultList.css'
@@ -26,7 +26,17 @@ const timeGapToSpaceGap = makeNonlinearTransform({
     nonlinearity: Math.log,
 })
 
-const ResultList = ({searchResult}) => {
+const ResultList = ({searchResult, searchQuery}) => {
+    // If there are no results, show a message.
+    const noResultMessage = 'no results'
+    if(searchResult.rows.length === 0 && searchQuery !== ''){
+        return (
+            <p className={styles.noResultMessage}>
+                {noResultMessage}
+            </p>
+        )
+    }
+
     // The space and possibly a time stamp before each row
     const rowGaps = searchResult.rows.map((row, rowIndex) => {
         // Space between two rows depends on the time between them.
