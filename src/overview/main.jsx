@@ -22,7 +22,7 @@ store.dispatch(overview.actions.init())
 ReactDOM.render(
     <Provider store={store}>
         <div>
-            <overview.components.Overview grabFocusOnMount={true} />
+            <overview.components.Main />
             {ReduxDevTools && <ReduxDevTools />}
         </div>
     </Provider>,
