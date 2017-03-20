@@ -4,7 +4,6 @@ import update from 'lodash/fp/update'
 import db, { normaliseFindResult, resultRowsById } from 'src/pouchdb'
 import { pageKeyPrefix } from 'src/activity-logger'
 import { searchableTextFields, revisePageFields } from 'src/page-analysis'
->>>>>>> master
 
 
 // Resolve redirects from (deduplicated) pages, replacing them in the results.
@@ -85,11 +84,7 @@ export function searchPages({
         highlighting: true,
         stale: 'update_after',
     }).then(
-<<<<<<< HEAD
-        result => {console.log(result)}
-=======
         pagesResult => postprocessPagesResult({...otherOptions, pagesResult})
->>>>>>> master
     )
 }
 
@@ -110,10 +105,6 @@ export function findPagesByUrl({url, ...otherOptions}) {
     }).then(
         normaliseFindResult
     ).then(
-<<<<<<< HEAD
-        postprocessPagesResult
-=======
         pagesResult => postprocessPagesResult({...otherOptions, pagesResult})
->>>>>>> master
     )
 }
