@@ -12,7 +12,7 @@ browser.webNavigation.onCommitted.addListener(({url, tabId, frameId}) => {
 
 
 //********************************************************************************/
-var timestamp = new Date().getTime;
+
 
 var number_of_opened_tabs = 0;
 
@@ -27,13 +27,13 @@ var tabList = [];
 browser.tabs.onCreated.addListener(function (tab){
     number_of_opened_tabs = number_of_opened_tabs + 1;
     //console.log('total opened tabs: ' + number_of_opened_tabs);
-    var t = {
+    var tabObj = {
         id : tab.id,
         activetime : 0,
         isActive : false,
-        lastActivatedtime : Number(new Date().getTime())
+        lastActivatedtime : Number(new Date().now())
     };
-    tabList.push(t);
+    tabList.push(tabObj);
     console.log('a new Tab created : ' + tab.id);
 })
 
@@ -54,14 +54,14 @@ browser.tabs.onActivated.addListener(function (tab){
     for (var index in tabList){
         if(tabList[index].isActive == true){
             tabList[index].isActive = false;
-            tabList[index].lastActivatedtime = Number(new Date().getTime());
+            tabList[index].lastActivatedtime = Number(new Date().now());
             console.log('a tab went inactive : ' + tabList[index].id);
         }
         
     }
     for (var index in tabList){
         if(tabList[index].id == tab.tabId){
-            var currTimestamp = Number(new Date().getTime())
+            var currTimestamp = Number(new Date().now())
             var difference = currTimestamp - tabList[index].lastActivatedtime;
             tabList[index].activetime = tabList[index].activetime + difference;
             tabList[index].isActive = true;
