@@ -1,7 +1,7 @@
 import { createAction } from 'redux-act'
 
-import { onDatabaseChange } from '../pouchdb'
-import { filterVisitsByQuery } from '../search'
+import { onDatabaseChange } from 'src/pouchdb'
+import { filterVisitsByQuery } from 'src/search'
 import { ourState } from './selectors'
 
 
@@ -9,6 +9,8 @@ import { ourState } from './selectors'
 
 export const setQuery = createAction('overview/setQuery')
 export const setSearchResult = createAction('overview/setSearchResult')
+export const showLoadingIndicator = createAction('overview/showLoadingIndicator')
+export const hideLoadingIndicator = createAction('overview/hideLoadingIndicator')
 
 
 // == Actions that trigger other actions ==
@@ -17,7 +19,7 @@ export const setSearchResult = createAction('overview/setSearchResult')
 export function init() {
     return function (dispatch, getState) {
         // Perform an initial search to populate the view (empty query = get all docs)
-        dispatch(refreshSearch())
+        dispatch(refreshSearch({loadingIndicator:true}))
 
         // Track database changes, to e.g. trigger search result refresh
         onDatabaseChange(change => dispatch(handlePouchChange({change})))
@@ -25,11 +27,26 @@ export function init() {
 }
 
 // Search for docs matching the current query, update the results
-export function refreshSearch() {
+export function refreshSearch({loadingIndicator=false}) {
     return function (dispatch, getState) {
         const query = ourState(getState()).query
         const oldResult = ourState(getState()).searchResult
-        filterVisitsByQuery({query}).then(searchResult => {
+
+        if (loadingIndicator) {
+            // Show to the user that search is busy
+            dispatch(showLoadingIndicator())
+        }
+
+        filterVisitsByQuery({
+            query,
+            includeContext: true,
+        }).then(searchResult => {
+
+            if (loadingIndicator) {
+                // Hide our nice loading animation again.
+                dispatch(hideLoadingIndicator())
+            }
+
             // First check if the query and result changed in the meantime.
             if (ourState(getState()).query !== query
                 && ourState(getState()).searchResult !== oldResult) {
@@ -38,6 +55,7 @@ export function refreshSearch() {
                 // ours. So we did all that effort for nothing.
                 return
             }
+
             // Set the result to have it displayed to the user.
             dispatch(setSearchResult({searchResult}))
         })
