@@ -2,11 +2,18 @@
 // The browser's historyItems and visitItems are quite straightforwardly
 // converted to pageDocs and visitDocs (sorry for the confusingly similar name).
 
-import db from '../pouchdb'
-import { updatePageSearchIndex } from '../search/find-pages'
-import { getVisitItemsForBrowserItems, transformToPageDoc, transformToVisitDoc,
-   convertbrowserItemToPagesAndVisits } from '../importUtils'
-import { isWorthRemembering } from '../activity-logger'
+// <<<<<<< HEAD
+// import db from '../pouchdb'
+// import { updatePageSearchIndex } from '../search/find-pages'
+// import { getVisitItemsForBrowserItems, transformToPageDoc, transformToVisitDoc,
+//    convertbrowserItemToPagesAndVisits } from '../importUtils'
+// import { isWorthRemembering } from '../activity-logger'
+// =======
+import db from 'src/pouchdb'
+import { updatePageSearchIndex } from 'src/search/find-pages'
+import { isWorthRemembering, generateVisitDocId,
+         visitKeyPrefix, convertVisitDocId } from 'src/activity-logger'
+import { generatePageDocId } from 'src/page-storage'
 
 
 // Get the historyItems (visited places/pages; not each visit to them)
