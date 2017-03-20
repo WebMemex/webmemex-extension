@@ -63,7 +63,7 @@ browser.tabs.onActivated.addListener(function (tab){
         if(tabList[index].id == tab.tabId){
             var currTimestamp = Number(new Date().now())
             var difference = currTimestamp - tabList[index].lastActivatedtime;
-            tabList[index].activetime = tabList[index].activetime + difference;
+            tabList[index].activetime += difference;
             tabList[index].isActive = true;
             console.log('a tab came active : ' + tabList[index].id);
             console.log('tab ' + tabList[index].id +' had been in that page for '+ tabList[index].activetime + 'ms');
