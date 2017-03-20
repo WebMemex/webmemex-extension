@@ -29,7 +29,6 @@
         "<all_urls>",
         "history",
         "tabs",
-        "bookmarks",
         "webNavigation"
     ],
     "chrome_url_overrides" : {

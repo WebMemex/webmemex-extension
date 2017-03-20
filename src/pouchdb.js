@@ -35,10 +35,7 @@ export const keyRangeForPrefix = prefix => ({
     endkey: `${prefix}\uffff`
 })
 
-<<<<<<< HEAD
-=======
 // Present db.find results in the same structure as other PouchDB results.
->>>>>>> master
 export const normaliseFindResult = result => ({
     rows: result.docs.map(doc => ({
         doc,
@@ -47,10 +44,7 @@ export const normaliseFindResult = result => ({
         value: {rev: doc._rev},
     }))
 })
-<<<<<<< HEAD
-=======
 
 // Get rows of a query result indexed by doc id, as an {id: row} object.
 export const resultRowsById = result =>
     fromPairs(result.rows.map(row => [row.id, row]))
->>>>>>> master
