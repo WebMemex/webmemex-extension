@@ -2,26 +2,13 @@ import fromPairs from 'lodash/fp/fromPairs'
 import update from 'lodash/fp/update'
 import reverse from 'lodash/fp/reverse'
 import unionBy from 'lodash/unionBy' // the fp version does not support >2 inputs (lodash issue #3025)
-import sortBy from 'lodash/fp/sortBy' 
-import db from '../pouchdb'
+import sortBy from 'lodash/fp/sortBy'
+import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
 import { getPages } from './find-pages'
 import { ourState } from '../overview/selectors'
 import store from '../overview/main'
-
-const resultsById = result =>
-    fromPairs(result.rows.map(row => [(row.id || row.doc._id), row]))
-
-// Present db.find results in the same structure as other PouchDB results.
-const normaliseFindResult = result => ({
-    rows: result.docs.map(doc => ({
-        doc,
-        id: doc._id,
-        key: doc._id,
-        value: {rev: doc._rev},
-    }))
-})
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {

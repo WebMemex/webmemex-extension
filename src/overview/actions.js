@@ -1,8 +1,7 @@
 import { createAction } from 'redux-act'
 import { onDatabaseChange } from '../pouchdb'
-import { filterVisitsByQuery } from '../search'
+import { filterVisitsByQuery } from 'src/search'
 import { ourState } from './selectors'
-import MyClass from './components/DAte_value_store';
 
 // == Simple commands to change the state in reducers ==
 
