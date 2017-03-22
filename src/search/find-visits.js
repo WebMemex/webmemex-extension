@@ -5,10 +5,17 @@ import unionBy from 'lodash/unionBy' // the fp version does not support >2 input
 import sortBy from 'lodash/fp/sortBy'
 import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 
+<<<<<<< HEAD
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
 import { getPages } from './find-pages'
 import { ourState } from '../overview/selectors'
 import store from '../overview/main'
+=======
+import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
+import { convertVisitDocId, visitKeyPrefix, getTimestamp } from 'src/activity-logger'
+import { getPages } from './find-pages'
+
+>>>>>>> 44444645628e80587cb483186d9c3d081acc2bd0
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
@@ -16,7 +23,11 @@ function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     if (pagesResult === undefined) {
         // Get the page of each visit.
         const pageIds = visitsResult.rows.map(row => row.doc.page._id)
-        return getPages({pageIds}).then(pagesResult =>
+        return getPages({
+            pageIds,
+            // Assume that we always want to follow redirects.
+            followRedirects: true,
+        }).then(pagesResult =>
             // Invoke ourselves with the found pages.
             insertPagesIntoVisits({visitsResult, pagesResult, presorted: true})
         )
@@ -30,7 +41,7 @@ function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     }
     else {
         // Read each visit's doc.page._id and replace it with the specified page.
-        const pagesById = resultsById(pagesResult)
+        const pagesById = resultRowsById(pagesResult)
         return update('rows', rows => rows.map(
             
             update('doc.page', page => pagesById[page._id].doc)
@@ -57,9 +68,11 @@ export function getLastVisits({
 }
 
 
-// Find all visits to the given pages, return them with the pages nested.
+// Find all visits to the given pages, return them with the pages nested inside.
 // Resulting visits are sorted by time, descending.
+// XXX: If pages are redirected, only visits to the source page are found.
 export function findVisitsToPages({pagesResult}) {
+<<<<<<< HEAD
     const pageIds = pagesResult.rows.map(row => row.doc._id)
      console.log('## '+visitKeyPrefix);
     /**
@@ -88,6 +101,10 @@ export function findVisitsToPages({pagesResult}) {
     }
     
      return db.find({
+=======
+    const pageIds = pagesResult.rows.map(row => row.id)
+    return db.find({
+>>>>>>> 44444645628e80587cb483186d9c3d081acc2bd0
         // Find the visits that contain the pages
         selector: {
             'page._id': {$in: pageIds},
@@ -162,7 +179,7 @@ export function addVisitsContext({
             const allRows = unionBy(
                 rows,
                 ...contextResults.map(result => result.rows),
-                'doc._id' // Use the id as uniqueness criterion
+                'id' // Use the visits' ids as the uniqueness criterion
             )
             // Sort them again by timestamp
             return sortBy(row => -getTimestamp(row.doc))(allRows)

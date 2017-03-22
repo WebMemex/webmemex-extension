@@ -22,6 +22,7 @@ class Overview extends React.Component {
      
            
         return <div>
+<<<<<<< HEAD
                <input
                   className={styles.query}
                   onChange={e=>this.props.onInputChanged(e.target.value)}
@@ -51,6 +52,24 @@ class Overview extends React.Component {
           }
 
      componentDidMount() {
+=======
+            <input
+                className={styles.query}
+                onChange={e=>this.props.onInputChanged(e.target.value)}
+                placeholder="Search your memory"
+                value={this.props.query}
+                ref='inputQuery'
+            >
+            </input>
+            {this.props.waitingForResults
+                ? <LoadingIndicator />
+                : <ResultList searchResult={this.props.searchResult} searchQuery={this.props.query} />
+            }
+        </div>
+    }
+
+    componentDidMount() {
+>>>>>>> 44444645628e80587cb483186d9c3d081acc2bd0
         if (this.props.grabFocusOnMount) {
             this.refs['inputQuery'].focus()
           }

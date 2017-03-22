@@ -1,4 +1,6 @@
-import './activity-logger/background'
+import 'src/activity-logger/background'
+import 'src/omnibar'
+
 
 function openOverview() {
     browser.tabs.create({
