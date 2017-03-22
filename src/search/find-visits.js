@@ -5,17 +5,10 @@ import unionBy from 'lodash/unionBy' // the fp version does not support >2 input
 import sortBy from 'lodash/fp/sortBy'
 import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 
-<<<<<<< HEAD
-import { convertVisitDocId, visitKeyPrefix, getTimestamp } from '../activity-logger'
-import { getPages } from './find-pages'
-import { ourState } from '../overview/selectors'
-import store from '../overview/main'
-=======
 import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from 'src/activity-logger'
 import { getPages } from './find-pages'
 
->>>>>>> 44444645628e80587cb483186d9c3d081acc2bd0
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
@@ -72,39 +65,8 @@ export function getLastVisits({
 // Resulting visits are sorted by time, descending.
 // XXX: If pages are redirected, only visits to the source page are found.
 export function findVisitsToPages({pagesResult}) {
-<<<<<<< HEAD
-    const pageIds = pagesResult.rows.map(row => row.doc._id)
-     console.log('## '+visitKeyPrefix);
-    /**
-     * Here the whole data range values (StartDate and endDates) are accessed that are bieng updated 
-     * by Overview.jsx via date-picker . if they are not updated i.e user didn't seleceted any of them 
-     * then the startDate is intialized with default value of 100 days past and endDate is intialized 
-     * with present date.  if only one is selected other is initializedd with  it's default value.
-     * inside db,find we are  fetching only these data values that are between staertDate and endDate.
-     * @Raj Pratim Bhattacharya gmail rajpratim1234@gmail.com
-     */
-    
-    var comp = new Date();
-    var sDate = comp.getTime() - 100*24*60*60*1000 //100 days old search
-    var eDate =  comp.getTime()
-   
-    if(ourState(store.getState()).startDate!='')
-    {   
-        //if startDate has been updated by user then it's updates else default value is used
-        sDate = ourState(store.getState()).startDate.format('x');
-    }
-
-    if(ourState(store.getState()).endDate!='')
-    {
-        //if endDate has been updated by user then it's updates else default value is used
-        eDate = ourState(store.getState()).endDate.format('x');
-    }
-    
-     return db.find({
-=======
     const pageIds = pagesResult.rows.map(row => row.id)
     return db.find({
->>>>>>> 44444645628e80587cb483186d9c3d081acc2bd0
         // Find the visits that contain the pages
         selector: {
             'page._id': {$in: pageIds},
