@@ -14,7 +14,6 @@
     "fx-build": "npm run build-prod && web-ext -s extension -a dist/firefox build"
   },
   "dependencies": {
-    "bootstrap-daterangepicker": "^2.1.25",
     "classnames": "^2.2.5",
     "diff-match-patch": "^1.0.0",
     "docuri": "^4.2.1",
