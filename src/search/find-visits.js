@@ -27,7 +27,6 @@ function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     }
 
     if (presorted) {
-        // A small optimisation if the results already match one to one.
         return update('rows', rows => rows.map(
             (row, i) => update('doc.page', ()=>pagesResult.rows[i].doc)(row)
         ))(visitsResult)
@@ -120,7 +119,10 @@ export function addVisitsContext({
     // For each visit, get its context.
     const promises = visitsResult.rows.map(row => {
         const timestamp = getTimestamp(row.doc)
-        // Get preceding visits
+        var compr = new Date();
+        var result   = (compr.getTime() - timestamp)/1000;
+        console.log(result)
+         // Get preceding visits
         return db.allDocs({
             include_docs: true,
             // Subtract 1ms to exclude itself (there is no include_start option).

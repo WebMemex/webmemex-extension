@@ -37,7 +37,6 @@ function handleEndChange(state, {endDate}) {
     return {...state, endDate}
 }
 
-
 export default createReducer({
     [actions.setQuery]: setQuery,
     [actions.setSearchResult]: setSearchResult,
