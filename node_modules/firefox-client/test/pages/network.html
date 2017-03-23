@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Logs tests</title>
+  <meta charset="utf-8">
+
+  <script>
+    function sendRequest() {
+      var req = new XMLHttpRequest();
+
+      req.open("GET", "test-network.json", true);
+      req.responseType = "json";
+      req.setRequestHeader("test-header", "test-value");
+      req.send();
+    }
+  </script>
+</head>
+<body>
+  <main>
+  </main>
+</body>
+</html>

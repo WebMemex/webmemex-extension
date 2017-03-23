@@ -1,9 +1,7 @@
 import { createAction } from 'redux-act'
-
 import { onDatabaseChange } from 'src/pouchdb'
 import { filterVisitsByQuery } from 'src/search'
 import { ourState } from './selectors'
-
 
 // == Simple commands to change the state in reducers ==
 
@@ -11,7 +9,8 @@ export const setQuery = createAction('overview/setQuery')
 export const setSearchResult = createAction('overview/setSearchResult')
 export const showLoadingIndicator = createAction('overview/showLoadingIndicator')
 export const hideLoadingIndicator = createAction('overview/hideLoadingIndicator')
-
+export const handleStartChange = createAction('overview/handleStartChange')
+export const handleEndChange = createAction('overview/handleEndChange')
 
 // == Actions that trigger other actions ==
 
@@ -30,8 +29,8 @@ export function init() {
 export function refreshSearch({loadingIndicator=false}) {
     return function (dispatch, getState) {
         const query = ourState(getState()).query
-        const oldResult = ourState(getState()).searchResult
-
+        const oldResult = ourState(getState()).searchResult       
+       
         if (loadingIndicator) {
             // Show to the user that search is busy
             dispatch(showLoadingIndicator())
@@ -46,7 +45,6 @@ export function refreshSearch({loadingIndicator=false}) {
                 // Hide our nice loading animation again.
                 dispatch(hideLoadingIndicator())
             }
-
             // First check if the query and result changed in the meantime.
             if (ourState(getState()).query !== query
                 && ourState(getState()).searchResult !== oldResult) {

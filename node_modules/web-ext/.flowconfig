@@ -1,0 +1,20 @@
+[include]
+
+[libs]
+
+[options]
+module.system=node
+log.file=./artifacts/flow.log
+suppress_comment= \\(.\\|\n\\)*\\$FLOW_FIXME
+suppress_comment= \\(.\\|\n\\)*\\$FLOW_IGNORE 
+
+[ignore]
+<PROJECT_ROOT>/dist/.*
+
+# A lot of babel modules seem to use Flow and for some reason they're mostly
+# broken.
+.*/node_modules/babel.*
+
+# This ignores .json files in a bunch of places. It can go away when the
+# bug is fixed: https://github.com/facebook/flow/issues/1420
+.*/node_modules.*/\(binary\-extensions\|builtin\-modules\|iconv\-lite\|lib\|test\|url\-regex\|spdx\-exceptions\|spdx\-license\-ids\)/.*\.json$

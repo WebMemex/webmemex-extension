@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Lunr tests</title>
+
+    <!-- Lunr -->
+    <script src="/lib/lunr.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/utils.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/tokenizer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/pipeline.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/vector.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/sorted_set.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/index.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/stemmer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/stop_word_filter.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/trimmer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/token.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/builder.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/token_set.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/token_set_builder.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/match_data.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/query.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/query_lexer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/lib/query_parser.js" type="text/javascript" charset="utf-8"></script>
+
+    <script>
+      fetch("/example/example_data.json")
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (raw) {
+          console.time("building")
+
+          window.idx = lunr(function () {
+            this.ref('id')
+
+            this.field('title')
+            this.field('body')
+            this.field('tags')
+
+            raw.questions.forEach(function (q) {
+              this.add({
+                id: parseInt(q.question_id, 10),
+                title: q.title,
+                body: q.body,
+                tags: q.tags.join(' ')
+              })
+            }, this)
+          })
+
+          console.timeEnd("building")
+        })
+
+//      var fsaBuilder = new lunr.FSABuilder
+//      fsaBuilder.insert("monday", 0)
+//      fsaBuilder.insert("thursday", 3)
+//      fsaBuilder.insert("tuesday", 1)
+//      fsaBuilder.finish()
+
+      var search = function (query, field) {
+        console.time("search")
+        var results = idx.search(query, field)
+        console.timeEnd("search")
+        return results
+      }
+
+      var query = function (term) {
+        console.time("query")
+        var results = idx.query(function () {
+          this.term(term)
+        })
+        console.timeEnd("query")
+        return results
+      }
+
+      var profile = function (term) {
+        console.profile("query")
+        var results = idx.query(function () {
+          this.term(term)
+        })
+        console.profileEnd("query")
+        return results
+      }
+
+      var serialize = function () {
+        console.time("stringify")
+        var result = JSON.stringify(idx)
+        console.timeEnd("stringify")
+
+        console.log(result.length)
+
+        console.time("parse")
+        var output = JSON.parse(result)
+        console.timeEnd("parse")
+
+        console.log(output)
+      }
+
+      var blah = function () {
+        console.profile("fuzz")
+        var t = lunr.TokenSet.fromFuzzyString("oliver", 1)
+        console.profileEnd("fuzz")
+        return t
+      }
+
+    </script>
+
+  </head>
+</html>

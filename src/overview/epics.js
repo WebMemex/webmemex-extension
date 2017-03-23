@@ -1,7 +1,6 @@
 import 'rxjs/add/operator/debounceTime'
 import 'rxjs/add/operator/map'
 
-
 import * as actions from './actions'
 
 // When the query changed, refresh the search results

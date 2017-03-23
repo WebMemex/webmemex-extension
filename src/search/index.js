@@ -8,7 +8,7 @@ export async function filterVisitsByQuery({
     limit=30,
     includeContext=false,
 }) {
-    if (query === '') {
+ if (query === '') {
         return await getLastVisits({limit})
     }
     else {

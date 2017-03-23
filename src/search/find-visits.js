@@ -3,11 +3,12 @@ import update from 'lodash/fp/update'
 import reverse from 'lodash/fp/reverse'
 import unionBy from 'lodash/unionBy' // the fp version does not support >2 inputs (lodash issue #3025)
 import sortBy from 'lodash/fp/sortBy'
+import {ourState} from '../overview/selectors'
+import store from '../overview/main'
 
 import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from 'src/activity-logger'
 import { getPages } from './find-pages'
-
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
@@ -26,7 +27,6 @@ function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     }
 
     if (presorted) {
-        // A small optimisation if the results already match one to one.
         return update('rows', rows => rows.map(
             (row, i) => update('doc.page', ()=>pagesResult.rows[i].doc)(row)
         ))(visitsResult)
@@ -63,14 +63,41 @@ export function getLastVisits({
 // Resulting visits are sorted by time, descending.
 // XXX: If pages are redirected, only visits to the source page are found.
 export function findVisitsToPages({pagesResult}) {
-    const pageIds = pagesResult.rows.map(row => row.id)
+    const pageIds = pagesResult.rows.map(row => row.doc._id)
+    /**
+     * Here the whole data range values (StartDate and endDates) are accessed that are bieng updated 
+     * by Overview.jsx via date-picker . if they are not updated i.e user didn't seleceted any of them 
+     * then the startDate is intialized with default value of 100 days past and endDate is intialized 
+     * with present date.  if only one is selected other is initializedd with  it's default value.
+     * inside db,find we are  fetching only these data values that are between staertDate and endDate.
+     * Raj Pratim Bhattacharya gmail rajpratim1234@gmail.com
+     */
+    
+    var comp = new Date();
+    var sDate = comp.getTime() - 100*24*60*60*1000 //100 days old search
+    var eDate =  comp.getTime()
+  
+    if(ourState(store.getState()).startDate!='')
+    {   
+        //if startDate has been updated by user then it's updates else default value is used
+        sDate = ourState(store.getState()).startDate.format('x');
+    }
+
+    if(ourState(store.getState()).endDate!='')
+    {
+        //if endDate has been updated by user then it's updates else default value is used
+        eDate = ourState(store.getState()).endDate.format('x');
+    }
+    console.log('char@@@@@@@@@@ '+ sDate+' '+eDate);
     return db.find({
         // Find the visits that contain the pages
         selector: {
             'page._id': {$in: pageIds},
             // workaround for lack of startkey/endkey support
-            _id: {$gte: visitKeyPrefix, $lte: `${visitKeyPrefix}\uffff`},
-        },
+        _id: { $gte: convertVisitDocId({timestamp: sDate}),
+                         $lte: convertVisitDocId({timestamp:eDate})} 
+   
+ },
         // Sort them by time, newest first
         sort: [{'_id': 'desc'}],
     }).then(
@@ -92,7 +119,10 @@ export function addVisitsContext({
     // For each visit, get its context.
     const promises = visitsResult.rows.map(row => {
         const timestamp = getTimestamp(row.doc)
-        // Get preceding visits
+        var compr = new Date();
+        var result   = (compr.getTime() - timestamp)/1000;
+        console.log(result)
+         // Get preceding visits
         return db.allDocs({
             include_docs: true,
             // Subtract 1ms to exclude itself (there is no include_start option).
