@@ -8,13 +8,12 @@ import overview from 'src/overview'
 import './base.css'
 
 // Include development tools if we are not building for production
-let ReduxDevTools = undefined
-if (process.env.NODE_ENV !== 'production') {
-    ReduxDevTools = require('src/dev/redux-devtools').default
-}
+export const ReduxDevTools = process.env.NODE_ENV !== 'production' ?
+    require('src/dev/redux-devtools').default :
+    undefined
 
 // Set up the Redux store
-const store = configureStore({ReduxDevTools})
+export const store = configureStore({ReduxDevTools})
 
 store.dispatch(overview.actions.init())
 

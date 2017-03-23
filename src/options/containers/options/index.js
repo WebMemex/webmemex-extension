@@ -1,6 +1,6 @@
 import React from 'react'
-import SettingComponent from '../../components/settings'
 import { connect } from 'react-redux'
+import OptionsComponent from '../../components/options'
 
 const mapStateToProps = (state) => ({
 })
@@ -8,4 +8,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettingComponent)
+export default connect(mapStateToProps, mapDispatchToProps)(OptionsComponent)
