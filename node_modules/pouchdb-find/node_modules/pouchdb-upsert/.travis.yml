@@ -1,0 +1,22 @@
+language: node_js
+
+services:
+  - couchdb
+
+node_js:
+  - "5"
+sudo: false
+script: npm run $COMMAND
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+
+env:
+  matrix:
+  - COMMAND=test
+  - COMMAND=test-browser
+  - COMMAND=coverage
+
+branches:
+  only:
+  - master

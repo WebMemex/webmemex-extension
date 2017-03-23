@@ -1,0 +1,13 @@
+firefox-profile.sublime-*
+.DS_Store
+node_modules/
+npm-debug.log
+coverage/
+doc/
+examples/
+test/
+.travis.yml
+.coveralls.yml
+.jshintrc
+Gruntfile.js
+secret.config.*
