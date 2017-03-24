@@ -10,7 +10,6 @@ import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from 'src/activity-logger'
 import { getPages } from './find-pages'
 
-
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
     // If pages are not already passed to us, get them and call ourselves again.
@@ -78,19 +77,26 @@ export function findVisitsToPages({pagesResult}) {
     var comp = new Date();
     var sDate = comp.getTime() - 100*24*60*60*1000 //100 days old search
     var eDate =  comp.getTime()
-  
+    
     if(ourState(store.getState()).startDate!='')
     {   
         //if startDate has been updated by user then it's updates else default value is used
         sDate = ourState(store.getState()).startDate.format('x');
-}
+        console.log('############ '+sDate)
+        
+    }   
 
     if(ourState(store.getState()).endDate!='')
     {
         //if endDate has been updated by user then it's updates else default value is used
         eDate = ourState(store.getState()).endDate.format('x');
     }
-    
+    if(result1!=''&& result1< eDate && result1.isValid())
+    {
+        sDate = result1.toDate().getTime();
+        console.log(sDate);
+    }
+
     return db.find({
         // Find the visits that contain the pages
         selector: {
