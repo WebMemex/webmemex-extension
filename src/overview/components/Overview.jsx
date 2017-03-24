@@ -62,8 +62,7 @@ class Overview extends React.Component {
     componentDidMount() {
         if (this.props.grabFocusOnMount) {
             this.refs['inputQuery'].focus()
-            
-        }
+          }
     }
 }
 
@@ -85,12 +84,12 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(actions.handleInputDate({nlp_date: input_date}))
     },
 
-    onStartDateChange: date => {
-             dispatch(actions.handleStartChange({startDate: date}))
+    onStartDateChange: date_clicked => {
+             dispatch(actions.handleStartChange({startDate: date_clicked}))
       },
 
-    onEndDateChange: date => {
-             dispatch(actions.handleEndChange({endDate: date}))
+    onEndDateChange: date_clicked => {
+             dispatch(actions.handleEndChange({endDate: date_clicked}))
     },
 })
 

@@ -5,18 +5,14 @@ import * as actions from './actions'
 const defaultState = {
     searchResult: {rows: []},
     query: '',
-    nlp_date:'',
+    nlp_date: '',
     waitingForResults: 0,
-    startDate: '', 
-    endDate: ''
+    startDate: null, 
+    endDate: null
 }
 
 function setQuery(state, {query}) {
     return {...state, query}
-}
-
-function handleInputDate(state, {nlp_date}){
-    return {...state, nlp_date}
 }
 
 function setSearchResult(state, {searchResult}) {
@@ -41,6 +37,11 @@ function handleStartChange(state, {startDate}) {
 function handleEndChange(state, {endDate}) { 
     return {...state, endDate}
 }
+
+function handleInputDate(state, {nlp_date}){
+    return {...state, nlp_date}
+}
+
 
 export default createReducer({
     [actions.setQuery]: setQuery,

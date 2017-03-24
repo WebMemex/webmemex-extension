@@ -5,11 +5,13 @@ import unionBy from 'lodash/unionBy' // the fp version does not support >2 input
 import sortBy from 'lodash/fp/sortBy'
 import {ourState} from '../overview/selectors'
 import store from '../overview/main'
+import moment from 'moment';
 
 import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from 'src/activity-logger'
 import { getPages } from './find-pages'
 import parser from 'moment-parser'
+
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
@@ -75,30 +77,31 @@ export function findVisitsToPages({pagesResult}) {
      * Raj Pratim Bhattacharya gmail rajpratim1234@gmail.com
      */
     
-    var comp = new Date();
-    var sDate = comp.getTime() - 100*24*60*60*1000 //100 days old search
-    var eDate =  comp.getTime()
-    
-    if(ourState(store.getState()).nlp_date!='')
-        var result1 = parser.parseMoment( ourState(store.getState()).nlp_date );
 
-    if(ourState(store.getState()).startDate!='')
+    var current_time = new moment().valueOf();
+    var startDate = current_time - 100*24*60*60*1000; //100 days old search
+    var endDate =  current_time;
+
+    var result1 = null;
+    if(ourState(store.getState()).nlp_date!='')
+        result1 = parser.parseMoment( ourState(store.getState()).nlp_date );
+
+    if(ourState(store.getState()).startDate!=null)
     {   
         //if startDate has been updated by user then it's updates else default value is used
-        sDate = ourState(store.getState()).startDate.format('x');
-        console.log('############ '+sDate)
-        
-    }   
+        startDate = ourState(store.getState()).startDate.format('x');
+    }
 
-    if(ourState(store.getState()).endDate!='')
+    if(ourState(store.getState()).endDate!=null)
     {
         //if endDate has been updated by user then it's updates else default value is used
-        eDate = ourState(store.getState()).endDate.format('x');
+        endDate = ourState(store.getState()).endDate.format('x');
     }
-    if(result1!=''&& result1< eDate && result1.isValid())
+    
+    if(result1!=null&& result1< endDate && result1.isValid())
     {
-        sDate = result1.toDate().getTime();
-        console.log(sDate);
+        startDate = result1.toDate().valueOf();
+        console.log(startDate);
     }
 
     return db.find({
@@ -106,8 +109,8 @@ export function findVisitsToPages({pagesResult}) {
         selector: {
             'page._id': {$in: pageIds},
             // workaround for lack of startkey/endkey support
-        _id: { $gte: convertVisitDocId({timestamp: sDate}),
-                         $lte: convertVisitDocId({timestamp:eDate})} 
+        _id: { $gte: convertVisitDocId({timestamp: startDate}),
+                         $lte: convertVisitDocId({timestamp:endDate})} 
    
     },
     
