@@ -13,6 +13,7 @@ export const showLoadingIndicator = createAction('overview/showLoadingIndicator'
 export const hideLoadingIndicator = createAction('overview/hideLoadingIndicator')
 export const handleStartChange = createAction('overview/handleStartChange')
 export const handleEndChange = createAction('overview/handleEndChange')
+export const handleInputDate = createAction('overview/handleInputDate')
 
 
 // == Actions that trigger other actions ==
