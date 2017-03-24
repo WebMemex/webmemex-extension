@@ -37,25 +37,39 @@ class Overview extends React.Component {
                     maxDate={moment()}
                     onChange={e=>this.props.onEndDateChange(e)}
                   />
+                </div>
+                <div>
+                <input
+                  className={styles.query}
+                  onChange={e=>this.props.onInputDate(e.target.value)} 
+                  placeholder="natural language date parser"
+                  value={this.props.nlp_date}
+                  ref='inputDate'
+                 >
+                  </input>
                 </div> 
                 <div>
                 {this.props.waitingForResults
                 ? <LoadingIndicator />
                 : <ResultList searchResult={this.props.searchResult} searchQuery={this.props.query} />
-            }
+                }
                 </div>
             </div>         
         
     }
 
+
     componentDidMount() {
         if (this.props.grabFocusOnMount) {
             this.refs['inputQuery'].focus()
+            
         }
     }
 }
 
 const mapStateToProps = (state) => ({
+
+    nlp_date: ourState(state).nlp_date,
     query: ourState(state).query,
     searchResult: ourState(state).searchResult,
     waitingForResults: ourState(state).waitingForResults,
@@ -67,6 +81,10 @@ const mapDispatchToProps = (dispatch) => ({
     onInputChanged: input => {
         dispatch(actions.setQuery({query: input}))
     },
+    onInputDate:input_date => {
+        dispatch(actions.handleInputDate({nlp_date: input_date}))
+    },
+
     onStartDateChange: date => {
              dispatch(actions.handleStartChange({startDate: date}))
       },

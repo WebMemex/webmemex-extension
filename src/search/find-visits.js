@@ -9,6 +9,7 @@ import store from '../overview/main'
 import db, { normaliseFindResult, resultRowsById }  from 'src/pouchdb'
 import { convertVisitDocId, visitKeyPrefix, getTimestamp } from 'src/activity-logger'
 import { getPages } from './find-pages'
+import parser from 'moment-parser'
 
 // Nest the page docs into the visit docs, and return the latter.
 function insertPagesIntoVisits({visitsResult, pagesResult, presorted=false}) {
@@ -78,6 +79,9 @@ export function findVisitsToPages({pagesResult}) {
     var sDate = comp.getTime() - 100*24*60*60*1000 //100 days old search
     var eDate =  comp.getTime()
     
+    if(ourState(store.getState()).nlp_date!='')
+        var result1 = parser.parseMoment( ourState(store.getState()).nlp_date );
+
     if(ourState(store.getState()).startDate!='')
     {   
         //if startDate has been updated by user then it's updates else default value is used
