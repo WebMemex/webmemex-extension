@@ -1,4 +1,5 @@
 import Readability from 'readability'
+import extractPdfText from 'src/pdf-analysis/extract-pdf-text'
 
 // Extract the 'main text' from a web page (esp. news article, blog post, ...).
 function extractPageText_sync({
@@ -6,6 +7,15 @@ function extractPageText_sync({
     loc = window.location,
     doc = document,
 }={}) {
+
+    if(loc.href.substr(loc.href.lastIndexOf('.')+1) === "pdf" ){
+        return extractPdfText(loc.href).then(function (pdfText) {
+            return {
+                bodyInnerText: pdfText
+            }
+        })
+    }
+
     const uri = {
         spec: loc.href,
         host: loc.host,
