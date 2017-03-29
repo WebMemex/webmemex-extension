@@ -11,7 +11,7 @@ function getMetaData(blob) {
 
             // workerSrc needs to be specified, PDFJS library uses
             // Document.currentScript which is disallowed by content scripts
-            PDFJS.workerSrc = chrome.extension.getURL("pdf-worker/pdf.worker.js");
+            PDFJS.workerSrc = browser.extension.getURL("pdf-worker/pdf.worker.js");
             PDFJS.getDocument(blob.target.result).then(function(pdf) {
 
                 pdf.getMetadata().then(function (data) {
