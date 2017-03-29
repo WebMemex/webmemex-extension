@@ -20,7 +20,7 @@
     "docuri": "^4.2.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "page-metadata-parser": "git://github.com/Treor2a/page-metadata-parser.git#npm-testable",
+    "page-metadata-parser": "git://github.com/Treora/page-metadata-parser.git#npm-testable",
     "pdfjs-dist": "^1.7.395",
     "pouchdb-browser": "^6.1.0",
     "pouchdb-find": "^0.10.4",
