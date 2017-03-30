@@ -2,11 +2,11 @@
 // The browser's historyItems and visitItems are quite straightforwardly
 // converted to pageDocs and visitDocs (sorry for the confusingly similar name).
 
-import db from 'src/pouchdb'
-import { updatePageSearchIndex } from 'src/search/find-pages'
-import { isWorthRemembering, generateVisitDocId,
-         visitKeyPrefix, convertVisitDocId } from 'src/activity-logger'
-import { generatePageDocId } from 'src/page-storage'
+import db from '../pouchdb'
+import { updatePageSearchIndex } from '../search/find-pages'
+import { getVisitItemsForBrowserItems, transformToPageDoc, transformToVisitDoc,
+   convertbrowserItemToPagesAndVisits } from '../importUtils'
+import { isWorthRemembering } from '../activity-logger'
 
 
 // Get the historyItems (visited places/pages; not each visit to them)
@@ -24,94 +24,6 @@ function getHistoryItems({
     )
 }
 
-// Get the visitItems for each historyItem.
-// Returns them as an array of: {historyItem, visitItems: [visitItem, ...]}.
-function getVisitItemsForHistoryItems(historyItems) {
-    // Get all visits to each of those items.
-    const promises = historyItems.map(historyItem =>
-        browser.history.getVisits({
-            url: historyItem.url,
-        }).then(
-            visitItems => ({historyItem, visitItems})
-        )
-    )
-    return Promise.all(promises)
-}
-
-function transformToPageDoc({historyItem}) {
-    const pageDoc = {
-        _id: generatePageDocId({
-            timestamp: historyItem.lastVisitTime,
-            // We set the nonce manually, to prevent duplicating items if
-            // importing multiple times (thus making importHistory idempotent).
-            nonce: `history-${historyItem.id}`,
-        }),
-        url: historyItem.url,
-        title: historyItem.title,
-    }
-    return pageDoc
-}
-
-function transformToVisitDoc({visitItem, pageDoc}) {
-    return {
-        _id: generateVisitDocId({
-            timestamp: visitItem.visitTime,
-            // We set the nonce manually, to prevent duplicating items if
-            // importing multiple times (thus making importHistory idempotent).
-            nonce: `history-${visitItem.visitId}`,
-        }),
-        visitStart: visitItem.visitTime,
-        // Temporarily keep the pointer to the browser history's id numbering.
-        // Will be replaced by the id of the corresponding visit in our model.
-        referringVisitItemId: visitItem.referringVisitId,
-        url: pageDoc.url,
-        page: {
-            _id: pageDoc._id,
-        },
-    }
-}
-
-// Convert the array of {historyItem, visitItems} pairs to our model.
-// Returns two arrays: pageDocs and visitDocs.
-function convertHistoryToPagesAndVisits(fullHistory) {
-    const pageDocs = []
-    const visitDocs = {}
-    fullHistory.forEach(({historyItem, visitItems}) => {
-        // Map each pair to a page...
-        const pageDoc = transformToPageDoc({historyItem})
-        pageDocs.push(pageDoc)
-        // ...and one or more visits to that page.
-        visitItems.forEach(visitItem => {
-            const visitDoc = transformToVisitDoc({visitItem, pageDoc})
-            visitDocs[visitItem.visitId] = visitDoc
-        })
-    })
-    // Now each new visit has an id, we can map the referrer-paths between them.
-    Object.values(visitDocs).forEach(visitDoc => {
-        // Take and forget the id of the visitItem in the browser's history.
-        const referringVisitItemId = visitDoc.referringVisitItemId
-        delete visitDoc.referringVisitItemId
-        if (referringVisitItemId && referringVisitItemId !== '0') {
-            // Look up what visit this id maps to in our model.
-            const referringVisitDoc = visitDocs[referringVisitItemId]
-            if (referringVisitDoc) {
-                const referringVisitDocId = referringVisitDoc._id
-                // Add a reference to the visit document.
-                visitDoc.referringVisit = {_id: referringVisitDocId}
-            }
-            else {
-                // Apparently the referring visit is not present in the history.
-                // We can just pretend that there was no referrer.
-            }
-        }
-    })
-    // Return the new docs.
-    return {
-        pageDocs,
-        visitDocs: Object.values(visitDocs) // we can forget the old ids now
-    }
-}
-
 // Pulls the full browser history into the database.
 export default function importHistory({
     startTime,
@@ -120,10 +32,10 @@ export default function importHistory({
     // Get the full history: both the historyItems and visitItems.
     console.time('import history')
     return getHistoryItems({startTime, endTime}).then(
-        getVisitItemsForHistoryItems
+        getVisitItemsForBrowserItems
     ).then(
         // Convert everything to our data model
-        convertHistoryToPagesAndVisits
+        convertbrowserItemToPagesAndVisits
     ).then(({pageDocs, visitDocs}) => {
         // Mark and store the pages and visits.
         let allDocs = pageDocs.concat(visitDocs)
