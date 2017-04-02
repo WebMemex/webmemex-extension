@@ -24,7 +24,10 @@ async function performPageAnalysis({pageId, tabId}) {
 
     // Get page title, author (if any), etcetera.
     const storePageMetadata = extractPageMetadata().then(
-        setDocField(db, pageId, 'extractedMetadata')
+        (val) =>{
+            console.log('MetaData : \n' + JSON.stringify(val,null,2))
+            setDocField(db, pageId, 'extractedMetadata')
+        }
     )
 
     // Get and store the fav-icon
@@ -41,7 +44,10 @@ async function performPageAnalysis({pageId, tabId}) {
 
     // Extract the main text
     const storePageText = extractPageText().then(
-        setDocField(db, pageId, 'extractedText')
+        (val) => {
+            console.log('Text : \n' + JSON.stringify(val,null,2))
+            setDocField(db, pageId, 'extractedText')
+        }
     )
 
     // When every task has either completed or failed, update the search index.
