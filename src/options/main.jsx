@@ -1,24 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, IndexRedirect, hashHistory } from 'react-router'
+import { Provider } from 'react-redux'
+import { store, ReduxDevTools } from 'src/overview/main'
 
-import Layout from './layout'
-import Routes from './routes'
-
-// Render the UI to the screen
+import options from 'src/options'
 
 ReactDOM.render(
-    <Router history={hashHistory}>
-        <Route path="/" component={Layout}>
-            <IndexRedirect to="/settings" />
-            { Routes.map(route =>
-                <Route
-                    key={route.pathname}
-                    path={route.pathname}
-                    component={route.component}
-                />
-            )}
-        </Route>
-    </Router>,
+    <Provider store={store}>
+        <div>
+            <options.components.Options />
+            {ReduxDevTools && <ReduxDevTools />}
+        </div>
+    </Provider>,
     document.getElementById('app')
 )
