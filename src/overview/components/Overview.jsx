@@ -10,18 +10,23 @@ import styles from './Overview.css'
 
 
 class Overview extends React.Component {
+    componentDidMount() {
+        if (this.props.grabFocusOnMount) {
+            this.refs['inputQuery'].focus()
+        }
+    }
+
     render() {
         return (
             <div>
                 <div>
                     <input
                         className={styles.query}
-                        onChange={e=>this.props.onInputChanged(e.target.value)}
-                        placeholder="Search your memory"
+                        onChange={e => this.props.onInputChanged(e.target.value)}
+                        placeholder='Search your memory'
                         value={this.props.query}
                         ref='inputQuery'
-                    >
-                    </input>
+                     />
                 </div>
                 <DateRangeSelection
                     startDate={this.props.startDate}
@@ -42,12 +47,6 @@ class Overview extends React.Component {
                 </div>
             </div>
         )
-    }
-
-    componentDidMount() {
-        if (this.props.grabFocusOnMount) {
-            this.refs['inputQuery'].focus()
-        }
     }
 }
 
