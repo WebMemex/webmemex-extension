@@ -19,33 +19,33 @@ const VisitAsListItem = ({doc, compact}) => {
             // DEBUG Show document props on ctrl+meta+click
             onClick={e => { if (e.metaKey && e.ctrlKey) { console.log(doc); e.preventDefault() } }}
         >
-                <span className={styles.logo} title={doc.page.title}>
-                    {doc.page.favIcon
+            <span className={styles.logo} title={doc.page.title}>
+                {doc.page.favIcon
                         ? <img className={styles.favicon} src={doc.page.favIcon} />
                         : <img className={styles.favicon} src='img/null-icon.png' />
                     }
-                </span>
-                <div className={styles.title}>
-                    <div><strong>{doc.page.title}</strong></div>
-                    <div>{doc.page.url}</div>
-                    <div>{niceTime(doc.visitStart)}</div>
-                </div>
-                <div className={styles.linkToLocalVersion}>
-                    {localVersionAvailable({page: doc.page})
+            </span>
+            <div className={styles.result_content}>
+                <div className={styles.title}><strong>{doc.page.title}</strong></div>
+                <div className={styles.url}>{doc.page.url}</div>
+                <div className={styles.time}>{niceTime(doc.visitStart)}</div>
+            </div>
+            <div className={styles.icons_container}>
+                {localVersionAvailable({page: doc.page})
                         ? <LinkToLocalVersion page={doc.page}>
-                        <img src='img/save-icon.png' alt='save-icon' />
+                            <img src='img/save-icon.png' alt='save-icon' />
                         </LinkToLocalVersion>
                         : null
                     }
-                    <img src='img/trash-icon.png' alt='trash-icon' />
-                </div>
-                <div className={styles.screenshot}>
-                    {doc.page.screenshot
-                    ? <img className={styles.thumbnail} src={doc.page.screenshot} />
-                    : <p className={styles.thumbnail}>No screenshot available.</p>
+                <img src='img/trash-icon.png' alt='trash-icon' />
+            </div>
+            <div className={styles.screenshot_container}>
+                {doc.page.screenshot
+                    ? <img src={doc.page.screenshot} />
+                    : <p className={styles.no_screenshot_available}>No screenshot available.</p>
                     }
-                </div>
-                
+            </div>
+
         </a>
     )
 }

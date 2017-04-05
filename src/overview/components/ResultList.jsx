@@ -63,11 +63,6 @@ const ResultList = ({searchResult, searchQuery}) => {
         {searchResult.rows.map((row, rowIndex) => {
             let { marginTop, timestampComponent } = rowGaps[rowIndex]
 
-            // Cluster successive & related visits closer together.
-            const nextRow = searchResult.rows[rowIndex + 1]
-            // ...unless there is a gap between the rows.
-            const gapBelowThisRow = nextRow && rowGaps[rowIndex+1].marginTop
-
             return <li
                 key={row.doc._id}
                 style={{
