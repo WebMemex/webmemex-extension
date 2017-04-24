@@ -1,66 +1,56 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import classNames from 'classnames'
-
-import {localVersionAvailable, LinkToLocalVersion} from 'src/page-viewer'
-import niceTime from 'src/util/nice-time'
+import niceTime from '../../util/nice-time'
 import styles from './VisitAsListItem.css'
 
+import {localVersionAvailable, LinkToLocalVersion } from 'src/page-viewer'
 
 const VisitAsListItem = ({doc, compact}) => {
     const visitClasses = classNames({
         [styles.root]: true,
-        [styles.compact]: compact,
+        [styles.compact]: compact
     })
-    const favIcon = (
-        <img
-            className={styles.favIcon}
-            src={doc.page.favIcon || 'img/null-icon.png'}
-        />
-    )
+
     return (
         <a
             className={visitClasses}
             href={doc.page.url}
-            // DEBUG Show document props on ctrl+meta+click
-            onClick={e => { if (e.metaKey && e.ctrlKey) { console.log(doc); e.preventDefault() } }}
+            title={doc.page.url}
+            onClick={e=>{if (e.metaKey && e.ctrlKey) {console.log(doc); e.preventDefault()}}}
         >
-            <div className={styles.screenshotContainer}>
-                {doc.page.screenshot
-                    ? <img className={styles.screenshot} src={doc.page.screenshot} />
-                    : favIcon
+
+            <span className={styles.logo} title={doc.page.title}>
+                {doc.page.favIcon
+                    ? <img className={styles.favicon} src={doc.page.favIcon} />
+                    : <img className={styles.favicon} src='img/null-icon.png' />
                 }
-            </div>
-            <div className={styles.descriptionContainer}>
-                <div
-                    className={styles.title}
-                    title={doc.page.title}
-                >
-                    {doc.page.favIcon && favIcon}
-                    {doc.page.title}
-                </div>
-                <div className={styles.url}>
-                    {doc.page.url}
-                </div>
+            </span>
+
+            <div className={styles.result_content}>
+                <div className={styles.title}><strong>{doc.page.title}</strong></div>
+                <div className={styles.url}>{doc.page.url}</div>
                 <div className={styles.time}>{niceTime(doc.visitStart)}</div>
             </div>
-            <div className={styles.buttonsContainer}>
-                <img src='img/trash-icon.png' alt='🗑 remove' />
+
+            <div className={styles.icons_container}>
                 {localVersionAvailable({page: doc.page})
-                    ? (
-                        <LinkToLocalVersion page={doc.page}>
-                            <img src='img/save-icon.png' alt='💾 saved' />
+                    ? <LinkToLocalVersion page={doc.page}>
+                        <img src='img/save-icon.png' alt='save-icon' />
                         </LinkToLocalVersion>
-                    )
                     : null
                 }
+                <img src='img/trash-icon.png' alt='trash-icon' />
             </div>
+
+            <div className={styles.screenshot_container}>
+                {doc.page.screenshot
+                ? <img src={doc.page.screenshot} />
+                : <p className={styles.no_screenshot_available}>No screenshot<br />available</p>
+                }
+            </div>
+
         </a>
     )
-}
-
-VisitAsListItem.propTypes = {
-    doc: PropTypes.object.isRequired,
-    compact: PropTypes.bool,
 }
 
 export default VisitAsListItem
