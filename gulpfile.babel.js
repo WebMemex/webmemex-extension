@@ -12,6 +12,7 @@ import uglifyify from 'uglifyify'
 import path from 'path'
 import cssModulesify from 'css-modulesify'
 import cssnext from 'postcss-cssnext'
+import runSequence from 'run-sequence'
 
 
 const staticFiles = {
@@ -130,5 +131,7 @@ gulp.task('lint-watch', () => {
     })
 })
 
-gulp.task('watch', ['lint', 'build-watch', 'lint-watch'])
+gulp.task('watch', function() {
+    runSequence('lint', 'build-watch', 'lint-watch')
+})
 gulp.task('default', ['watch'])
