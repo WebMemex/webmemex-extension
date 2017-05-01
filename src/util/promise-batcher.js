@@ -35,7 +35,9 @@ function initBatch(batch, callback, concurrency = 5) {
     return {
         pause: () => pauser.next(false),
         resume: () => pauser.next(true),
-        getRemaining: () => diffSets(batch, processed),
+        getProgress: () => processed,
+        // Clear state + force complete subject to stop acting on input
+        terminate: () => processed.clear() && pausable.complete(),
         subscribe(observer) {
             const sub = pausable.subscribe(observer)
             pauser.next(true)   // Make sure pauser is set to run
