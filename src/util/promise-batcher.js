@@ -5,7 +5,7 @@ const diffSets = (a, b) => new Set([...a].filter(el => !b.has(el)))
 
 // Given a RxJS Subject + Observable, makes that Observable pausable by sending bools to Subject
 const createPausable = (subject, observer) => subject.switchMap(running =>
-    Rx.Observable.if(() => running, observer, Rx.Observable.empty()))
+    Rx.Observable.if(() => running, observer(), Rx.Observable.empty()))
 
 /**
  * Given a Set of input and an async function, will attempt to concurrently batch fetch them in the background.
@@ -28,8 +28,8 @@ function initBatch(batch, callback, concurrency = 5) {
         )
         .do(({ input }) => processed.add(input))  // Update state as input gets processed
 
-    const pauser = new Rx.Subject()
-    const pausable = createPausable(pauser, batchObservable(diffSets(batch, processed)))
+    // Pauser subject to handle stopping, starting and resuming operations on input observable
+    const pauser = createPausable(new Rx.Subject(), () => batchObservable(diffSets(batch, processed)))
 
     // Interface to use this batch
     return {
@@ -37,9 +37,9 @@ function initBatch(batch, callback, concurrency = 5) {
         resume: () => pauser.next(true),
         getProgress: () => processed,
         // Clear state + force complete subject to stop acting on input
-        terminate: () => processed.clear() && pausable.complete(),
+        terminate: () => processed.clear() && pauser.complete(),
         subscribe(observer) {
-            const sub = pausable.subscribe(observer)
+            const sub = pauser.subscribe(observer)
             pauser.next(true)   // Make sure pauser is set to run
             return sub          // Allow caller to manage sub
         },
