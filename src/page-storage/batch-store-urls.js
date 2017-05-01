@@ -1,5 +1,4 @@
 import Rx from 'rxjs'
-import { reidentifyOrStorePage } from './store-page'
 
 // Give two Sets; will spit out a new Set containing everything in a that wasn't in b
 const diffSets = (a, b) => new Set([...a].filter(el => !b.has(el)))
@@ -8,33 +7,29 @@ const diffSets = (a, b) => new Set([...a].filter(el => !b.has(el)))
 const createPausable = (subject, observer) => subject.switchMap(running =>
     Rx.Observable.if(() => running, observer, Rx.Observable.empty()))
 
-// Creates a deferred promise from inner analysis promise of `reidentifyOrStorePage`
-// NOTE: This is probably not done the best way; can't get my head around deferring on inner promise with Rx
-const deferAnalysis = url => Rx.Observable.defer(() =>
-    reidentifyOrStorePage({ url }).then(res => res.finalPagePromise))
-
 /**
- * Given a Set of URLs, will attempt to concurrently batch fetch them in the background.
+ * Given a Set of input and an async function, will attempt to concurrently batch fetch them in the background.
  *
- * @param {Set} batch The total batch of URLs to operate on.
- * @param {number} [concurrency=5] How many URLs to be fetching at the same time.
+ * @param {Set} batch The total batch of input to operate on.
+ * @param {(input: any) => Promise<any>} callback The async callback to run each input on.
+ * @param {number} [concurrency=5] How many promises to be waiting at any time.
  * @returns {any} Object containing batch handling functions.
  */
-export default function initURLBatch(batch, concurrency = 5) {
+function initBatch(batch, callback, concurrency = 5) {
     // State to keep track of progress
     const processed = new Set()
 
     // Uses mergeMap to handle concurrently processing the deferred promises
-    const fetchAndAnalyse = data => Rx.Observable.from(data)
+    const batchObservable = data => Rx.Observable.from(data)
         .mergeMap(
-            url => deferAnalysis(url),
-            url => url,
+            input => Rx.Observable.defer(() => callback(input)),
+            (input, result) => ({ input, result }),
             concurrency,
         )
-        .do(url => processed.add(url))
+        .do(({ input }) => processed.add(input))  // Update state as input gets processed
 
     const pauser = new Rx.Subject()
-    const pausable = createPausable(pauser, fetchAndAnalyse(diffSets(batch, processed)))
+    const pausable = createPausable(pauser, batchObservable(diffSets(batch, processed)))
 
     // Interface to use this batch
     return {
@@ -48,3 +43,6 @@ export default function initURLBatch(batch, concurrency = 5) {
         },
     }
 }
+
+// Export a HOF that binds callbacks to a batch initialser
+export default callback => (batch, concurrency) => initBatch(batch, callback, concurrency)
