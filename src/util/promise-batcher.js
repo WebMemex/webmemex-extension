@@ -1,5 +1,4 @@
 import Rx from 'rxjs'
-import identity from 'lodash/identity'
 
 // Given a RxJS Subject + Observable, makes that Observable pausable by sending bools to Subject
 const createPausable = (subject, getObservable) => subject.switchMap(running =>
@@ -64,8 +63,11 @@ function initBatch({ batch, callback, innerPromise = false, concurrency = 5 }) {
         pause: () => pauser.next(false),
         resume: () => pauser.next(true),
         getProgress: () => processed,
-        // Clear state + force complete subject to stop acting on input
-        terminate: () => processed.clear() && pauser.complete(),
+        terminate: () => {
+            pauser.next(false)  // Make sure pauser doesn't use input observable
+            pauser.complete()   // Send complete notification to pauser Subject
+            processed.clear()   // Reset the state
+        },
         subscribe(observer) {
             const sub = pauser.subscribe(observer)
             pauser.next(true)   // Make sure pauser is set to run
