@@ -1,4 +1,5 @@
 import Rx from 'rxjs'
+import State from './promise-batcher-state'
 
 // Given a RxJS Subject + Observable, makes that Observable pausable by sending bools to Subject
 const createPausable = (subject, getObservable) => subject.switchMap(running =>
@@ -20,7 +21,7 @@ const createPausable = (subject, getObservable) => subject.switchMap(running =>
  */
 function initBatch({ batch, callback, innerPromise = false, concurrency = 5 }) {
     // State to keep track of progress
-    const processed = new Set()
+    const state = new State()
 
     /**
      * Gets Observable built on the batch input. It uses state to track which inputs
@@ -30,7 +31,7 @@ function initBatch({ batch, callback, innerPromise = false, concurrency = 5 }) {
      */
     const getObservable = () => {
         const filteredInputObs = Rx.Observable.from(batch)
-            .filter(input => !processed.has(input))  // Ignore already-processed values
+            .filter(input => !state.has(input))  // Ignore already-processed values
 
         // Map input to pre-processing to emit promises to stream
         //  mergeMap needs to be used if innerPromise set (need to wait on outter promise)
@@ -52,7 +53,7 @@ function initBatch({ batch, callback, innerPromise = false, concurrency = 5 }) {
                 ({ input }, result) => ({ input, result }),
                 concurrency,  // Allow n promises to process at a time
              )
-            .do(({ input }) => processed.add(input))  // Update state as input gets processed
+            .do(({ input }) => state.recordSuccess(input))  // Update state as input gets processed
     }
 
     // Pauser subject to handle stopping, starting and resuming operations on input observable
@@ -62,11 +63,11 @@ function initBatch({ batch, callback, innerPromise = false, concurrency = 5 }) {
     return {
         pause: () => pauser.next(false),
         resume: () => pauser.next(true),
-        getProgress: () => processed,
+        getState: () => state.getState(),
         terminate: () => {
             pauser.next(false)  // Make sure pauser doesn't use input observable
             pauser.complete()   // Send complete notification to pauser Subject
-            processed.clear()   // Reset the state
+            state.reset()       // Reset the state
         },
         subscribe(observer) {
             const sub = pauser.subscribe(observer)
