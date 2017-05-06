@@ -69,8 +69,8 @@ function initBatch({ batch, callback, innerPromise = false, concurrency = 5 }) {
             pauser.complete()   // Send complete notification to pauser Subject
             state.reset()       // Reset the state
         },
-        subscribe(observer) {
-            const sub = pauser.subscribe(observer)
+        subscribe(...observer) {
+            const sub = pauser.subscribe(...observer)
             pauser.next(true)   // Make sure pauser is set to run
             return sub          // Allow caller to manage sub
         },
