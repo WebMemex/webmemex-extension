@@ -4,62 +4,74 @@ import State from './promise-batcher-state'
 /**
  * Given a Set of input and an async function, will attempt to concurrently batch process them in the background.
  *
- * Note that if the async function resolves to another Promise that is wanted to be defered,
- * handle resolving that in the `callback` and set `innerPromise`.
- *
- * @param {Iterable<any>} batch The total batch of input to operate on.
- * @param {(input: any) => Promise<any|Promise<any>>} callback The callback to run each input on, either
- *      returning a promise or a promise that will return an inner promise to defer on.
- * @param {boolean} [innerPromise=false] Denotes whether to defer on the Promise returned by callback,
- *      or an inner Promise of that promise.
+ * @param {Iterable<any>} inputBatch The total batch of input to operate on.
+ * @param {(input: any) => Promise<any>} callback The callback to run each input on. Should be
+ *          an async/promise-returning function.
  * @param {number} [concurrency=5] How many promises to be waiting at any time.
  * @returns {any} Object containing batch handling functions.
  */
-function initBatch({ batch, callback, innerPromise = false, concurrency = 5 }) {
-    // State to keep track of progress
-    const state = new State()
+function initBatch({ inputBatch, asyncCallback, concurrency = 5 }) {
+    const state = new State() // State to keep track of progress
+    let sub // State to keep track of subscription (allow hiding of Rx away from caller)
 
     /**
-     * Gets Observable built on the batch input. It uses state to track which inputs
-     * have been processed already (done right at the end of stream ops), and checks
-     * that state for every new input (to make sure it isn't a dupe or if it was
-     * already processed on a previous invocation).
+     * Subscribes to Observable built on the batch input. It uses state to track which inputs
+     * have been processed already, and filters new input against the state (to make
+     * sure it isn't a dupe or if it was already processed on a previous invocation).
      */
-    const filteredInputObs = Rx.Observable.from(batch)
+    const subBatchObservable = (...observer) => Rx.Observable.from(inputBatch)
         .filter(input => !state.has(input))  // Ignore already-processed values
-
-    // Map input to pre-processing to emit promises to stream
-    //  mergeMap needs to be used if innerPromise set (need to wait on outter promise)
-    // Note that both emit objects of type { input, promise } to the next step; this
-    //  promise is the Promise that will be defered and batched
-    const promiseObs = innerPromise
-        ? filteredInputObs.mergeMap(
-            input => callback(input),
-            (input, innerPromise) => ({ input, promise: innerPromise }))
-        : filteredInputObs.map(
-            input => ({ input, promise: callback(input) }))
-
-    // Main promise batching logic now that there is an observable stream of Promises
-    const observable = promiseObs
         .mergeMap(
-            ({ input, promise }) => Rx.Observable.defer(promise),  // Defer all promises to stop them processing
-            ({ input }, result) => ({ input, result }),
-            concurrency,  // Allow n promises to process at a time
-            )
+            input => Rx.Observable.defer(() => asyncCallback(input)), // Defer the async functions...
+            (input, output) => ({ input, output }),
+            concurrency)                                        // ...but run this many at any time
         .do(({ input }) => state.recordSuccess(input))  // Update state as input gets processed
-
-    // Create Subject to observe the observable; we can sub/unsub from this without destroying input
-    const watcher = new Rx.Subject()
-    observable.subscribe(watcher)
+        .subscribe(...observer)
 
     // Interface to use this batch
     return {
-        subscribe: (...observer) => watcher.subscribe(...observer),
+        /**
+         * Starts/resumes the batched processing on the input.
+         * @param {({ input: any, output: any }) => void} onNext Callback to run after input is processed.
+         * @param {(err: any) => void} onError Callback to run for input if error gets thrown.
+         * @param {() => void} onCompleted Callback to run after ALL inputs are processed.
+         * @returns {boolean} Denotes whether or not batch could be started/resumed.
+         */
+        start(...observer) {
+            if (sub) { return false }
+            sub = subBatchObservable(...observer) // Create new sub to an observable doing the processing
+            return true
+        },
+        /**
+         * Terminates a running batch. Resets state so that the next start() call will start from the
+         * beginning of input.
+         * @returns {boolean} Denotes whether or not batch could be terminated.
+         */
+        stop() {
+            if (!sub) { return false }
+            state.reset() // Reset state so it can't be resumed
+            sub.unsubscribe() // Unsub to end observable processing
+            sub = undefined // Explicitly remove pointer to old observable sub
+            return true
+        },
+        /**
+         * Pauses a running batch. Persists state so that the next start() call will ignore previously
+         * processed inputs.
+         * @returns {boolean} Denotes whether or not batch could be paused.
+         */
+        pause() {
+            if (!sub) { return false }
+            sub.unsubscribe() // Unsub to end observable processing (state still saved)
+            sub = undefined
+            return true
+        },
+        /**
+         * @returns {Array<any>} The Array of inputs that have already been processed.
+         */
         getState: () => state.getState(),
-        resetState: () => state.reset(),
     }
 }
 
-// Export a HOF that binds callbacks to a batch initialser
-export default (callback, innerPromise = false) =>
-    (batch, concurrency = 5) => initBatch({ batch, callback, innerPromise, concurrency })
+// Export a function that binds async callbacks to a batch initialser
+export default asyncCallback =>
+    (inputBatch, concurrency = 5) => initBatch({ inputBatch, asyncCallback, concurrency })
