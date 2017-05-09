@@ -16,7 +16,7 @@ function initBatch({
     inputBatch,
     asyncCallback,
     concurrency = 5,
-    observer = { next: noop, error: noop, complete: noop },
+    observer: { next = noop, error = noop, complete = noop } = {},
 }) {
     const state = new State() // State to keep track of progress
     let sub // State to keep track of subscription (allow hiding of Rx away from caller)
@@ -26,14 +26,27 @@ function initBatch({
      * have been processed already, and filters new input against the state (to make
      * sure it isn't a dupe or if it was already processed on a previous invocation).
      */
-    const subBatchObservable = () => Rx.Observable.from(inputBatch)
-        .filter(input => !state.has(input))  // Ignore already-processed values
-        .mergeMap(
-            input => Rx.Observable.defer(() => asyncCallback(input)), // Defer the async functions...
-            (input, output) => ({ input, output }),
-            concurrency)                                        // ...but run this many at any time
-        .do(({ input }) => state.recordSuccess(input))  // Update state as input gets processed
-        .subscribe(observer.next, observer.error, observer.complete)
+    const subBatchObservable = () => {
+        // Given an input, defers the async callback and handles any errors
+        const inputDeferer = input => Rx.Observable.defer(() => asyncCallback(input))
+                .catch(err => {
+                    state.recordFailure(input, err.message)
+                    error(err)  // Note we're using the observer's onError callback here to not stop stream
+                    return Rx.Observable.empty() // Empty obs to ignore error and continue stream
+                })
+
+        return Rx.Observable.from(inputBatch)
+            .filter(input => !state.has(input))  // Ignore already-processed values
+            .mergeMap(
+                inputDeferer, // Defer async callbacks on input...
+                (input, output) => ({ input, output }),
+                concurrency)  // ...but run this many at any time
+            .do(({ input }) => {
+                console.log(`${state.getState().length} processed out of ${inputBatch.length}`)
+                state.recordSuccess(input)
+            })  // Update state as input gets processed
+            .subscribe(next, noop, complete)
+    }
 
     // Interface to use this batch
     return {
@@ -77,6 +90,4 @@ function initBatch({
 }
 
 // Export a function that binds async callbacks to a batch initialser
-export default asyncCallback =>
-    (inputBatch, observer, concurrency = 5) =>
-        initBatch({ inputBatch, asyncCallback, concurrency, observer })
+export default initBatch
