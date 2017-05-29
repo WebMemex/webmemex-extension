@@ -2,7 +2,7 @@
 
 import docuri from 'docuri'
 import randomString from 'src/util/random-string'
-import { constants as blacklistConsts } from 'src/options/blacklist'
+import { STORAGE_KEY as BLACKLIST_STORAGE_KEY } from 'src/options/blacklist/constants'
 
 export const visitKeyPrefix = 'visit/'
 
@@ -53,7 +53,7 @@ function isURLProtocolValid(url = '') {
  */
 async function fetchBlacklistFromStorage() {
     // Fetch and parse blacklist data for check calls to use
-    const { blacklist } = await browser.storage.local.get(blacklistConsts.STORAGE_KEY)
+    const { blacklist } = await browser.storage.local.get(BLACKLIST_STORAGE_KEY)
 
     return !blacklist ? [] : JSON.parse(blacklist)
 }
