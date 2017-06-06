@@ -27,6 +27,7 @@
     "freeze-dry": "^0.1.0",
     "history": "^4.6.3",
     "lodash": "^4.17.4",
+    "medium-editor": "^5.23.0",
     "moment": "^2.18.1",
     "page-metadata-parser": "git+https://github.com/Treora/page-metadata-parser.git#npm-testable",
     "pdfjs-dist": "^1.8.492",

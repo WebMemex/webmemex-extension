@@ -1,17 +1,22 @@
+import throttle from 'lodash/fp/throttle'
 import { blobToArrayBuffer } from 'blob-util'
 
 import db from 'src/pouchdb'
 import { getPage } from 'src/search/find-pages'
 import { getTimestamp } from 'src/activity-logger'
+import { setAttachment } from 'src/util/pouchdb-update-doc'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 import syncLocationHashes from 'src/util/sync-location-hashes'
+
+import makeEditable from './editor'
 
 
 function fixChromiumInjectedStylesheet(document) {
     // Pragmatic workaround for Chromium, which appears to inject two style
     // rules into extension pages (with font-size: 75%, for some reason?).
     const styleEl = document.createElement('style')
+    styleEl.setAttribute('data-temporary-element', true) // To be ignored when saving the page.
     styleEl.innerHTML = `body {
         font-size: inherit;
         font-family: inherit;
@@ -47,6 +52,13 @@ async function showPage(pageId) {
                 ${niceTime(timestamp)}
             </time>
         </span>
+        <button
+            id="editButton"
+            class="ui compact tiny icon button"
+        >
+            <i class="edit icon"></i>
+            Edit
+        </button>
         <button
             id="downloadButton"
             class="ui compact tiny icon button"
@@ -96,6 +108,7 @@ async function showPage(pageId) {
         // Make links open in the whole tab, not inside the iframe
         const baseEl = doc.createElement('base')
         baseEl.setAttribute('target', '_parent')
+        baseEl.setAttribute('data-temporary-element', true) // To be ignored when saving the page.
         doc.head.insertAdjacentElement('afterbegin', baseEl)
 
         // Workaround required for Chromium.
@@ -106,6 +119,24 @@ async function showPage(pageId) {
 
         // Keep the iframe's location #hash in sync with that of the window.
         syncLocationHashes([window, iframe.contentWindow], {initial: window})
+
+        const editButton = document.getElementById('editButton')
+        editButton.onclick = () => {
+            const editor = makeEditable(doc)
+
+            // When the content is modified, simply overwrite the frozen page.
+            const save = async () => {
+                const htmlString = editor.getContent(doc)
+                const blob = new Blob([htmlString], {type: 'text/html;charset=UTF-8'})
+                await setAttachment(db, pageId, 'frozen-page.html', blob)
+            }
+            editor.subscribe('editableInput', throttle(1000)(save))
+
+            bar.style.backgroundColor = '#ccf'
+            editButton.innerText = 'Editing'
+            editButton.disabled = true
+            editButton.classList.add('disabled')
+        }
     }
     document.body.appendChild(iframe)
 }
