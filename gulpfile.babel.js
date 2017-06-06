@@ -33,6 +33,8 @@ const staticFiles = {
     'node_modules/pdfjs-dist/build/pdf.worker.min.js': 'extension/lib',
     'node_modules/semantic-ui-css/semantic.min.css': 'extension/lib/semantic-ui',
     'node_modules/semantic-ui-css/themes/**/*': 'extension/lib/semantic-ui/themes',
+    'node_modules/medium-editor/dist/css/medium-editor.css': 'extension/lib/medium-editor',
+    'node_modules/medium-editor/dist/css/themes/default.css': 'extension/lib/medium-editor',
 }
 
 const sourceFiles = [
