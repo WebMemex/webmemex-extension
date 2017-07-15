@@ -1,0 +1,508 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VisitAsListItem should test against the given snapshot 1`] = `
+ShallowWrapper {
+  "complexSelector": ComplexSelector {
+    "buildPredicate": [Function],
+    "childrenOfNode": [Function],
+    "findWhereUnwrapped": [Function],
+  },
+  "length": 1,
+  "node": <Connect(VisitAsListItem)
+    compact={false}
+    doc={
+        Object {
+            "_id": "visit/1499620424533/5165988400",
+            "_rev": "1-36c625754645325c8f7a6e86fdc95f2e",
+            "page": Object {
+              "_attachments": Object {
+                "favIcon": Object {
+                  "content_type": "image/x-icon",
+                  "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                  "length": 5430,
+                  "revpos": 2,
+                  "stub": true,
+                },
+                "frozen-page.html": Object {
+                  "content_type": "text/html;charset=utf-8",
+                  "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                  "length": 549162,
+                  "revpos": 6,
+                  "stub": true,
+                },
+                "screenshot": Object {
+                  "content_type": "image/png",
+                  "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                  "length": 41222,
+                  "revpos": 5,
+                  "stub": true,
+                },
+              },
+              "_id": "page/1499620431844/1337776782",
+              "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+              "extractedMetadata": Object {
+                "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                "provider": "google",
+                "title": "Google",
+                "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+              },
+              "extractedText": Object {
+                "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+        Gmail
+        Images
+        Sign in
+        
+        
+        India
+        Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+        Privacy Terms Settings  Use Google.com Advertising Business About
+        ",
+              },
+              "title": "",
+              "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+            },
+            "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+            "visitStart": 1499620424533,
+          }
+    }
+/>,
+  "nodes": Array [
+    <Connect(VisitAsListItem)
+      compact={false}
+      doc={
+            Object {
+                  "_id": "visit/1499620424533/5165988400",
+                  "_rev": "1-36c625754645325c8f7a6e86fdc95f2e",
+                  "page": Object {
+                    "_attachments": Object {
+                      "favIcon": Object {
+                        "content_type": "image/x-icon",
+                        "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                        "length": 5430,
+                        "revpos": 2,
+                        "stub": true,
+                      },
+                      "frozen-page.html": Object {
+                        "content_type": "text/html;charset=utf-8",
+                        "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                        "length": 549162,
+                        "revpos": 6,
+                        "stub": true,
+                      },
+                      "screenshot": Object {
+                        "content_type": "image/png",
+                        "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                        "length": 41222,
+                        "revpos": 5,
+                        "stub": true,
+                      },
+                    },
+                    "_id": "page/1499620431844/1337776782",
+                    "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+                    "extractedMetadata": Object {
+                      "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                      "provider": "google",
+                      "title": "Google",
+                      "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+                    },
+                    "extractedText": Object {
+                      "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+            Gmail
+            Images
+            Sign in
+            
+            
+            India
+            Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+            Privacy Terms Settings  Use Google.com Advertising Business About
+            ",
+                    },
+                    "title": "",
+                    "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                  },
+                  "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                  "visitStart": 1499620424533,
+                }
+      }
+/>,
+  ],
+  "options": Object {},
+  "renderer": ReactShallowRenderer {
+    "_instance": ShallowComponentWrapper {
+      "_calledComponentWillUnmount": false,
+      "_compositeType": 0,
+      "_context": Object {},
+      "_currentElement": <Provider
+        store={
+                Object {
+                        "clearActions": [Function],
+                        "dispatch": [Function],
+                        "getActions": [Function],
+                        "getState": [Function],
+                        "replaceReducer": [Function],
+                        "subscribe": [Function],
+                      }
+        }
+>
+        <Connect(VisitAsListItem)
+                compact={false}
+                doc={
+                        Object {
+                                "_id": "visit/1499620424533/5165988400",
+                                "_rev": "1-36c625754645325c8f7a6e86fdc95f2e",
+                                "page": Object {
+                                  "_attachments": Object {
+                                    "favIcon": Object {
+                                      "content_type": "image/x-icon",
+                                      "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                                      "length": 5430,
+                                      "revpos": 2,
+                                      "stub": true,
+                                    },
+                                    "frozen-page.html": Object {
+                                      "content_type": "text/html;charset=utf-8",
+                                      "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                                      "length": 549162,
+                                      "revpos": 6,
+                                      "stub": true,
+                                    },
+                                    "screenshot": Object {
+                                      "content_type": "image/png",
+                                      "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                                      "length": 41222,
+                                      "revpos": 5,
+                                      "stub": true,
+                                    },
+                                  },
+                                  "_id": "page/1499620431844/1337776782",
+                                  "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+                                  "extractedMetadata": Object {
+                                    "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                                    "provider": "google",
+                                    "title": "Google",
+                                    "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                  },
+                                  "extractedText": Object {
+                                    "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+                        Gmail
+                        Images
+                        Sign in
+                        
+                        
+                        India
+                        Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+                        Privacy Terms Settings  Use Google.com Advertising Business About
+                        ",
+                                  },
+                                  "title": "",
+                                  "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                },
+                                "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                "visitStart": 1499620424533,
+                              }
+                }
+        />
+</Provider>,
+      "_debugID": 1,
+      "_hostContainerInfo": null,
+      "_hostParent": null,
+      "_instance": Provider {
+        "_reactInternalInstance": [Circular],
+        "context": Object {},
+        "props": Object {
+          "children": <Connect(VisitAsListItem)
+            compact={false}
+            doc={
+                        Object {
+                                    "_id": "visit/1499620424533/5165988400",
+                                    "_rev": "1-36c625754645325c8f7a6e86fdc95f2e",
+                                    "page": Object {
+                                      "_attachments": Object {
+                                        "favIcon": Object {
+                                          "content_type": "image/x-icon",
+                                          "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                                          "length": 5430,
+                                          "revpos": 2,
+                                          "stub": true,
+                                        },
+                                        "frozen-page.html": Object {
+                                          "content_type": "text/html;charset=utf-8",
+                                          "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                                          "length": 549162,
+                                          "revpos": 6,
+                                          "stub": true,
+                                        },
+                                        "screenshot": Object {
+                                          "content_type": "image/png",
+                                          "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                                          "length": 41222,
+                                          "revpos": 5,
+                                          "stub": true,
+                                        },
+                                      },
+                                      "_id": "page/1499620431844/1337776782",
+                                      "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+                                      "extractedMetadata": Object {
+                                        "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                                        "provider": "google",
+                                        "title": "Google",
+                                        "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                      },
+                                      "extractedText": Object {
+                                        "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+                        Gmail
+                        Images
+                        Sign in
+                        
+                        
+                        India
+                        Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+                        Privacy Terms Settings  Use Google.com Advertising Business About
+                        ",
+                                      },
+                                      "title": "",
+                                      "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                    },
+                                    "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                    "visitStart": 1499620424533,
+                                  }
+            }
+/>,
+          "store": Object {
+            "clearActions": [Function],
+            "dispatch": [Function],
+            "getActions": [Function],
+            "getState": [Function],
+            "replaceReducer": [Function],
+            "subscribe": [Function],
+          },
+        },
+        "refs": Object {},
+        "state": null,
+        "store": Object {
+          "clearActions": [Function],
+          "dispatch": [Function],
+          "getActions": [Function],
+          "getState": [Function],
+          "replaceReducer": [Function],
+          "subscribe": [Function],
+        },
+        "updater": Object {
+          "enqueueCallback": [Function],
+          "enqueueCallbackInternal": [Function],
+          "enqueueElementInternal": [Function],
+          "enqueueForceUpdate": [Function],
+          "enqueueReplaceState": [Function],
+          "enqueueSetState": [Function],
+          "isMounted": [Function],
+          "validateCallback": [Function],
+        },
+      },
+      "_mountOrder": 1,
+      "_pendingCallbacks": null,
+      "_pendingElement": null,
+      "_pendingForceUpdate": false,
+      "_pendingReplaceState": false,
+      "_pendingStateQueue": null,
+      "_renderedComponent": NoopInternalComponent {
+        "_currentElement": <Connect(VisitAsListItem)
+          compact={false}
+          doc={
+                    Object {
+                              "_id": "visit/1499620424533/5165988400",
+                              "_rev": "1-36c625754645325c8f7a6e86fdc95f2e",
+                              "page": Object {
+                                "_attachments": Object {
+                                  "favIcon": Object {
+                                    "content_type": "image/x-icon",
+                                    "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                                    "length": 5430,
+                                    "revpos": 2,
+                                    "stub": true,
+                                  },
+                                  "frozen-page.html": Object {
+                                    "content_type": "text/html;charset=utf-8",
+                                    "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                                    "length": 549162,
+                                    "revpos": 6,
+                                    "stub": true,
+                                  },
+                                  "screenshot": Object {
+                                    "content_type": "image/png",
+                                    "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                                    "length": 41222,
+                                    "revpos": 5,
+                                    "stub": true,
+                                  },
+                                },
+                                "_id": "page/1499620431844/1337776782",
+                                "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+                                "extractedMetadata": Object {
+                                  "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                                  "provider": "google",
+                                  "title": "Google",
+                                  "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                },
+                                "extractedText": Object {
+                                  "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+                    Gmail
+                    Images
+                    Sign in
+                    
+                    
+                    India
+                    Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+                    Privacy Terms Settings  Use Google.com Advertising Business About
+                    ",
+                                },
+                                "title": "",
+                                "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                              },
+                              "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                              "visitStart": 1499620424533,
+                            }
+          }
+/>,
+        "_debugID": 2,
+        "_renderedOutput": <Connect(VisitAsListItem)
+          compact={false}
+          doc={
+                    Object {
+                              "_id": "visit/1499620424533/5165988400",
+                              "_rev": "1-36c625754645325c8f7a6e86fdc95f2e",
+                              "page": Object {
+                                "_attachments": Object {
+                                  "favIcon": Object {
+                                    "content_type": "image/x-icon",
+                                    "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                                    "length": 5430,
+                                    "revpos": 2,
+                                    "stub": true,
+                                  },
+                                  "frozen-page.html": Object {
+                                    "content_type": "text/html;charset=utf-8",
+                                    "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                                    "length": 549162,
+                                    "revpos": 6,
+                                    "stub": true,
+                                  },
+                                  "screenshot": Object {
+                                    "content_type": "image/png",
+                                    "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                                    "length": 41222,
+                                    "revpos": 5,
+                                    "stub": true,
+                                  },
+                                },
+                                "_id": "page/1499620431844/1337776782",
+                                "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+                                "extractedMetadata": Object {
+                                  "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                                  "provider": "google",
+                                  "title": "Google",
+                                  "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+                                },
+                                "extractedText": Object {
+                                  "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+                    Gmail
+                    Images
+                    Sign in
+                    
+                    
+                    India
+                    Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+                    Privacy Terms Settings  Use Google.com Advertising Business About
+                    ",
+                                },
+                                "title": "",
+                                "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                              },
+                              "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                              "visitStart": 1499620424533,
+                            }
+          }
+/>,
+      },
+      "_renderedNodeType": 1,
+      "_rootNodeID": 0,
+      "_topLevelWrapper": null,
+      "_updateBatchNumber": null,
+      "_warnedAboutRefsInRender": false,
+    },
+    "getRenderOutput": [Function],
+    "render": [Function],
+  },
+  "root": [Circular],
+  "unrendered": <Provider
+    store={
+        Object {
+            "clearActions": [Function],
+            "dispatch": [Function],
+            "getActions": [Function],
+            "getState": [Function],
+            "replaceReducer": [Function],
+            "subscribe": [Function],
+          }
+    }
+>
+    <Connect(VisitAsListItem)
+        compact={false}
+        doc={
+            Object {
+                "_id": "visit/1499620424533/5165988400",
+                "_rev": "1-36c625754645325c8f7a6e86fdc95f2e",
+                "page": Object {
+                  "_attachments": Object {
+                    "favIcon": Object {
+                      "content_type": "image/x-icon",
+                      "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                      "length": 5430,
+                      "revpos": 2,
+                      "stub": true,
+                    },
+                    "frozen-page.html": Object {
+                      "content_type": "text/html;charset=utf-8",
+                      "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                      "length": 549162,
+                      "revpos": 6,
+                      "stub": true,
+                    },
+                    "screenshot": Object {
+                      "content_type": "image/png",
+                      "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                      "length": 41222,
+                      "revpos": 5,
+                      "stub": true,
+                    },
+                  },
+                  "_id": "page/1499620431844/1337776782",
+                  "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+                  "extractedMetadata": Object {
+                    "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                    "provider": "google",
+                    "title": "Google",
+                    "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+                  },
+                  "extractedText": Object {
+                    "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+            Gmail
+            Images
+            Sign in
+            
+            
+            India
+            Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+            Privacy Terms Settings  Use Google.com Advertising Business About
+            ",
+                  },
+                  "title": "",
+                  "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                },
+                "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                "visitStart": 1499620424533,
+              }
+        }
+    />
+</Provider>,
+}
+`;

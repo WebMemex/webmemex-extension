@@ -1,0 +1,234 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ImgFromPouch should test against the given snapshot 1`] = `
+ShallowWrapper {
+  "complexSelector": ComplexSelector {
+    "buildPredicate": [Function],
+    "childrenOfNode": [Function],
+    "findWhereUnwrapped": [Function],
+  },
+  "length": 1,
+  "node": <img
+    className="favicon"
+    src={undefined}
+/>,
+  "nodes": Array [
+    <img
+      className="favicon"
+      src={undefined}
+/>,
+  ],
+  "options": Object {},
+  "renderer": ReactShallowRenderer {
+    "_instance": ShallowComponentWrapper {
+      "_calledComponentWillUnmount": false,
+      "_compositeType": 0,
+      "_context": Object {},
+      "_currentElement": <ImgFromPouch
+        attachmentId="favIcon"
+        className="favicon"
+        doc={
+                Object {
+                        "_attachments": Object {
+                          "favIcon": Object {
+                            "content_type": "image/x-icon",
+                            "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                            "length": 5430,
+                            "revpos": 2,
+                            "stub": true,
+                          },
+                          "frozen-page.html": Object {
+                            "content_type": "text/html;charset=utf-8",
+                            "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                            "length": 549162,
+                            "revpos": 6,
+                            "stub": true,
+                          },
+                          "screenshot": Object {
+                            "content_type": "image/png",
+                            "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                            "length": 41222,
+                            "revpos": 5,
+                            "stub": true,
+                          },
+                        },
+                        "_id": "page/1499620431844/1337776782",
+                        "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+                        "extractedMetadata": Object {
+                          "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+                          "provider": "google",
+                          "title": "Google",
+                          "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+                        },
+                        "extractedText": Object {
+                          "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+                Gmail
+                Images
+                Sign in
+                
+                
+                India
+                Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+                Privacy Terms Settings  Use Google.com Advertising Business About
+                ",
+                        },
+                        "title": "",
+                        "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+                      }
+        }
+/>,
+      "_debugID": 1,
+      "_hostContainerInfo": null,
+      "_hostParent": null,
+      "_instance": ImgFromPouch {
+        "_isMounted": true,
+        "_reactInternalInstance": [Circular],
+        "context": Object {},
+        "props": Object {
+          "attachmentId": "favIcon",
+          "className": "favicon",
+          "doc": Object {
+            "_attachments": Object {
+              "favIcon": Object {
+                "content_type": "image/x-icon",
+                "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                "length": 5430,
+                "revpos": 2,
+                "stub": true,
+              },
+              "frozen-page.html": Object {
+                "content_type": "text/html;charset=utf-8",
+                "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                "length": 549162,
+                "revpos": 6,
+                "stub": true,
+              },
+              "screenshot": Object {
+                "content_type": "image/png",
+                "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                "length": 41222,
+                "revpos": 5,
+                "stub": true,
+              },
+            },
+            "_id": "page/1499620431844/1337776782",
+            "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+            "extractedMetadata": Object {
+              "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+              "provider": "google",
+              "title": "Google",
+              "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+            },
+            "extractedText": Object {
+              "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+Gmail
+Images
+Sign in
+
+
+India
+Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+Privacy Terms Settings  Use Google.com Advertising Business About
+",
+            },
+            "title": "",
+            "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+          },
+        },
+        "refs": Object {},
+        "state": Object {
+          "dataUrl": "data:image/gif;base64,R0lGODlhEAAOALMAAOazToeHh0tLS/7LZv/0jvb29t/f3//Ub//ge8WSLf/rhf/3kdbW1mxsbP//mf///yH5BAAAAAAALAAAAAAQAA4AAARe8L1Ekyky67QZ1hLnjM5UUde0ECwLJoExKcppV0aCcGCmTIHEIUEqjgaORCMxIC6e0CcguWw6aFjsVMkkIr7g77ZKPJjPZqIyd7sJAgVGoEGv2xsBxqNgYPj/gAwXEQA7",
+        },
+        "updater": Object {
+          "enqueueCallback": [Function],
+          "enqueueCallbackInternal": [Function],
+          "enqueueElementInternal": [Function],
+          "enqueueForceUpdate": [Function],
+          "enqueueReplaceState": [Function],
+          "enqueueSetState": [Function],
+          "isMounted": [Function],
+          "validateCallback": [Function],
+        },
+      },
+      "_mountOrder": 1,
+      "_pendingCallbacks": null,
+      "_pendingElement": null,
+      "_pendingForceUpdate": false,
+      "_pendingReplaceState": false,
+      "_pendingStateQueue": null,
+      "_renderedComponent": NoopInternalComponent {
+        "_currentElement": <img
+          className="favicon"
+          src="data:image/gif;base64,R0lGODlhEAAOALMAAOazToeHh0tLS/7LZv/0jvb29t/f3//Ub//ge8WSLf/rhf/3kdbW1mxsbP//mf///yH5BAAAAAAALAAAAAAQAA4AAARe8L1Ekyky67QZ1hLnjM5UUde0ECwLJoExKcppV0aCcGCmTIHEIUEqjgaORCMxIC6e0CcguWw6aFjsVMkkIr7g77ZKPJjPZqIyd7sJAgVGoEGv2xsBxqNgYPj/gAwXEQA7"
+/>,
+        "_debugID": 2,
+        "_renderedOutput": <img
+          className="favicon"
+          src="data:image/gif;base64,R0lGODlhEAAOALMAAOazToeHh0tLS/7LZv/0jvb29t/f3//Ub//ge8WSLf/rhf/3kdbW1mxsbP//mf///yH5BAAAAAAALAAAAAAQAA4AAARe8L1Ekyky67QZ1hLnjM5UUde0ECwLJoExKcppV0aCcGCmTIHEIUEqjgaORCMxIC6e0CcguWw6aFjsVMkkIr7g77ZKPJjPZqIyd7sJAgVGoEGv2xsBxqNgYPj/gAwXEQA7"
+/>,
+      },
+      "_renderedNodeType": 0,
+      "_rootNodeID": 0,
+      "_topLevelWrapper": null,
+      "_updateBatchNumber": null,
+      "_warnedAboutRefsInRender": false,
+    },
+    "getRenderOutput": [Function],
+    "render": [Function],
+  },
+  "root": [Circular],
+  "unrendered": <ImgFromPouch
+    attachmentId="favIcon"
+    className="favicon"
+    doc={
+        Object {
+            "_attachments": Object {
+              "favIcon": Object {
+                "content_type": "image/x-icon",
+                "digest": "md5-80GKRD59hBCXxxTWnsS8uA==",
+                "length": 5430,
+                "revpos": 2,
+                "stub": true,
+              },
+              "frozen-page.html": Object {
+                "content_type": "text/html;charset=utf-8",
+                "digest": "md5-rL1HMBSNfY37snk8/ZBX1w==",
+                "length": 549162,
+                "revpos": 6,
+                "stub": true,
+              },
+              "screenshot": Object {
+                "content_type": "image/png",
+                "digest": "md5-iJNPepFWRMhtmqAk/y5eAA==",
+                "length": 41222,
+                "revpos": 5,
+                "stub": true,
+              },
+            },
+            "_id": "page/1499620431844/1337776782",
+            "_rev": "6-3b60ef0bcdebea7c54615efb445613a3",
+            "extractedMetadata": Object {
+              "icon_url": "https://www.google.co.in/images/branding/product/ico/googleg_lodp.ico",
+              "provider": "google",
+              "title": "Google",
+              "url": "https://www.google.co.in/?ei=R2RiWZz1I4OW8QeqwZTIDA",
+            },
+            "extractedText": Object {
+              "bodyInnerText": "Screen-reader users, click here to turn off Google Instant.
+        Gmail
+        Images
+        Sign in
+        
+        
+        India
+        Google.co.in offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ
+        Privacy Terms Settings  Use Google.com Advertising Business About
+        ",
+            },
+            "title": "",
+            "url": "https://www.google.co.in/?gfe_rd=cr&ei=R2RiWZz1I4OW8QeqwZTIDA",
+          }
+    }
+/>,
+}
+`;
