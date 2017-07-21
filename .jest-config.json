@@ -4,7 +4,8 @@
     "browser": {}
   },
   "testMatch": [
-    "<rootDir>/src/**/*.test.(js|jsx)"
+    "<rootDir>/src/**/*.test.(js|jsx)",
+    "<rootDir>/test/**/*.app-test.(js|jsx)"
   ],
   "rootDir": ".",
   "transform": {
