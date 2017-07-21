@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { hrefForLocalPage } from 'src/page-viewer'
+import { hrefForLocalPage } from 'src/local-page'
 
 describe('hrefForLocalPage', () => {
     test('should return undefined for invalid page', () => {
@@ -19,7 +19,7 @@ describe('hrefForLocalPage', () => {
                 'frozen-page.html': new Blob(),
             },
         }
-        expect(hrefForLocalPage({page})).toBe('/page-viewer/localpage.html?page=undefined')
+        expect(hrefForLocalPage({page})).toBe('/local-page.html?page=undefined')
     })
 
     test('should return href for local page', () => {
@@ -30,7 +30,7 @@ describe('hrefForLocalPage', () => {
                 'frozen-page.html': new Blob(),
             },
         }
-        expect(hrefForLocalPage({page})).toBe('/page-viewer/localpage.html?page=page%2F1234567890123%2F1234567890')
+        expect(hrefForLocalPage({page})).toBe('/local-page.html?page=page%2F1234567890123%2F1234567890')
     })
 
     test('should append in page urls', () => {
@@ -41,6 +41,6 @@ describe('hrefForLocalPage', () => {
                 'frozen-page.html': new Blob(),
             },
         }
-        expect(hrefForLocalPage({page})).toBe('/page-viewer/localpage.html?page=page%2F1234567890123%2F1234567890#home')
+        expect(hrefForLocalPage({page})).toBe('/local-page.html?page=page%2F1234567890123%2F1234567890#home')
     })
 })
