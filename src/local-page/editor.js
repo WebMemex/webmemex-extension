@@ -35,6 +35,8 @@ export default function makeEditable(document) {
     // Return an object that behaves somewhat like MediumEditor's API.
     return {
         subscribe: editor.subscribe.bind(editor),
+        destroy: editor.destroy.bind(editor),
+        setup: editor.setup.bind(editor),
         getContent: () => getContent(document),
     }
 }
