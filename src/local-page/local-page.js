@@ -54,7 +54,7 @@ async function showPage(pageId) {
         </span>
         <button
             id="editButton"
-            class="ui compact tiny icon button"
+            class="ui compact tiny icon toggle button"
         >
             <i class="edit icon"></i>
             Edit
@@ -120,22 +120,34 @@ async function showPage(pageId) {
         // Keep the iframe's location #hash in sync with that of the window.
         syncLocationHashes([window, iframe.contentWindow], {initial: window})
 
+        // When the content is modified, simply overwrite the frozen page.
+        const save = async (html) => {
+            const blob = new Blob([html], {type: 'text/html;charset=UTF-8'})
+            await setAttachment(db, pageId, 'frozen-page.html', blob)
+        }
+
+        // Let the edit button toggle editing mode on/off.
         const editButton = document.getElementById('editButton')
+        let editor
+        let editingEnabled = false
         editButton.onclick = () => {
-            const editor = makeEditable(doc)
-
-            // When the content is modified, simply overwrite the frozen page.
-            const save = async () => {
-                const htmlString = editor.getContent(doc)
-                const blob = new Blob([htmlString], {type: 'text/html;charset=UTF-8'})
-                await setAttachment(db, pageId, 'frozen-page.html', blob)
+            if (editingEnabled) {
+                editingEnabled = false
+                editButton.classList.remove('active')
+                editor.destroy()
+            } else {
+                editingEnabled = true
+                editButton.classList.add('active')
+                if (!editor) {
+                    editor = makeEditable(doc)
+                } else {
+                    editor.setup()
+                }
+                editor.subscribe('editableInput',
+                    // Throttle events to not save more often than once per second
+                    throttle(1000)(() => save(editor.getContent()))
+                )
             }
-            editor.subscribe('editableInput', throttle(1000)(save))
-
-            bar.style.backgroundColor = '#ccf'
-            editButton.innerText = 'Editing'
-            editButton.disabled = true
-            editButton.classList.add('disabled')
         }
     }
     document.body.appendChild(iframe)
