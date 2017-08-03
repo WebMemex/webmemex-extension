@@ -24,4 +24,5 @@ describe('syncLocationHashes', () => {
         disableListener()
         expect(windows[0].removeEventListener).toBeCalled()
     })
+    // TODO test still requires to increase coverage over the code
 })

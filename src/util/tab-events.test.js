@@ -7,23 +7,19 @@ import * as eventToPromise from './event-to-promise'
 describe('whenPageDOMLoaded', () => {
     const tabId = 1
 
-    beforeAll(() => {
+    beforeEach(() => {
         browser.webNavigation = {
             onCommitted: jest.fn(),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
-            new Promise((resolve, reject) => {
-                resolve()
-            })
+            Promise.resolve()
         )
     })
 
     test('should call the browser event to execute script and resolve promise if script executes', async () => {
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                new Promise((resolve, reject) => {
-                    resolve()
-                })
+                Promise.resolve()
             ),
         }
         await whenPageDOMLoaded({tabId})
@@ -31,11 +27,10 @@ describe('whenPageDOMLoaded', () => {
     })
 
     test('should reject the promise if the script is not executed', async () => {
+        expect.assertions(1)
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                new Promise((resolve, reject) => {
-                    reject(new Error('Script unable to execute'))
-                })
+                Promise.reject(new Error('Script unable to execute'))
             ),
         }
         try {
@@ -49,9 +44,7 @@ describe('whenPageDOMLoaded', () => {
         expect.assertions(2)
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                new Promise((resolve, reject) => {
-                    resolve()
-                })
+                Promise.resolve()
             ),
         }
         await whenPageDOMLoaded({tabId})
@@ -60,17 +53,14 @@ describe('whenPageDOMLoaded', () => {
     })
 
     test('should reject the promise if tab is changed', async () => {
+        expect.assertions(1)
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                new Promise((resolve, reject) => {
-                    resolve()
-                })
+                Promise.resolve()
             ),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
-            new Promise((resolve, reject) => {
-                reject(new Error('Tab was changed'))
-            })
+            Promise.reject(new Error('Tab was changed'))
         )
         try {
             await whenPageDOMLoaded({tabId})
@@ -85,16 +75,14 @@ describe('whenPageLoadComplete', () => {
 
     beforeAll(() => {
         eventToPromise.default = jest.fn().mockReturnValue(
-            new Promise((resolve, reject) => {
-                resolve()
-            })
+            Promise.resolve()
         )
         browser.webNavigation = {
             onCommitted: jest.fn(),
         }
     })
 
-    test('should return if the tab status is complete', async () => {
+    test('should return directly if the tab status is complete', async () => {
         expect.assertions(2)
         browser.tabs = {
             get: jest.fn().mockReturnValueOnce({
@@ -116,16 +104,15 @@ describe('whenPageLoadComplete', () => {
         expect(eventToPromise.default).toHaveBeenCalled()
     })
 
-    test('should reject a promise if tab is changed', async () => {
+    test('should reject a promise if tab has changed location', async () => {
+        expect.assertions(1)
         browser.tabs = {
             get: jest.fn().mockReturnValueOnce({
                 status: 'incomplete',
             }),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
-            new Promise((resolve, reject) => {
-                reject(new Error('Tab was changed'))
-            })
+            Promise.reject(new Error('Tab was changed'))
         )
         try {
             await whenPageLoadComplete({tabId})
@@ -140,9 +127,7 @@ describe('whenTabActive', () => {
 
     beforeAll(() => {
         eventToPromise.default = jest.fn().mockReturnValue(
-            new Promise((resolve, reject) => {
-                resolve()
-            })
+            Promise.resolve()
         )
         browser.webNavigation = {
             onCommitted: jest.fn(),
@@ -168,13 +153,12 @@ describe('whenTabActive', () => {
     })
 
     test('should reject the promise if the tab is changed', async () => {
+        expect.assertions(1)
         browser.tabs = {
             query: jest.fn().mockReturnValueOnce([]),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
-            new Promise((resolve, reject) => {
-                reject(new Error('Tab was changed'))
-            })
+            Promise.reject(new Error('Tab was changed'))
         )
         try {
             await whenTabActive({tabId})

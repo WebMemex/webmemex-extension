@@ -13,14 +13,9 @@ describe('shortUrl', () => {
         expect(url).toBe('example.com/page')
     })
 
-    test('should do nothing to url with no prefix and within maxLength', () => {
-        const url = shortUrl('example.com/page')
-        expect(url).toBe('example.com/page')
-    })
-
     test('should slice the data uri', () => {
         const dataUri = 'data:text/plain;charset=utf-8;base64,aHR0cHM6Ly9leGFtcGxlLmNvbS9wdWJsaWMvaW1hZ2UvYmFja2dyb3VuZC5qcGVn'
         const url = shortUrl(dataUri)
-        expect(url).toBe(dataUri.slice(0, 47)+'...')
+        expect(url).toBe('data:text/plain;charset=utf-8;base64,aHR0cHM6Ly...')
     })
 })
