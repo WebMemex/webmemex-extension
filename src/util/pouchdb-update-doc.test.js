@@ -5,7 +5,6 @@ import db from 'src/pouchdb'
 
 describe('updateDoc', () => {
     test('should call the database functions', async () => {
-        expect.assertions(2)
         db.put = jest.fn()
         db.get = jest.fn()
         const docId = 'page/1234567890123/1234567890'

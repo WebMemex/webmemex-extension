@@ -41,7 +41,6 @@ describe('whenPageDOMLoaded', () => {
     })
 
     test('should resolve promise when DOM page is loaded', async () => {
-        expect.assertions(2)
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
                 Promise.resolve()
@@ -73,7 +72,7 @@ describe('whenPageDOMLoaded', () => {
 describe('whenPageLoadComplete', () => {
     const tabId = 1
 
-    beforeAll(() => {
+    beforeEach(() => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.resolve()
         )
@@ -83,7 +82,6 @@ describe('whenPageLoadComplete', () => {
     })
 
     test('should return directly if the tab status is complete', async () => {
-        expect.assertions(2)
         browser.tabs = {
             get: jest.fn().mockReturnValueOnce({
                 status: 'complete',
@@ -125,7 +123,7 @@ describe('whenPageLoadComplete', () => {
 describe('whenTabActive', () => {
     const tabId = 1
 
-    beforeAll(() => {
+    beforeEach(() => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.resolve()
         )
@@ -135,7 +133,6 @@ describe('whenTabActive', () => {
     })
 
     test('should return if the tab is active', async () => {
-        expect.assertions(2)
         browser.tabs = {
             query: jest.fn().mockReturnValueOnce([{id: 1}]),
         }

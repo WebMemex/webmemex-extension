@@ -24,7 +24,6 @@ function returnResolveOpts(value) {
 
 describe('eventToPromise', () => {
     test('should listen for the events', async () => {
-        expect.assertions(2)
         const resolveOpt = returnResolveOpts('test')
         const rejectOpt = returnRejectOpts('Error')
         eventToPromise({

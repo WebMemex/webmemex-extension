@@ -18,7 +18,6 @@ describe('remoteFunction', () => {
     })
 
     test('should call the browser.tabs function when tabId is valid', async () => {
-        expect.assertions(2)
         browser.tabs = {
             sendMessage: jest.fn(),
         }
@@ -34,7 +33,6 @@ describe('remoteFunction', () => {
     })
 
     test('should call the browser.runtime function when tabId is invalid', async () => {
-        expect.assertions(2)
         browser.tabs = {
             sendMessage: jest.fn(),
         }
@@ -50,6 +48,7 @@ describe('remoteFunction', () => {
     })
 
     test('should throw an error if there is an interfering listener', async () => {
+        expect.assertions(1)
         browser.tabs = {
             sendMessage: jest.fn(),
         }
@@ -62,10 +61,11 @@ describe('remoteFunction', () => {
     })
 
     test('should throw the error if in the response', async () => {
+        expect.assertions(1)
         browser.tabs = {
             sendMessage: jest.fn().mockReturnValue({
                 __RPC_RESPONSE__: '__RPC_RESPONSE__',
-                error: 'Remote function error',
+                errorMessage: 'Remote function error',
             }),
         }
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})

@@ -4,7 +4,6 @@ import { getAllNodes, getRoot } from './tree-walker'
 
 describe('getAllNodes', () => {
     test('should call the functions passed to it', async () => {
-        expect.assertions(2)
         const getParent = jest.fn()
         const getChildren = jest.fn().mockReturnValue([])
         await getAllNodes({getParent, getChildren})({})
@@ -13,7 +12,6 @@ describe('getAllNodes', () => {
     })
 
     test('should return all the nodes as an array', async () => {
-        expect.assertions(3)
         const getParent = jest.fn().mockReturnValueOnce(
             new Promise((resolve, reject) => {
                 resolve({
