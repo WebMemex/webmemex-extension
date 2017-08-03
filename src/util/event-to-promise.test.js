@@ -34,4 +34,5 @@ describe('eventToPromise', () => {
         expect(resolveOpt.event.addListener).toBeCalled()
         expect(rejectOpt.event.addListener).toBeCalled()
     })
+    // TODO find a better way to test the functionality of the event to promise function
 })
