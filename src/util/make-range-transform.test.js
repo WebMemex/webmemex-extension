@@ -2,7 +2,7 @@
 
 import { makeRangeTransform, makeNonlinearTransform } from './make-range-transform'
 
-describe('makeRangeTransform tests', () => {
+describe('makeRangeTransform', () => {
     test('should return transform function with clampOutput false', () => {
         expect.assertions(2)
         const transformFunction1 = makeRangeTransform({

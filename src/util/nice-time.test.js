@@ -2,7 +2,7 @@
 
 import niceTime from './nice-time'
 
-describe('niceTime tests', () => {
+describe('niceTime', () => {
     test('should return now for timeperiod of less than 90 seconds', () => {
         const date = new Date()
         expect(niceTime(date)).toBe('now')

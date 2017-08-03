@@ -3,7 +3,7 @@
 import delay from './delay'
 jest.useFakeTimers()
 
-describe('delay tests', () => {
+describe('delay', () => {
     test('should return with the given delay', () => {
         expect.assertions(2)
         delay(1000)
