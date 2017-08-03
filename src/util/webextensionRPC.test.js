@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { remoteFunction } from 'src/util/webextensionRPC'
+import { remoteFunction } from './webextensionRPC'
 
 describe('remoteFunction', () => {
     test('should return a remotely callable function', () => {

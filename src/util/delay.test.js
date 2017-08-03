@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import delay from 'src/util/delay'
+import delay from './delay'
 jest.useFakeTimers()
 
 describe('delay tests', () => {

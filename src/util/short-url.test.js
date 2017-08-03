@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import shortUrl from 'src/util/short-url'
+import shortUrl from './short-url'
 
 describe('shortUrl', () => {
     test('should shorten the url to given number of characters', () => {

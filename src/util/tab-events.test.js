@@ -1,8 +1,8 @@
 /* eslint-env jest */
 /* eslint import/namespace: "off" */
 
-import { whenPageDOMLoaded, whenPageLoadComplete, whenTabActive } from 'src/util/tab-events'
-import * as eventToPromise from 'src/util/event-to-promise'
+import { whenPageDOMLoaded, whenPageLoadComplete, whenTabActive } from './tab-events'
+import * as eventToPromise from './event-to-promise'
 
 describe('whenPageDOMLoaded', () => {
     const tabId = 1

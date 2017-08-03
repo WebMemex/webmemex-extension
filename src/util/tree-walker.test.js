@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { getAllNodes, getRoot } from 'src/util/tree-walker'
+import { getAllNodes, getRoot } from './tree-walker'
 
 describe('getAllNodes', () => {
     test('should call the functions passed to it', async () => {

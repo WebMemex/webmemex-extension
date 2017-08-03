@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { makeRangeTransform, makeNonlinearTransform } from 'src/util/make-range-transform'
+import { makeRangeTransform, makeNonlinearTransform } from './make-range-transform'
 
 describe('makeRangeTransform tests', () => {
     test('should return transform function with clampOutput false', () => {

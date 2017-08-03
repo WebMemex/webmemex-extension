@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import syncLocationHashes from 'src/util/sync-location-hashes'
+import syncLocationHashes from './sync-location-hashes'
 
 function createWindowStub({hash}) {
     return [{

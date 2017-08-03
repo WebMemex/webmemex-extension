@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import niceTime from 'src/util/nice-time'
+import niceTime from './nice-time'
 
 describe('niceTime tests', () => {
     test('should return now for timeperiod of less than 90 seconds', () => {

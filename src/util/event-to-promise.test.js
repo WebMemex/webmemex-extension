@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import eventToPromise from 'src/util/event-to-promise'
+import eventToPromise from './event-to-promise'
 
 function returnRejectOpts(message) {
     return {

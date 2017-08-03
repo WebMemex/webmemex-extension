@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import updateDoc from 'src/util/pouchdb-update-doc'
+import updateDoc from './pouchdb-update-doc'
 import db from 'src/pouchdb'
 
 describe('updateDoc', () => {
