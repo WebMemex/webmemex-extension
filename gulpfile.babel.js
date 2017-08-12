@@ -1,13 +1,14 @@
 import 'core-js/fn/object/entries' // shim Object.entries
 import fs from 'fs'
 import path from 'path'
-import { exec as nodeExec } from 'child_process'
+import { exec as execCb } from 'child_process'
 import pify from 'pify'
 import streamToPromise from 'stream-to-promise'
 import gulp from 'gulp'
 import addsrc from 'gulp-add-src'
 import clipEmptyFiles from 'gulp-clip-empty-files'
 import concatCss from 'gulp-concat-css'
+import { default as runSequenceCb } from 'run-sequence'
 import identity from 'gulp-identity'
 import source from 'vinyl-source-stream'
 import buffer from 'vinyl-buffer'
@@ -21,7 +22,18 @@ import envify from 'loose-envify/custom'
 import cssModulesify from 'css-modulesify'
 import cssnext from 'postcss-cssnext'
 
-const exec = pify(nodeExec)
+
+// Promisify callback-based apis.
+const runSequence = pify(runSequenceCb)
+const exec = pify((command, callback) => {
+    // Let exec also display the shell command and its output
+    console.log('>>>', command)
+    execCb(command, (error, stdout, stderr) => {
+        console.log(stdout)
+        console.error(stderr)
+        callback(error, stdout, stderr)
+    })
+})
 
 
 // === Tasks for building the source code; result is put into ./extension ===
@@ -224,3 +236,45 @@ gulp.task('package-chromium', async () => {
 })
 
 gulp.task('package', ['package-firefox', 'package-chromium'])
+
+
+// === Tasks for publishing the extension ===
+
+import { MozillaAddons, ChromeWebStore } from './.api-keys.json'
+
+// Publish to Mozilla Addons
+gulp.task('publish-amo', async () => {
+    const publishAmoCommand = (
+        `web-ext sign`
+        + ` -s ./extension`
+        + ` -a ./dist/amo`
+        + ` --api-key ${MozillaAddons.apiKey}`
+        + ` --api-secret ${MozillaAddons.apiSecret}`
+    )
+    try {
+        await exec(publishAmoCommand)
+    } catch (err) {}
+})
+
+// Publish to Chrome Web Store
+gulp.task('publish-cws', async () => {
+    const publishCwsCommand = (
+        `webstore upload --auto-publish`
+        + ` --source ./extension`
+        + ` --extension-id ${ChromeWebStore.extensionId}`
+        + ` --client-id ${ChromeWebStore.clientId}`
+        + ` --client-secret ${ChromeWebStore.clientSecret}`
+        + ` --refresh-token ${ChromeWebStore.refreshToken}`
+    )
+    try {
+        await exec(publishCwsCommand)
+    } catch (err) {}
+})
+
+gulp.task('publish', async () => {
+    // Run sequentially to keep output cleanly separated (a better solution is welcome).
+    await runSequence(
+        'publish-amo',
+        'publish-cws',
+    )
+})
