@@ -13,20 +13,12 @@ describe('getAllNodes', () => {
 
     test('should return all the nodes as an array', async () => {
         const getParent = jest.fn().mockReturnValueOnce(
-            new Promise((resolve, reject) => {
-                resolve({
-                    name: 'root',
-                })
-            })
+            Promise.resolve({name: 'root'})
         )
         const getChildren = jest.fn().mockReturnValueOnce(
-            new Promise((resolve, reject) => {
-                resolve([{name: 'child'}])
-            })
+            Promise.resolve([{name: 'child'}])
         ).mockReturnValueOnce(
-            new Promise((resolve, reject) => {
-                resolve([])
-            })
+            Promise.resolve([])
         )
         const nodes = await getAllNodes({getParent, getChildren})({})
         expect(nodes.length).toBe(2)
@@ -44,17 +36,9 @@ describe('getRoot', () => {
 
     test('should return the root of a tree', async () => {
         const getParent = jest.fn().mockReturnValueOnce(
-            new Promise((resolve, reject) => {
-                resolve({
-                    name: 'child',
-                })
-            })
+            Promise.resolve({name: 'child'})
         ).mockReturnValueOnce(
-            new Promise((resolve, reject) => {
-                resolve({
-                    name: 'root',
-                })
-            })
+            Promise.resolve({name: 'root'})
         )
         let root = await getRoot({getParent})({})
         expect(root.name).toBe('root')

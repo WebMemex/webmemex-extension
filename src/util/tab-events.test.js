@@ -55,7 +55,7 @@ describe('whenPageDOMLoaded', () => {
         expect.assertions(1)
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                Promise.resolve()
+                new Promise((resolve, reject) => {})
             ),
         }
         eventToPromise.default = jest.fn().mockReturnValue(

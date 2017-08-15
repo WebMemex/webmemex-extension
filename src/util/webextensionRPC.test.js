@@ -3,12 +3,20 @@
 import { remoteFunction } from './webextensionRPC'
 
 describe('remoteFunction', () => {
+    beforeEach(() => {
+        browser.runtime = {
+            sendMessage: jest.fn(),
+        }
+    })
+
     test('should return a remotely callable function', () => {
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
         expect(remoteFunc.name).toBe('remoteFunc_RPC')
+        expect(typeof remoteFunc).toBe('function')
     })
 
     test('should throw an error when remoteFunc is called', async () => {
+        expect.assertions(1)
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
         try {
             await remoteFunc()
@@ -18,10 +26,8 @@ describe('remoteFunction', () => {
     })
 
     test('should call the browser.tabs function when tabId is valid', async () => {
+        expect.assertions(2)
         browser.tabs = {
-            sendMessage: jest.fn(),
-        }
-        browser.runtime = {
             sendMessage: jest.fn(),
         }
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
@@ -33,10 +39,8 @@ describe('remoteFunction', () => {
     })
 
     test('should call the browser.runtime function when tabId is invalid', async () => {
+        expect.assertions(2)
         browser.tabs = {
-            sendMessage: jest.fn(),
-        }
-        browser.runtime = {
             sendMessage: jest.fn(),
         }
         const remoteFunc = remoteFunction('remoteFunc')
