@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App test should test page in the database 1`] = `
+Object {
+  "page": Object {
+    "_attachments": Object {
+      "favIcon": Object {
+        "content_type": "image/png",
+        "digest": "md5-7cVkAmmX4suBnAFSJ4A2Wg==",
+        "length": 67,
+        "revpos": 4,
+        "stub": true,
+      },
+      "frozen-page.html": Object {
+        "content_type": "text/html;charset=utf-8",
+        "digest": "md5-yDMBQlsq0dSWRzpf89nsyg==",
+        "length": 13,
+        "revpos": 3,
+        "stub": true,
+      },
+      "screenshot": Object {
+        "content_type": "image/png",
+        "digest": "md5-7cVkAmmX4suBnAFSJ4A2Wg==",
+        "length": 67,
+        "revpos": 5,
+        "stub": true,
+      },
+    },
+    "_id": "page/1499620431844/1337776782",
+    "content": "page content",
+    "title": "",
+    "url": "https://example.com/page",
+  },
+}
+`;

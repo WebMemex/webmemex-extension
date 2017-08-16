@@ -1,4 +1,5 @@
 # WebMemex browser extension
+![Build Image](https://travis-ci.org/reficul31/webmemex-extension.svg?branch=gsoc-ci)
 
 A browser extension that lets you grow your personal web of knowledge.
 
