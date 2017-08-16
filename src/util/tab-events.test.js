@@ -100,6 +100,7 @@ describe('whenPageLoadComplete', () => {
         }
         await whenPageLoadComplete({tabId})
         expect(eventToPromise.default).toHaveBeenCalled()
+        // TODO add a better way to test this particular behaviour
     })
 
     test('should reject a promise if tab has changed location', async () => {
