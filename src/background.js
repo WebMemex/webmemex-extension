@@ -1,6 +1,6 @@
 import get from 'lodash/fp/get'
 
-import manifest from '../extension/manifest.json'
+import manifest from './manifest.json'
 
 
 function openOverview() {
