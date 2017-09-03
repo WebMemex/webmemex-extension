@@ -3,18 +3,17 @@
 import { makeRangeTransform, makeNonlinearTransform } from './make-range-transform'
 
 describe('makeRangeTransform', () => {
-    test('should return transform function with clampOutput false', () => {
+    test('should work for basic cases', () => {
         const transformFunction = makeRangeTransform({
             domain: [66, 100],
             range: [9, 200],
-            clampOutput: false,
         })
         expect(transformFunction(79)).toBeCloseTo(82.029, 2)
         expect(transformFunction(43)).toBeCloseTo(-120.205, 2)
         expect(transformFunction(170)).toBeCloseTo(593.235, 2)
     })
 
-    test('should return transform function with clampOutput true', () => {
+    test('should clamp its outputs with clampOutput true', () => {
         const transformFunction = makeRangeTransform({
             domain: [93, 117],
             range: [3, 10],
@@ -25,46 +24,55 @@ describe('makeRangeTransform', () => {
         expect(transformFunction(150)).toBe(10)
     })
 
-    test('should return the inverse of the value for inverted range and domain with clampOutput true', () => {
+    test('should work with descending domain and/or range', () => {
         const transformFunction1 = makeRangeTransform({
             domain: [100, 0],
             range: [0, 10],
-            clampOutput: true,
         })
         expect(transformFunction1(80)).toBe(2)
+        expect(transformFunction1(-40)).toBe(14)
+        expect(transformFunction1(120)).toBe(-2)
         const transformFunction2 = makeRangeTransform({
             domain: [0, 100],
             range: [10, 0],
-            clampOutput: true,
         })
         expect(transformFunction2(80)).toBe(2)
+        expect(transformFunction2(-40)).toBe(14)
+        expect(transformFunction2(120)).toBe(-2)
         const transformFunction3 = makeRangeTransform({
             domain: [100, 0],
             range: [10, 0],
-            clampOutput: true,
         })
         expect(transformFunction3(80)).toBe(8)
+        expect(transformFunction3(-40)).toBe(-4)
+        expect(transformFunction3(120)).toBe(12)
     })
 
-    test('should return the inverse of the value for inverted range and domain with clampOutput false', () => {
+    test('should work with descending domain and/or range, with clamping', () => {
         const transformFunction1 = makeRangeTransform({
             domain: [100, 0],
             range: [0, 10],
-            clampOutput: false,
+            clampOutput: true,
         })
         expect(transformFunction1(80)).toBe(2)
+        expect(transformFunction1(-40)).toBe(10)
+        expect(transformFunction1(120)).toBe(0)
         const transformFunction2 = makeRangeTransform({
             domain: [0, 100],
             range: [10, 0],
-            clampOutput: false,
+            clampOutput: true,
         })
         expect(transformFunction2(80)).toBe(2)
+        expect(transformFunction2(-40)).toBe(10)
+        expect(transformFunction2(120)).toBe(0)
         const transformFunction3 = makeRangeTransform({
             domain: [100, 0],
             range: [10, 0],
-            clampOutput: false,
+            clampOutput: true,
         })
         expect(transformFunction3(80)).toBe(8)
+        expect(transformFunction3(-40)).toBe(0)
+        expect(transformFunction3(120)).toBe(10)
     })
 })
 
