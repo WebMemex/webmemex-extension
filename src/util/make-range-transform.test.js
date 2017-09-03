@@ -37,13 +37,13 @@ describe('makeRangeTransform', () => {
             range: [10, 0],
             clampOutput: true,
         })
-        expect(transformFunction2(80)).toBe(10)
+        expect(transformFunction2(80)).toBe(2)
         const transformFunction3 = makeRangeTransform({
             domain: [100, 0],
             range: [10, 0],
             clampOutput: true,
         })
-        expect(transformFunction3(80)).toBe(10)
+        expect(transformFunction3(80)).toBe(8)
     })
 
     test('should return the inverse of the value for inverted range and domain with clampOutput false', () => {
