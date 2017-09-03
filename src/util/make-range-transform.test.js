@@ -76,14 +76,31 @@ describe('makeRangeTransform', () => {
     })
 })
 
-describe('makeNonlinearTransform tests', () => {
-    test('should return non linear transform function', () => {
+describe('makeNonlinearTransform', () => {
+    test('should work for basic cases', () => {
+        const transformFunction = makeNonlinearTransform({
+            domain: [5, 5603],
+            range: [0, 100],
+            nonlinearity: Math.log,
+        })
+        expect(transformFunction(5)).toBe(0)
+        expect(transformFunction(5603)).toBe(100)
+        expect(transformFunction(3)).toBeCloseTo(-7.275, 2)
+        expect(transformFunction(1997)).toBeCloseTo(85.3074, 2)
+        expect(transformFunction(6000)).toBeCloseTo(100.974, 2)
+    })
+
+    test('should clamp its outputs with clampOutput true', () => {
         const transformFunction = makeNonlinearTransform({
             domain: [5, 5603],
             range: [0, 100],
             clampOutput: true,
             nonlinearity: Math.log,
         })
+        expect(transformFunction(5)).toBe(0)
+        expect(transformFunction(5603)).toBe(100)
+        expect(transformFunction(3)).toBe(0)
         expect(transformFunction(1997)).toBeCloseTo(85.3074, 2)
+        expect(transformFunction(6000)).toBe(100)
     })
 })
