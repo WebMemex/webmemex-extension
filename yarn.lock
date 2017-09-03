@@ -7176,12 +7176,13 @@ redux-observable@^0.14.1:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/redux-observable/-/redux-observable-0.14.1.tgz#9f3d870c69388fdc427ded6770a3e326f3b69693"
 
-redux-query-sync@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/redux-query-sync/-/redux-query-sync-0.1.5.tgz#f9fee582379f0ff773bd41f72371d8d2b35f9c66"
+redux-query-sync@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/redux-query-sync/-/redux-query-sync-0.1.6.tgz#73bc20c9097735e62fd096fb4dee6c4a880566ab"
   dependencies:
     history "^4.6.3"
     postinstall-build "^3.0.1"
+    url-search-params "0.10.0"
 
 redux-thunk@^2.2.0:
   version "2.2.0"
@@ -8539,6 +8540,10 @@ url-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/url-regex/-/url-regex-3.2.0.tgz#dbad1e0c9e29e105dd0b1f09f6862f7fdb482724"
   dependencies:
     ip-regex "^1.0.1"
+
+url-search-params@0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/url-search-params/-/url-search-params-0.10.0.tgz#d428c1fa9d78d5c5a3feb634147873890f4adcf0"
 
 url-template@~2.0.6:
   version "2.0.8"
