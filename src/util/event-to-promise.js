@@ -11,7 +11,7 @@
 //
 // The options objects can have the following properties:
 // - event (required):
-//     The event to listen to. Could be anything with an `addListener` method.
+//     The event to listen to. Could be anything with `addListener` and `removeListener` methods.
 // - filter (optional):
 //     Supply a predicate function to decide for each event whether to
 //     resolve/reject or to ignore it. The function gets passed the event
@@ -52,7 +52,7 @@ export default function eventToPromise({
                         // Hurray, let's resolve. First clean up our listeners.
                         removeListeners()
                         // Resolve, with the specified value if any.
-                        if (opts.value) {
+                        if ('value' in opts) {
                             resolve(castFuncToValue(opts.value, args))
                         } else {
                             resolve()
@@ -96,7 +96,7 @@ function castToArray(value) {
     else return [value]
 }
 
-// Identity function, except that if passed a function, its return value.
+// Identity function, except that if passed a function, it runs it and returns its return value.
 // ('resolve' would be a better term than 'cast', but too confusing in this context)
 function castFuncToValue(functionOrValue, args = []) {
     const value = (typeof functionOrValue === 'function')
