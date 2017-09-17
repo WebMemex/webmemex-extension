@@ -28,14 +28,14 @@ describe('syncLocationHashes', () => {
     })
 
     test('should create a listener on the windows', () => {
-        syncLocationHashes(windows, {initial: undefined})
+        syncLocationHashes(windows)
         windows.forEach(win => {
             expect(win.addEventListener).toHaveBeenCalledTimes(1)
         })
     })
 
     test('should disable the listeners when returned function is called', () => {
-        const disableListener = syncLocationHashes(windows, {initial: undefined})
+        const disableListener = syncLocationHashes(windows)
         windows.forEach(win => {
             expect(win.removeEventListener).not.toHaveBeenCalled()
         })
@@ -57,7 +57,7 @@ describe('syncLocationHashes', () => {
     })
 
     test('should sync to other windows when one emits a hashchange event', () => {
-        syncLocationHashes(windows, {initial: undefined})
+        syncLocationHashes(windows)
         const win2HashChangeEventListener = win2.addEventListener.mock.calls[0][1]
 
         win2.location.hash = '#newhash'
