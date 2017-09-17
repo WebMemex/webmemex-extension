@@ -23,6 +23,10 @@ export default function syncLocationHashes(windows, {initial} = {}) {
                 if (otherHash.startsWith('#')) {
                     otherHash = otherHash.substring(1)
                 }
+                // Setting a window's location hash will trigger its hashchange event, which could
+                // then cause us to start syncing it back to the others again, etcetera. To avoid
+                // creating such an infinite loop, we simply ensure that a hash will not be set if
+                // it already has the right value.
                 if (otherHash !== hash) {
                     otherWindow.location.hash = hash
                 }

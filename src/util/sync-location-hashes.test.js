@@ -98,4 +98,20 @@ describe('syncLocationHashes', () => {
             expect(win.location.hash).toEqual('#newhash')
         })
     })
+
+    test('should avoid creating an infinite updating loop', () => {
+        // We simply verify that a hash will not be set if it already has the right value.
+        syncLocationHashes(windows)
+        const win2HashChangeEventListener = win2.addEventListener.mock.calls[0][1]
+
+        win1.location.hash = '#samehash'
+        win2.location.hash = '#samehash'
+        win3.location.hash = '#samehash'
+        win2HashChangeEventListener()
+
+        windows.forEach(win => {
+            const hashSetter = Object.getOwnPropertyDescriptor(win.location, 'hash').set
+            expect(hashSetter).toHaveBeenCalledTimes(1) // just our manual assignment above.
+        })
+    })
 })
