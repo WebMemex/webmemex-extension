@@ -3,12 +3,38 @@
 import syncLocationHashes from './sync-location-hashes'
 
 
-const createWindowMock = () => ({
-    // FIXME When getting a (non-empty) hash attribute, location.hash should prepend a missing '#'.
-    // (therefore we now test the value of location.hash with a regex)
-    location: {hash: ''},
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
+const createWindowMock = () => {
+    const win = {
+        location: {_hash: ''},
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+    }
+    Object.defineProperty(win.location, 'hash', {
+        // Store the hash without '#' in the _hash attribute, and prefix the '#' when getting it.
+        get: jest.fn(function () { return this._hash ? `#${this._hash}` : '' }),
+        set: jest.fn(function (value) { this._hash = value.replace(/^#/, '') }),
+    })
+    return win
+}
+
+describe('windowMock', () => {
+    test('should prepend the # to the hash value', () => {
+        const win = createWindowMock()
+        win.location.hash = 'abc'
+        expect(win.location.hash).toEqual('#abc')
+    })
+
+    test('should not end up with a double ## before the hash value', () => {
+        const win = createWindowMock()
+        win.location.hash = '#abc'
+        expect(win.location.hash).toEqual('#abc')
+    })
+
+    test('should not add a # when the hash is the empty string', () => {
+        const win = createWindowMock()
+        win.location.hash = ''
+        expect(win.location.hash).toEqual('')
+    })
 })
 
 describe('syncLocationHashes', () => {
@@ -18,13 +44,18 @@ describe('syncLocationHashes', () => {
     const windows = [win1, win2, win3]
 
     beforeEach(() => {
-        windows.forEach(win => {
-            win.addEventListener.mockReset()
-            win.removeEventListener.mockReset()
-        })
         win1.location.hash = '#win1hash'
         win2.location.hash = '#win2hash'
         win3.location.hash = '#win3hash'
+        windows.forEach(win => {
+            win.addEventListener.mockReset()
+            win.removeEventListener.mockReset()
+            // Do not reset getter/setter implementations, but clear their call log.
+            // (note that the _hash value is left intact, to the value we just gave it)
+            const {get, set} = Object.getOwnPropertyDescriptor(win.location, 'hash')
+            get.mockClear()
+            set.mockClear()
+        })
     })
 
     test('should create a listener on the windows', () => {
@@ -52,7 +83,7 @@ describe('syncLocationHashes', () => {
         syncLocationHashes(windows, {initial: win2})
 
         windows.forEach(win => {
-            expect(win.location.hash).toMatch(/#?somehash/)
+            expect(win.location.hash).toEqual('#somehash')
         })
     })
 
@@ -64,7 +95,7 @@ describe('syncLocationHashes', () => {
         win2HashChangeEventListener()
 
         windows.forEach(win => {
-            expect(win.location.hash).toMatch(/#?newhash/)
+            expect(win.location.hash).toEqual('#newhash')
         })
     })
 })
