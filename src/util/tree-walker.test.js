@@ -2,45 +2,88 @@
 
 import { getAllNodes, getRoot } from './tree-walker'
 
+
+const testTrees = (() => {
+    const _edges = {
+        // Tree one.
+        a: {parent: undefined, children: ['b', 'c']},
+        b: {parent: 'a', children: []},
+        c: {parent: 'a', children: ['d', 'e']},
+        d: {parent: 'c', children: []},
+        e: {parent: 'c', children: []},
+        // Tree two.
+        f: {parent: undefined, children: ['g']},
+        g: {parent: 'f', children: ['h']},
+        h: {parent: 'g', children: []},
+    }
+    return {
+        _edges,
+        getParent: async node => _edges[node].parent,
+        getChildren: async node => _edges[node].children,
+    }
+})()
+
 describe('getAllNodes', () => {
-    test('should call the functions passed to it', async () => {
-        const getParent = jest.fn()
-        const getChildren = jest.fn().mockReturnValue([])
-        await getAllNodes({getParent, getChildren})({})
-        expect(getParent).toHaveBeenCalled()
-        expect(getChildren).toHaveBeenCalled()
+    const getAllNodesOfTestTree = getAllNodes(testTrees)
+
+    test('gets all nodes given a leaf node', async () => {
+        const nodes = [
+            (await getAllNodesOfTestTree('e')).sort(),
+            (await getAllNodesOfTestTree('h')).sort(),
+        ]
+        expect(nodes).toEqual([
+            ['a', 'b', 'c', 'd', 'e'],
+            ['f', 'g', 'h'],
+        ])
     })
 
-    test('should return all the nodes as an array', async () => {
-        const getParent = jest.fn().mockReturnValueOnce(
-            Promise.resolve({name: 'root'})
-        )
-        const getChildren = jest.fn().mockReturnValueOnce(
-            Promise.resolve([{name: 'child'}])
-        ).mockReturnValueOnce(
-            Promise.resolve([])
-        )
-        const nodes = await getAllNodes({getParent, getChildren})({})
-        expect(nodes.length).toBe(2)
-        expect(nodes[0].name).toBe('root')
-        expect(nodes[1].name).toBe('child')
+    test('gets all nodes given a non-leaf node', async () => {
+        const nodes = [
+            (await getAllNodesOfTestTree('c')).sort(),
+            (await getAllNodesOfTestTree('g')).sort(),
+        ]
+        expect(nodes).toEqual([
+            ['a', 'b', 'c', 'd', 'e'],
+            ['f', 'g', 'h'],
+        ])
+    })
+
+    test('gets all nodes given the root node', async () => {
+        const nodes = [
+            (await getAllNodesOfTestTree('a')).sort(),
+            (await getAllNodesOfTestTree('f')).sort(),
+        ]
+        expect(nodes).toEqual([
+            ['a', 'b', 'c', 'd', 'e'],
+            ['f', 'g', 'h'],
+        ])
     })
 })
 
 describe('getRoot', () => {
-    test('should call the function passed to it', async () => {
-        const getParent = jest.fn()
-        await getRoot({getParent})({})
-        expect(getParent).toBeCalled()
+    const getRootOfTestTree = getRoot(testTrees)
+
+    test('gets the root given a leaf node', async () => {
+        const roots = [
+            await getRootOfTestTree('e'),
+            await getRootOfTestTree('h'),
+        ]
+        expect(roots).toEqual(['a', 'f'])
     })
 
-    test('should return the root of a tree', async () => {
-        const getParent = jest.fn().mockReturnValueOnce(
-            Promise.resolve({name: 'child'})
-        ).mockReturnValueOnce(
-            Promise.resolve({name: 'root'})
-        )
-        let root = await getRoot({getParent})({})
-        expect(root.name).toBe('root')
+    test('gets the root given a non-leaf node', async () => {
+        const roots = [
+            await getRootOfTestTree('c'),
+            await getRootOfTestTree('g'),
+        ]
+        expect(roots).toEqual(['a', 'f'])
+    })
+
+    test('gets the root given the root node itself', async () => {
+        const roots = [
+            await getRootOfTestTree('a'),
+            await getRootOfTestTree('f'),
+        ]
+        expect(roots).toEqual(['a', 'f'])
     })
 })
