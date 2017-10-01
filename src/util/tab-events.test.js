@@ -8,6 +8,7 @@ describe('whenPageDOMLoaded', () => {
     const tabId = 1
 
     beforeEach(() => {
+        browser.tabs = {}
         browser.webNavigation = {
             onCommitted: jest.fn(),
         }
@@ -16,14 +17,17 @@ describe('whenPageDOMLoaded', () => {
         )
     })
 
-    test('should call the browser event to execute script and resolve promise if script executes', async () => {
+    test('should execute script and resolve promise if script executes', async () => {
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
                 Promise.resolve()
             ),
         }
         await whenPageDOMLoaded({tabId})
-        expect(browser.tabs.executeScript).toHaveBeenCalledWith(tabId, {code: 'undefined', runAt: 'document_end'})
+        expect(browser.tabs.executeScript).toHaveBeenCalledWith(
+            tabId,
+            {code: 'undefined', runAt: 'document_end'},
+        )
     })
 
     test('should reject the promise if the script is not executed', async () => {
@@ -36,19 +40,8 @@ describe('whenPageDOMLoaded', () => {
         try {
             await whenPageDOMLoaded({tabId})
         } catch (err) {
-            expect(err.toString()).toBe('Error: Script unable to execute')
+            expect(err.message).toBe('Script unable to execute')
         }
-    })
-
-    test('should resolve promise when DOM page is loaded', async () => {
-        browser.tabs = {
-            executeScript: jest.fn().mockReturnValue(
-                Promise.resolve()
-            ),
-        }
-        await whenPageDOMLoaded({tabId})
-        expect(browser.tabs.executeScript).toHaveBeenCalledWith(tabId, {code: 'undefined', runAt: 'document_end'})
-        expect(eventToPromise.default).toHaveBeenCalled()
     })
 
     test('should reject the promise if tab is changed', async () => {
@@ -61,11 +54,7 @@ describe('whenPageDOMLoaded', () => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.reject(new Error('Tab was changed'))
         )
-        try {
-            await whenPageDOMLoaded({tabId})
-        } catch (err) {
-            expect(err.toString()).toBe('Error: Tab was changed')
-        }
+        await expect(whenPageDOMLoaded({tabId})).rejects.toMatchObject({message: 'Tab was changed'})
     })
 })
 
@@ -92,38 +81,31 @@ describe('whenPageLoadComplete', () => {
         expect(eventToPromise.default).not.toHaveBeenCalled()
     })
 
-    test('should return a promise which resolves', async () => {
+    test('should run eventToPromise and resolve if its Promise resolves', async () => {
         browser.tabs = {
             get: jest.fn().mockReturnValueOnce({
-                status: 'incomplete',
+                status: 'loading',
             }),
         }
-        await whenPageLoadComplete({tabId})
-        expect(eventToPromise.default).toHaveBeenCalled()
-        // TODO add a better way to test this particular behaviour
+        // Add a 'shibboleth' to be able to check that *this* Promise was returned & resolved.
+        eventToPromise.default.mockReturnValueOnce(Promise.resolve('shibboleth'))
+        await expect(whenPageLoadComplete({tabId})).resolves.toBe('shibboleth')
     })
 
-    test('should reject a promise if tab has changed location', async () => {
-        expect.assertions(1)
+    test('should run eventToPromise and reject if its Promise rejects', async () => {
         browser.tabs = {
             get: jest.fn().mockReturnValueOnce({
-                status: 'incomplete',
+                status: 'loading',
             }),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.reject(new Error('Tab was changed'))
         )
-        try {
-            await whenPageLoadComplete({tabId})
-        } catch (err) {
-            expect(err.toString()).toBe('Error: Tab was changed')
-        }
+        await expect(whenPageLoadComplete({tabId})).rejects.toMatchObject({message: 'Tab was changed'})
     })
 })
 
 describe('whenTabActive', () => {
-    const tabId = 1
-
     beforeEach(() => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.resolve()
@@ -133,35 +115,31 @@ describe('whenTabActive', () => {
         }
     })
 
-    test('should return if the tab is active', async () => {
+    test('should return directly if the tab is already active', async () => {
         browser.tabs = {
             query: jest.fn().mockReturnValueOnce([{id: 1}]),
         }
-        await whenTabActive({tabId})
+        await whenTabActive({tabId: 1})
         expect(browser.tabs.query).toHaveBeenCalledWith({active: true})
         expect(eventToPromise.default).not.toHaveBeenCalled()
     })
 
-    test('should return a promise which resolves', async () => {
+    test('should run eventToPromise and resolve if its Promise resolves', async () => {
         browser.tabs = {
-            query: jest.fn().mockReturnValueOnce([]),
+            query: jest.fn().mockReturnValueOnce([{id: 2}]),
         }
-        await whenTabActive({tabId})
-        expect(eventToPromise.default).toHaveBeenCalled()
+        // Add a 'shibboleth' to be able to check that *this* Promise was returned & resolved.
+        eventToPromise.default.mockReturnValueOnce(Promise.resolve('shibboleth'))
+        await expect(whenTabActive({tabId: 1})).resolves.toBe('shibboleth')
     })
 
-    test('should reject the promise if the tab is changed', async () => {
-        expect.assertions(1)
+    test('should run eventToPromise and reject if its Promise rejects', async () => {
         browser.tabs = {
-            query: jest.fn().mockReturnValueOnce([]),
+            query: jest.fn().mockReturnValueOnce([{id: 2}]),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.reject(new Error('Tab was changed'))
         )
-        try {
-            await whenTabActive({tabId})
-        } catch (err) {
-            expect(err.toString()).toBe('Error: Tab was changed')
-        }
+        await expect(whenTabActive({tabId: 1})).rejects.toMatchObject({message: 'Tab was changed'})
     })
 })
