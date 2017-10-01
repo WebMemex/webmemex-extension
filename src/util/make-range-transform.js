@@ -6,7 +6,9 @@ export function makeRangeTransform({domain: [minX, maxX], range: [minY, maxY], c
     const scale = (maxY - minY) / (maxX - minX)
     const bias = minY - minX * scale
     const transform = x => bias + x * scale
-    return clampOutput ? compose(clamp(minY, maxY), transform) : transform
+    return clampOutput
+        ? compose(clamp(Math.min(minY, maxY), Math.max(minY, maxY)), transform)
+        : transform
 }
 
 // Create a transformation that passes the input through a monotonic nonlinearity

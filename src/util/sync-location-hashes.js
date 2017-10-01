@@ -5,7 +5,7 @@
 // - windows: an Array of Windows.
 // - initial (optional): the window whose hash is used to sync them initially.
 // Returns a function that disables synchronisation again.
-export default function syncLocationHashes(windows, {initial}) {
+export default function syncLocationHashes(windows, {initial} = {}) {
     const listeners = windows.map(win => function syncHashListener() {
         syncHashToOthers(win)
     })
@@ -23,6 +23,10 @@ export default function syncLocationHashes(windows, {initial}) {
                 if (otherHash.startsWith('#')) {
                     otherHash = otherHash.substring(1)
                 }
+                // Setting a window's location hash will trigger its hashchange event, which could
+                // then cause us to start syncing it back to the others again, etcetera. To avoid
+                // creating such an infinite loop, we simply ensure that a hash will not be set if
+                // it already has the right value.
                 if (otherHash !== hash) {
                     otherWindow.location.hash = hash
                 }
