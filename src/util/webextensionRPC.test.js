@@ -5,31 +5,28 @@ import { remoteFunction } from './webextensionRPC'
 describe('remoteFunction', () => {
     beforeEach(() => {
         browser.runtime = {
-            sendMessage: jest.fn(),
+            sendMessage: jest.fn(() => Promise.resolve()),
+        }
+        browser.tabs = {
+            sendMessage: jest.fn(() => Promise.resolve()),
         }
     })
 
-    test('should return a remotely callable function', () => {
+    test('should create a function', () => {
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
         expect(remoteFunc.name).toBe('remoteFunc_RPC')
         expect(typeof remoteFunc).toBe('function')
     })
 
-    test('should throw an error when remoteFunc is called', async () => {
-        expect.assertions(1)
+    test('should throw an error when unable to sendMessage', async () => {
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
-        try {
-            await remoteFunc()
-        } catch (err) {
-            expect(err.toString()).toBe(`Error: Got no response when trying to call 'remoteFunc'. Did you enable RPC in the tab's content script?`)
-        }
+        browser.tabs.sendMessage.mockImplementationOnce(() => { throw new Error() })
+        await expect(remoteFunc()).rejects.toMatchObject({
+            message: `Got no response when trying to call 'remoteFunc'. Did you enable RPC in the tab's content script?`,
+        })
     })
 
-    test('should call the browser.tabs function when tabId is valid', async () => {
-        expect.assertions(2)
-        browser.tabs = {
-            sendMessage: jest.fn(),
-        }
+    test('should call the browser.tabs function when tabId is given', async () => {
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
         try {
             await remoteFunc()
@@ -38,11 +35,7 @@ describe('remoteFunction', () => {
         expect(browser.runtime.sendMessage).toHaveBeenCalledTimes(0)
     })
 
-    test('should call the browser.runtime function when tabId is invalid', async () => {
-        expect.assertions(2)
-        browser.tabs = {
-            sendMessage: jest.fn(),
-        }
+    test('should call the browser.runtime function when tabId is undefined', async () => {
         const remoteFunc = remoteFunction('remoteFunc')
         try {
             await remoteFunc()
@@ -51,44 +44,32 @@ describe('remoteFunction', () => {
         expect(browser.runtime.sendMessage).toHaveBeenCalledTimes(1)
     })
 
-    test('should throw an error if there is an interfering listener', async () => {
-        expect.assertions(1)
-        browser.tabs = {
-            sendMessage: jest.fn(),
-        }
+    test('should throw an error if response does not contain RPC token', async () => {
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
-        try {
-            await remoteFunc()
-        } catch (err) {
-            expect(err.toString()).toBe('Error: RPC got a response from an interfering listener.')
-        }
+        await expect(remoteFunc()).rejects.toMatchObject({
+            message: 'RPC got a response from an interfering listener.',
+        })
     })
 
-    test('should throw the error if in the response', async () => {
-        expect.assertions(1)
-        browser.tabs = {
-            sendMessage: jest.fn().mockReturnValue({
-                __RPC_RESPONSE__: '__RPC_RESPONSE__',
-                errorMessage: 'Remote function error',
-            }),
-        }
+    test('should throw an error if the response contains an error message', async () => {
+        browser.tabs.sendMessage.mockReturnValueOnce({
+            __RPC_RESPONSE__: '__RPC_RESPONSE__',
+            errorMessage: 'Remote function error',
+        })
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
-        try {
-            await remoteFunc()
-        } catch (err) {
-            expect(err.toString()).toBe('Error: Remote function error')
-        }
+        await expect(remoteFunc()).rejects.toMatchObject({
+            message: 'Remote function error',
+        })
     })
 
-    test('should return the value in the response', async () => {
-        browser.tabs = {
-            sendMessage: jest.fn().mockReturnValue({
-                __RPC_RESPONSE__: '__RPC_RESPONSE__',
-                returnValue: 'Remote Function return value',
-            }),
-        }
+    test('should return the value contained in the response', async () => {
+        browser.tabs.sendMessage.mockReturnValueOnce({
+            __RPC_RESPONSE__: '__RPC_RESPONSE__',
+            returnValue: 'Remote function return value',
+        })
         const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
-        const data = await remoteFunc()
-        expect(data).toBe('Remote Function return value')
+        await expect(remoteFunc()).resolves.toBe('Remote function return value')
     })
 })
+
+// TODO Test behaviour of executing side.
