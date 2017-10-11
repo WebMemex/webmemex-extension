@@ -50,20 +50,12 @@ function computeRowGaps({searchResult}) {
         const dateString = niceDate(timestamp)
         const prevDateString = niceDate(prevTimestamp)
         const showDate = (dateString !== prevDateString)
-        const timestampComponent = showDate && (
-            <time
-                className={styles.timestamp}
-                dateTime={new Date(timestamp)}
-                style={{
-                    height: 16,
-                    fontSize: 16,
-                }}
-            >
-                {dateString}
-            </time>
-        )
 
-        return {marginTop: spaceGap, showConnection, timestampComponent}
+        return {
+            marginTop: spaceGap,
+            showConnection,
+            dateStringToShow: showDate ? dateString : undefined,
+        }
     })
 }
 
@@ -89,7 +81,20 @@ const ResultList = ({
     const rowGaps = computeRowGaps({searchResult})
 
     const listItems = searchResult.rows.map((row, rowIndex) => {
-        const { marginTop, showConnection, timestampComponent } = rowGaps[rowIndex]
+        const { marginTop, showConnection, dateStringToShow } = rowGaps[rowIndex]
+
+        const timestampComponent = dateStringToShow && (
+            <time
+                className={styles.timestamp}
+                dateTime={new Date(row.doc.visitStart)}
+                style={{
+                    height: 16,
+                    fontSize: 16,
+                }}
+            >
+                {dateStringToShow}
+            </time>
+        )
 
         return (
             <li
