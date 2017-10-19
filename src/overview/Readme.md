@@ -25,7 +25,7 @@ into this here.
 
 ## Application structure
 
-It all starts with [`main.jsx`](main.jsx), which creates the store (using
+It all starts with [`overview.jsx`](overview.jsx), which creates the store (using
 [`store.js`](store.js)), and renders the main component
 ([`components/Overview.jsx`](components/Overview.jsx)) to the DOM. Then
 components will dispatch actions, which trigger reducers (and more actions),
