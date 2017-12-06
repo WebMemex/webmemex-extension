@@ -240,10 +240,20 @@ gulp.task('package', ['package-firefox', 'package-chromium'])
 
 // === Tasks for publishing the extension ===
 
-import { MozillaAddons, ChromeWebStore } from './.api-keys.json'
+function readApiKeys() {
+    try {
+        return JSON.parse(fs.readFileSync('./.api-keys.json'))
+    } catch (err) {
+        throw new Error(
+            'Expected to find API keys in .api-keys.json.' +
+            ' For details, well best just read the gulpfile..'
+        )
+    }
+}
 
 // Publish to Mozilla Addons
 gulp.task('publish-amo', async () => {
+    const { MozillaAddons } = readApiKeys()
     const publishAmoCommand = (
         `web-ext sign`
         + ` -s ./extension`
@@ -258,6 +268,7 @@ gulp.task('publish-amo', async () => {
 
 // Publish to Chrome Web Store
 gulp.task('publish-cws', async () => {
+    const { ChromeWebStore } = readApiKeys()
     const publishCwsCommand = (
         `webstore upload --auto-publish`
         + ` --source ./extension`
