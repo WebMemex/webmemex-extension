@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Input } from 'semantic-ui-react'
+import { Image, Input } from 'semantic-ui-react'
 
 import * as actions from '../actions'
 import { ourState } from '../selectors'
@@ -24,6 +24,7 @@ class Overview extends React.Component {
                 <div
                     className={styles.queryInputContainer}
                 >
+                    <Image src='assets/webmemex-48.png' wrapped />
                     <Input
                         size='huge'
                         icon='search'

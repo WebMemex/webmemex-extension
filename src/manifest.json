@@ -1,6 +1,10 @@
 {
     "name": "WebMemex",
     "version": "0.2.4",
+    "icons": {
+        "48": "assets/webmemex-48.png",
+        "96": "assets/webmemex-96.png"
+    },
     "background": {
         "scripts": ["lib/browser-polyfill.js", "background.js"]
     },
@@ -10,6 +14,7 @@
         "run_at": "document_start"
     }],
     "browser_action": {
+        "default_icon": "assets/webmemex-32.png",
         "default_title": "WebMemex",
         "default_popup": "/popup.html"
     },
