@@ -33,7 +33,7 @@ class Overview extends React.Component {
                         onKeyDown={e => {
                             if (e.key === 'Escape') { this.props.onInputChanged('') }
                         }}
-                        placeholder='Search your memory'
+                        placeholder='Search your snapshots'
                         value={this.props.query}
                         ref={el => { this.inputQueryEl = el }}
                         className={styles.queryInputComponent}
