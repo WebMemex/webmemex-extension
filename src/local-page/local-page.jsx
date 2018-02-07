@@ -4,6 +4,7 @@ import { Button, Icon, Image } from 'semantic-ui-react'
 import { blobToArrayBuffer } from 'blob-util'
 
 import db from 'src/pouchdb'
+import { downloadPage } from 'src/page-storage/download-page'
 import { getPage } from 'src/search/find-pages'
 import { getTimestamp } from 'src/activity-logger'
 import shortUrl from 'src/util/short-url'
@@ -11,26 +12,6 @@ import niceTime from 'src/util/nice-time'
 
 import ContentFrame from './ContentFrame'
 
-
-async function saveAs({page}) {
-    const pageId = page._id
-    // Reread the html file from the database. XXX This might not be the version that is shown.
-    const blob = await db.getAttachment(pageId, 'frozen-page.html')
-    const url = URL.createObjectURL(blob)
-    // Use title as filename, after removing (back)slashes.
-    let filename = `${page.title.replace(/[\\/]/g, '-')}.html`
-    try {
-        await browser.downloads.download({url, filename, saveAs: true})
-    } catch (err) {
-        // Possibly due to punctuation in the filename (Chromium is picky).
-        if (err.message.includes('filename')) {
-            filename = filename.replace(/['?:~<>*|]/g, '-') // an empirically composed list.
-            await browser.downloads.download({url, filename, saveAs: true})
-        }
-    }
-    // Forget the blob again. Firefox needs a moment; we give it 10s to be on the safe side.
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000*10)
-}
 
 async function showPage(pageId) {
     const page = await getPage({pageId, followRedirects: true})
@@ -70,7 +51,7 @@ async function showPage(pageId) {
             <Button
                 compact
                 size='tiny'
-                onClick={() => saveAs({page})}
+                onClick={() => downloadPage({page, saveAs: true})}
             >
                 <Icon name='download' />
                 Save page as…

@@ -1,7 +1,7 @@
 import get from 'lodash/fp/get'
 import update from 'lodash/fp/update'
 
-import db, { normaliseFindResult, resultRowsById } from 'src/pouchdb'
+import db, { normaliseFindResult, resultRowsById, keyRangeForPrefix } from 'src/pouchdb'
 import { pageKeyPrefix } from 'src/page-storage'
 import { revisePageFields } from 'src/page-analysis'
 import { getAllNodes } from 'src/util/tree-walker'
@@ -68,6 +68,15 @@ export async function getPages({pageIds, ...otherOptions}) {
     })
     pagesResult = await postprocessPagesResult({...otherOptions, pagesResult})
     return pagesResult
+}
+
+export async function getAllPages({...otherOptions}) {
+  let pagesResult = await db.allDocs({
+      ...keyRangeForPrefix(pageKeyPrefix),
+      include_docs: true,
+  })
+  pagesResult = await postprocessPagesResult({...otherOptions, pagesResult})
+  return pagesResult
 }
 
 export async function findPagesByUrl({url, ...otherOptions}) {
