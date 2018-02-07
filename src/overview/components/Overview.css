@@ -6,5 +6,6 @@
 }
 
 .queryInputComponent {
+    margin-left: 1rem;
     flex-grow: 1;
 }

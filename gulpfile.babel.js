@@ -41,6 +41,7 @@ const exec = pify((command, callback) => {
 const staticFiles = {
     'src/manifest.json': 'extension',
     'src/*.html': 'extension',
+    'src/assets/*': 'extension/assets/',
     'node_modules/webextension-polyfill/dist/browser-polyfill.js': 'extension/lib',
     'node_modules/pdfjs-dist/build/pdf.worker.min.js': 'extension/lib',
     'node_modules/semantic-ui-css/semantic.min.css': 'extension/lib/semantic-ui',

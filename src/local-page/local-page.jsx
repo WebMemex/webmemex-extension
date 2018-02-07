@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Button, Icon } from 'semantic-ui-react'
+import { Button, Icon, Image } from 'semantic-ui-react'
 import { blobToArrayBuffer } from 'blob-util'
 
 import db from 'src/pouchdb'
@@ -48,10 +48,14 @@ async function showPage(pageId) {
     // We assume utf-8 encoding. TODO: read encoding from document.
     const html = new TextDecoder('utf-8').decode(await blobToArrayBuffer(blob))
 
-    document.title = `📄 ${page.title}`
+    document.title = `${page.title}`
 
     const bar = (
         <div id='bar'>
+            <Image
+                title='WebMemex'
+                src='assets/webmemex-32.png'
+                wrapped />
             <span id='description'>
                 <Icon name='camera' />
                 Snapshot of
