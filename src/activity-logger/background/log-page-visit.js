@@ -76,7 +76,7 @@ export async function logActivePageVisit() {
     const {url, id: tabId} = tabs[0]
 
     if (!isLoggable({url})) {
-        throw new Error('This page cannot be snapshoted')
+        throw new Error('This page cannot be snapshotted')
     }
 
     return await logPageVisit({
