@@ -71,12 +71,12 @@ export async function getPages({pageIds, ...otherOptions}) {
 }
 
 export async function getAllPages({...otherOptions}) {
-  let pagesResult = await db.allDocs({
-      ...keyRangeForPrefix(pageKeyPrefix),
-      include_docs: true,
-  })
-  pagesResult = await postprocessPagesResult({...otherOptions, pagesResult})
-  return pagesResult
+    let pagesResult = await db.allDocs({
+        ...keyRangeForPrefix(pageKeyPrefix),
+        include_docs: true,
+    })
+    pagesResult = await postprocessPagesResult({...otherOptions, pagesResult})
+    return pagesResult
 }
 
 export async function findPagesByUrl({url, ...otherOptions}) {
