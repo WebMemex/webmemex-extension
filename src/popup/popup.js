@@ -1,38 +1,40 @@
-import { getAttachmentAsDataUrl } from 'src/pouchdb'
 import { remoteFunction } from 'src/util/webextensionRPC'
 import { hrefForLocalPage } from 'src/local-page'
 
 
 const logActivePageVisit = remoteFunction('logActivePageVisit')
 
-const screenshotImg = document.getElementById('screenshotImg')
-const screenshotLink = document.getElementById('screenshotLink')
-const screenshotDimmer = document.getElementById('screenshotDimmer')
-
 async function storeThisPage() {
-    screenshotDimmer.classList.add('active')
+    storeButton.classList.add('disabled')
+    storeButton.querySelector('.icon').classList.add('loading')
+
     let page
     try {
         const { page: page_ } = await logActivePageVisit()
         page = page_
     } catch (err) {
+        const errorMessage = document.getElementById('errorMessage')
+        errorMessage.classList.remove('hidden')
         const errorMessageContent = document.getElementById('errorMessageContent')
-        const errorMessageDimmer = document.getElementById('errorMessageDimmer')
         errorMessageContent.innerText = `Error: ${err && err.message}`
-        errorMessageDimmer.classList.add('active')
         return
     } finally {
-        screenshotDimmer.classList.remove('active')
+        storeButton.classList.remove('disabled')
+        storeButton.querySelector('.icon').classList.remove('loading')
     }
-    const imgData = await getAttachmentAsDataUrl({doc: page, attachmentId: 'screenshot'})
-    screenshotImg.src = imgData
+    const successMessage = document.getElementById('successMessage')
+    successMessage.classList.remove('hidden')
+
     const href = hrefForLocalPage({page})
     if (href) {
-        screenshotLink.setAttribute('href', href)
+        const snapshotLink = document.getElementById('snapshotLink')
+        snapshotLink.setAttribute('href', href)
+        snapshotLink.classList.remove('hidden')
     }
 }
-// Store this page directly.
-storeThisPage()
+
+const storeButton = document.getElementById('storeButton')
+storeButton.onclick = storeThisPage
 
 const overviewButton = document.getElementById('overviewButton')
 overviewButton.onclick = async () => {
