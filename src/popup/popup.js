@@ -49,8 +49,7 @@ async function storeThisPage() {
         errorMessageContent.innerText = `Error: ${err && err.message}`
         return
     } finally {
-        storeButton.classList.remove('disabled')
-        storeButton.querySelector('.icon').classList.remove('loading')
+        storeButton.parentElement.removeChild(storeButton)
     }
     const successMessage = document.getElementById('successMessage')
     successMessage.classList.remove('hidden')
