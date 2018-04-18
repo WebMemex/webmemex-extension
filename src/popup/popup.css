@@ -43,3 +43,17 @@
 .disabled .disabledContent {
     display: unset;
 }
+
+#snapshotList {
+    list-style: none;
+    padding-left: 0;
+}
+
+#snapshotList li {
+    padding: 0.3em;
+}
+
+.faint {
+    color: gray;
+    font-style: italic;
+}

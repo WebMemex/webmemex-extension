@@ -1,8 +1,38 @@
 import { remoteFunction } from 'src/util/webextensionRPC'
 import { hrefForLocalPage } from 'src/local-page'
-
+import { findPagesByUrl } from 'src/search/find-pages'
+import { getTimestamp } from 'src/activity-logger'
+import niceTime from 'src/util/nice-time'
 
 const logActivePageVisit = remoteFunction('logActivePageVisit')
+
+async function showSnapshots() {
+    const url = (await browser.tabs.query({active: true, currentWindow: true}))[0].url
+    const pagesResult = await findPagesByUrl({url})
+    const listEl = document.getElementById('snapshotList')
+    const lis = pagesResult.rows.map(row => {
+        const page = row.doc
+        const li = document.createElement('li')
+        const a = document.createElement('a')
+        a.innerText = niceTime(getTimestamp(page))
+        a.target = '_new'
+        a.href = hrefForLocalPage({page})
+        li.append(a)
+        return li
+    })
+    while (listEl.firstChild) {
+        listEl.removeChild(listEl.firstChild)
+    }
+    if (lis.length > 0) {
+        lis.forEach(li => listEl.insertBefore(li, listEl.firstChild))
+    } else {
+        const li = document.createElement('li')
+        li.classList.add('faint')
+        li.innerText = 'None yet.'
+        listEl.append(li)
+    }
+}
+showSnapshots()
 
 async function storeThisPage() {
     storeButton.classList.add('disabled')
@@ -31,6 +61,7 @@ async function storeThisPage() {
         snapshotLink.setAttribute('href', href)
         snapshotLink.classList.remove('hidden')
     }
+    await showSnapshots()
 }
 
 const storeButton = document.getElementById('storeButton')
