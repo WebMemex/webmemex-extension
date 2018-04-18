@@ -4,14 +4,10 @@
 <link rel="stylesheet" href="/popup/popup.css" />
 
 <div class="ui attached vertical fluid borderless menu">
-    <div class="title">
-        <img src="/assets/webmemex-32.png"/>
-        <span>WebMemex</span>
-    </div>
     <div class="item">
         <div id="storeButton" class="ui fluid primary button">
             <i class="camera icon"></i>
-            <span class="enabledContent">Store this page</span>
+            <span class="enabledContent">Snapshot this page</span>
             <span class="disabledContent">Taking snapshot...</span>
         </div>
         <div id="errorMessage" class="ui compact warning icon hidden message">
@@ -20,19 +16,20 @@
         </div>
         <div id="successMessage" class="ui compact success icon hidden message">
             <i class="check icon"></i>
-            <div id="successMessageContent" class="content">Stored <a id="snapshotLink" href="" target="_new" class="hidden">(view snapshot)</a></div>
+            <div id="successMessageContent" class="content">Stored. <a id="snapshotLink" href="" target="_new" class="hidden">view snapshot</a></div>
         </div>
     </div>
     <div class="item">
-        Your snapshots of this page:
+        Your previous snapshots of this page:
         <ul id="snapshotList">
           <li class="faint">loading...</li>
         </ul>
     </div>
+    <div class="ui divider"></div>
     <div class="item">
-        <div id="overviewButton" class="ui fluid primary button">
+        <div id="overviewButton" class="ui fluid button">
             <i class="list layout icon"></i>
-            Browse all snapshots
+            See all your snapshots
         </div>
     </div>
     <div class="item">
