@@ -1,38 +1,70 @@
-import { getAttachmentAsDataUrl } from 'src/pouchdb'
 import { remoteFunction } from 'src/util/webextensionRPC'
 import { hrefForLocalPage } from 'src/local-page'
-
+import { findPagesByUrl } from 'src/search/find-pages'
+import { getTimestamp } from 'src/activity-logger'
+import niceTime from 'src/util/nice-time'
 
 const logActivePageVisit = remoteFunction('logActivePageVisit')
 
-const screenshotImg = document.getElementById('screenshotImg')
-const screenshotLink = document.getElementById('screenshotLink')
-const screenshotDimmer = document.getElementById('screenshotDimmer')
+async function showSnapshots() {
+    const url = (await browser.tabs.query({active: true, currentWindow: true}))[0].url
+    const pagesResult = await findPagesByUrl({url})
+    const listEl = document.getElementById('snapshotList')
+    const lis = pagesResult.rows.map(row => {
+        const page = row.doc
+        const li = document.createElement('li')
+        const a = document.createElement('a')
+        a.innerText = niceTime(getTimestamp(page))
+        a.target = '_new'
+        a.href = hrefForLocalPage({page})
+        li.append(a)
+        return li
+    })
+    while (listEl.firstChild) {
+        listEl.removeChild(listEl.firstChild)
+    }
+    if (lis.length > 0) {
+        lis.forEach(li => listEl.insertBefore(li, listEl.firstChild))
+    } else {
+        const li = document.createElement('li')
+        li.classList.add('faint')
+        li.innerText = 'None yet.'
+        listEl.append(li)
+    }
+}
+showSnapshots()
 
 async function storeThisPage() {
-    screenshotDimmer.classList.add('active')
+    storeButton.classList.add('disabled')
+    storeButton.querySelector('.icon').classList.add('loading')
+
     let page
     try {
         const { page: page_ } = await logActivePageVisit()
         page = page_
     } catch (err) {
+        const errorMessage = document.getElementById('errorMessage')
+        errorMessage.classList.remove('hidden')
         const errorMessageContent = document.getElementById('errorMessageContent')
-        const errorMessageDimmer = document.getElementById('errorMessageDimmer')
         errorMessageContent.innerText = `Error: ${err && err.message}`
-        errorMessageDimmer.classList.add('active')
         return
     } finally {
-        screenshotDimmer.classList.remove('active')
+        storeButton.parentElement.removeChild(storeButton)
     }
-    const imgData = await getAttachmentAsDataUrl({doc: page, attachmentId: 'screenshot'})
-    screenshotImg.src = imgData
+    const successMessage = document.getElementById('successMessage')
+    successMessage.classList.remove('hidden')
+
     const href = hrefForLocalPage({page})
     if (href) {
-        screenshotLink.setAttribute('href', href)
+        const snapshotLink = document.getElementById('snapshotLink')
+        snapshotLink.setAttribute('href', href)
+        snapshotLink.classList.remove('hidden')
     }
+    await showSnapshots()
 }
-// Store this page directly.
-storeThisPage()
+
+const storeButton = document.getElementById('storeButton')
+storeButton.onclick = storeThisPage
 
 const overviewButton = document.getElementById('overviewButton')
 overviewButton.onclick = async () => {

@@ -1,75 +1,35 @@
 <meta charset="utf-8" />
 <title>WebMemex popup menu</title>
 <link rel="stylesheet" href="/lib/semantic-ui/semantic.min.css" />
-<style>
-    .title {
-        margin-bottom: 1rem;
-        padding: 0.5rem;
-        background-color: whitesmoke;
-        border-bottom: 1px solid #e3e3e3;
-        text-align: center;
-    }
-    .title img {
-        margin-right: 0.5rem;
-    }
-    .title span {
-        position: relative;
-        top: -8px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #444;
-    }
-    .ui.image.scaleToFit {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .ui.image.scaleToFit img {
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-    }
-    #screenshotLink {
-        height: 150px;
-    }
-    .ui.warning.message {
-        width: 92%;
-        margin-right: 1rem;
-        margin-left: 1rem;
-    }
-</style>
+<link rel="stylesheet" href="/popup/popup.css" />
 
-<div class="ui attached vertical fluid menu">
-    <div class="title">
-        <img src="/assets/webmemex-32.png"/>
-        <span>WebMemex</span>
-    </div>
+<div class="ui attached vertical fluid borderless menu">
     <div class="item">
-        <a id="screenshotLink" class="ui image scaleToFit" target="_new">
-            <img id="screenshotImg" src="" />
-        </a>
-        <div id="screenshotDimmer" class="ui inverted dimmer">
-            <div class="content">
-                <div class="center">
-                    <h2 class="ui icon header">
-                        <i class="camera loading icon"></i>
-                        Storing page...
-                    </h2>
-                </div>
-            </div>
+        <div id="storeButton" class="ui fluid primary button">
+            <i class="camera icon"></i>
+            <span class="enabledContent">Snapshot this page</span>
+            <span class="disabledContent">Taking snapshot...</span>
         </div>
-        <div id="errorMessageDimmer" class="ui inverted dimmer">
-            <div id="errorMessage" class="ui compact warning icon message">
-                <i class="warning icon"></i>
-                <div id="errorMessageContent" class="content"></div>
-            </div>
+        <div id="errorMessage" class="ui compact warning icon hidden message">
+            <i class="warning icon"></i>
+            <div id="errorMessageContent" class="content"></div>
+        </div>
+        <div id="successMessage" class="ui compact success icon hidden message">
+            <i class="check icon"></i>
+            <div id="successMessageContent" class="content">Stored. <a id="snapshotLink" href="" target="_new" class="hidden">view snapshot</a></div>
         </div>
     </div>
     <div class="item">
-        <div id="overviewButton" class="ui fluid primary button">
+        Your previous snapshots of this page:
+        <ul id="snapshotList">
+          <li class="faint">loading...</li>
+        </ul>
+    </div>
+    <div class="ui divider"></div>
+    <div class="item">
+        <div id="overviewButton" class="ui fluid button">
             <i class="list layout icon"></i>
-            Browse snapshots
+            See all your snapshots
         </div>
     </div>
     <div class="item">
