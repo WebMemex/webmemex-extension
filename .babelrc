@@ -1,9 +1,14 @@
 {
-  "plugins": [
-      "transform-regenerator",
-      ["transform-runtime", {
-          "polyfill": false
-      }]
-  ],
-  "presets": ["es2015", "stage-1", "react"]
+  "presets": [
+    "react",
+    "stage-3",
+    ["env", {
+      "targets": {
+        "browsers": [
+          "last 2 Firefox versions",
+          "last 2 Chrome versions"
+        ]
+      }
+    }]
+  ]
 }

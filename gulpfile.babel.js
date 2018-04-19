@@ -1,4 +1,3 @@
-import 'core-js/fn/object/entries' // shim Object.entries
 import fs from 'fs'
 import path from 'path'
 import { exec as execCb } from 'child_process'

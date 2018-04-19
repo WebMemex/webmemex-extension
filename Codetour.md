@@ -93,7 +93,7 @@ could perhaps be packaged and published as an NPM module some day.
 
 ### `...`: other stuff
 
-The build process is a `Makefile`, that runs `yarn` and some `npm` commands specified in
+The build process is a `Makefile`, that runs some `npm` commands specified in
 `package.json`, which in turn start the corresponding tasks in
 `gulpfile.babel.js` (transpiled by settings in `.babelrc`). All lurking there
 so you only have to type `make` to get things running.

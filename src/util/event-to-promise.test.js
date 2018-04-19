@@ -1,7 +1,6 @@
 /* eslint-env jest */
 /* eslint-disable promise/catch-or-return */
 
-import 'core-js/fn/object/entries' // shim Object.entries
 import pull from 'lodash/pull'
 
 import eventToPromise from './event-to-promise'

@@ -56,7 +56,7 @@ this personal web based on [React]+[Redux].
 ### Build and run it
 
 1. Clone this repo.
-2. Get [Node/NPM] and [yarn] (`npm install -g yarn`).
+2. Get [Node/NPM]≥7.
 3. Run `make` to install dependencies and compile the source files.
 4. Load it in Firefox or Chromium/Chrome:
     * In Firefox (≥49): run `npm run firefox` (or run [web-ext] directly for more control).
@@ -81,5 +81,4 @@ automatically. Otherwise, manually press the reload button in the extension list
 [React]: https://facebook.github.io/react/
 [Redux]: http://redux.js.org/
 [Node/NPM]: https://nodejs.org
-[yarn]: https://yarnpkg.com
 [web-ext]: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_run

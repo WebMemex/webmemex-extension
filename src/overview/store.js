@@ -1,4 +1,3 @@
-import 'core-js/fn/object/values' // shim Object.values for Chromium<54
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import thunk from 'redux-thunk'
