@@ -6,7 +6,7 @@ import { Button, Checkbox, Divider, Header, Icon, List, Menu, Message } from 'se
 
 import { hrefForLocalPage } from 'src/local-page'
 import { findPagesByUrl } from 'src/search/find-pages'
-import { getTimestamp } from 'src/activity-logger'
+import { isLoggable, getTimestamp } from 'src/activity-logger'
 import { downloadPage } from 'src/page-storage/download-page'
 import niceTime from 'src/util/nice-time'
 import { remoteFunction } from 'src/util/webextensionRPC'
@@ -60,7 +60,7 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        this.getPreviousSnapshots()
+        this.getPreviousSnapshots(this.props.url)
         this.loadSettings()
     }
 
@@ -86,8 +86,7 @@ class Main extends React.Component {
         }))
     }
 
-    async getPreviousSnapshots() {
-        const url = (await browser.tabs.query({active: true, currentWindow: true}))[0].url
+    async getPreviousSnapshots(url) {
         const pagesResult = await findPagesByUrl({url})
         const previousSnapshots = pagesResult.rows.map(row => row.doc)
         previousSnapshots.reverse() // sorts most recent first
@@ -119,6 +118,8 @@ class Main extends React.Component {
     }
 
     render() {
+        const { url } = this.props
+
         const {
             snapshotState,
             snapshottedPage,
@@ -127,59 +128,72 @@ class Main extends React.Component {
             loggingEnabled,
         } = this.state
 
+        const snapshottable = isLoggable({url})
+
         return (
             <Menu vertical fluid borderless>
-                <Menu.Item>
-                    {snapshotState === 'initial' && (
-                        <Button fluid primary onClick={this.storeThisPage}>
-                            <Icon name='camera' />
-                            Snapshot this page
-                        </Button>
-                    )}
-                    {snapshotState === 'shooting' && (
-                        <Button fluid primary disabled>
-                            <Icon name='camera' loading />
-                            Taking snapshot...
-                        </Button>
-                    )}
-                    {snapshotState === 'success' && (
-                        <Button
-                            fluid
-                            positive
-                            href={hrefForLocalPage({page: snapshottedPage})}
-                            target='_blank'
-                            title='View the snapshot'
-                        >
-                            <Icon name='check' />
-                            Stored.
-                        </Button>
-                    )}
-                    {snapshotState === 'error' && (
-                        <Message error>
-                            <Icon name='warning' />
-                            {errorMessage}
-                        </Message>
-                    )}
-                </Menu.Item>
-                <Menu.Item>
-                    <Header size='tiny'>
-                        Your previous snapshots of this page:
-                    </Header>
-                    <List divided relaxed verticalAlign='middle'>
-                        {previousSnapshots === undefined
-                            ? <List.Item className='faint'>digging..</List.Item>
-                            : previousSnapshots.length === 0
-                                ? <List.Item className='faint'>No snapshots yet</List.Item>
-                                : previousSnapshots.map(page => (
-                                    <PageAsListItem
-                                        key={page._id}
-                                        page={page}
-                                        highlight={page === snapshottedPage}
-                                    />
-                                ))
-                        }
-                    </List>
-                </Menu.Item>
+                {snapshottable && (
+                    <Menu.Item>
+                        {snapshotState === 'initial' && (
+                            <Button fluid primary onClick={this.storeThisPage}>
+                                <Icon name='camera' />
+                                Snapshot this page
+                            </Button>
+                        )}
+                        {snapshotState === 'shooting' && (
+                            <Button fluid primary disabled>
+                                <Icon name='camera' loading />
+                                Taking snapshot...
+                            </Button>
+                        )}
+                        {snapshotState === 'success' && (
+                            <Button
+                                fluid
+                                positive
+                                href={hrefForLocalPage({page: snapshottedPage})}
+                                target='_blank'
+                                title='View the snapshot'
+                            >
+                                <Icon name='check' />
+                                Stored.
+                            </Button>
+                        )}
+                        {snapshotState === 'error' && (
+                            <Message error>
+                                <Icon name='warning' />
+                                {errorMessage}
+                            </Message>
+                        )}
+                    </Menu.Item>
+                )}
+                {snapshottable && (
+                    <Menu.Item>
+                        <Header size='tiny'>
+                            Your previous snapshots of this page:
+                        </Header>
+                        <List divided relaxed verticalAlign='middle'>
+                            {previousSnapshots === undefined
+                                ? <List.Item className='faint'>digging..</List.Item>
+                                : previousSnapshots.length === 0
+                                    ? <List.Item className='faint'>No snapshots yet</List.Item>
+                                    : previousSnapshots.map(page => (
+                                        <PageAsListItem
+                                            key={page._id}
+                                            page={page}
+                                            highlight={page === snapshottedPage}
+                                        />
+                                    ))
+                            }
+                        </List>
+                    </Menu.Item>
+                )}
+                {!snapshottable && (
+                    <Menu.Item style={{textAlign: 'center'}}>
+                        <em className='faint'>
+                            Cannot snapshot this page.
+                        </em>
+                    </Menu.Item>
+                )}
                 <Divider />
                 <Menu.Item>
                     <Button fluid onClick={this.openOverview}>
@@ -206,7 +220,17 @@ class Main extends React.Component {
     }
 }
 
-ReactDOM.render(
-    <Main />,
-    document.getElementById('app')
-)
+Main.propTypes = {
+    url: PropTypes.string,
+}
+
+
+async function main() {
+    const url = (await browser.tabs.query({active: true, currentWindow: true}))[0].url
+
+    ReactDOM.render(
+        <Main url={url} />,
+        document.getElementById('app')
+    )
+}
+main()
