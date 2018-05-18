@@ -36,6 +36,8 @@ async function showPage(pageId) {
             <Image
                 title='WebMemex'
                 src='assets/webmemex-32.png'
+                as='a'
+                href='/overview.html'
                 wrapped />
             <span id='description'>
                 <Icon name='camera' />
