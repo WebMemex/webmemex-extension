@@ -52,7 +52,7 @@ const sourceFiles = [
     'content_script.js',
     'overview/overview.jsx',
     'local-page/local-page.jsx',
-    'popup/popup.js',
+    'popup/popup.jsx',
 ]
 
 const browserifySettings = {
