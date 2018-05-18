@@ -80,6 +80,8 @@ export default async function tryDedupePage({
 
     // Choose the action to take.
     if (
+        // FIXME Turn off deduplication for now. It is more complex than it seems worth.
+        false && // eslint-disable-line
         sameness >= Sameness.EXACTLY
         && !candidatePage.protected
         // Even if they seem to represent the same content, ensure we don't delete a better copy.
