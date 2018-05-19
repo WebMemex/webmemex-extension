@@ -11,7 +11,6 @@ import { default as runSequenceCb } from 'run-sequence'
 import identity from 'gulp-identity'
 import source from 'vinyl-source-stream'
 import buffer from 'vinyl-buffer'
-import uglify from 'gulp-uglify'
 import eslint from 'gulp-eslint'
 import stylelint from 'gulp-stylelint'
 import browserify from 'browserify'
@@ -20,7 +19,10 @@ import babelify from 'babelify'
 import envify from 'loose-envify/custom'
 import cssModulesify from 'css-modulesify'
 import cssnext from 'postcss-cssnext'
+import uglifyjs from 'uglify-es'
+import uglifyComposer from 'gulp-uglify/composer'
 
+const uglify = uglifyComposer(uglifyjs, console);
 
 // Promisify callback-based apis.
 const runSequence = pify(runSequenceCb)
