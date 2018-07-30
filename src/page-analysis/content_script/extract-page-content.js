@@ -1,5 +1,5 @@
 import pick from 'lodash/fp/pick'
-import { getMetadata, metadataRules } from 'page-metadata-parser'
+import { getMetadata, metadataRuleSets } from 'page-metadata-parser'
 
 import extractPdfContent from './extract-pdf-content'
 
@@ -20,10 +20,10 @@ export default async function extractPageContent({
 
     // Metadata of web page
     const selectedMetadataRules = {
-        canonicalUrl: metadataRules.url,
-        title: metadataRules.title,
-        keywords: metadataRules.keywords,
-        description: metadataRules.description,
+        canonicalUrl: metadataRuleSets.url,
+        title: metadataRuleSets.title,
+        keywords: metadataRuleSets.keywords,
+        description: metadataRuleSets.description,
     }
     const metadata = getMetadata(doc, url, selectedMetadataRules)
 

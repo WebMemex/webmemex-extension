@@ -30,7 +30,7 @@
     "history": "^4.6.3",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "page-metadata-parser": "git+https://github.com/Treora/page-metadata-parser.git#npm-testable",
+    "page-metadata-parser": "^1.1.2",
     "pdfjs-dist": "^1.10.97",
     "pouchdb-browser": "^6.4.3",
     "pouchdb-find": "^6.4.3",
