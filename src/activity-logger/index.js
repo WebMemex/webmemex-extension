@@ -28,9 +28,3 @@ export function isLoggable({url}) {
     const loggableUrlPattern = /^https?:\/\//
     return loggableUrlPattern.test(url)
 }
-
-export function shouldBeLogged({url}) {
-    // Currently, we log everything that we think we can log.
-    // TODO Add ignore-/blacklist lookup here (issue #22, #94)
-    return isLoggable({url})
-}

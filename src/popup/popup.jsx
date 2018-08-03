@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Button, Checkbox, Divider, Header, Icon, List, Menu, Message } from 'semantic-ui-react'
+import { Button, Divider, Header, Icon, List, Menu, Message } from 'semantic-ui-react'
 
 import { hrefForLocalPage } from 'src/local-page'
 import { findPagesByUrl } from 'src/search/find-pages'
@@ -52,7 +52,6 @@ class Main extends React.Component {
         super(props)
         this.storeThisPage = this.storeThisPage.bind(this)
         this.openOverview = this.openOverview.bind(this)
-        this.toggleLoggingEnabled = this.toggleLoggingEnabled.bind(this)
 
         this.state = {
             snapshotState: 'initial',
@@ -61,7 +60,6 @@ class Main extends React.Component {
 
     componentDidMount() {
         this.getPreviousSnapshots(this.props.url)
-        this.loadSettings()
     }
 
     async storeThisPage() {
@@ -102,21 +100,6 @@ class Main extends React.Component {
         window.close()
     }
 
-    async loadSettings() {
-        // Load initial checkbox value from storage
-        // (note that we do not keep this value in sync bidirectionally; should be okay for a popup)
-        const { loggingEnabled } = await browser.storage.local.get('loggingEnabled')
-        this.setState({
-            loggingEnabled,
-        })
-    }
-
-    async toggleLoggingEnabled(event, { checked }) {
-        await browser.storage.local.set({ loggingEnabled: checked })
-        // refresh the UI.
-        await this.loadSettings()
-    }
-
     render() {
         const { url } = this.props
 
@@ -125,7 +108,6 @@ class Main extends React.Component {
             snapshottedPage,
             errorMessage,
             previousSnapshots,
-            loggingEnabled,
         } = this.state
 
         const snapshottable = isLoggable({url})
@@ -200,20 +182,6 @@ class Main extends React.Component {
                         <Icon name='list layout' />
                         See all your snapshots
                     </Button>
-                </Menu.Item>
-                <Menu.Item>
-                    {loggingEnabled !== undefined && (
-                        <Checkbox
-                            checked={loggingEnabled}
-                            toggle
-                            label={(
-                                <label>
-                                    Store <em>every</em> visited webpage <em>(experimental)</em>
-                                </label>
-                            )}
-                            onChange={this.toggleLoggingEnabled}
-                        />
-                    )}
                 </Menu.Item>
             </Menu>
         )
