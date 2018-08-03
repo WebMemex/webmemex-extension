@@ -6,14 +6,19 @@ import { Button, Divider, Header, Icon, List, Menu, Message } from 'semantic-ui-
 
 import { hrefForLocalPage } from 'src/local-page'
 import { findPagesByUrl } from 'src/search/find-pages'
-import { isLoggable, getTimestamp } from 'src/activity-logger'
+import { getTimestamp } from 'src/page-storage'
 import { downloadPage } from 'src/page-storage/download-page'
 import niceTime from 'src/util/nice-time'
 import { remoteFunction } from 'src/util/webextensionRPC'
 
+const storeActivePage = remoteFunction('storeActivePage')
 
-const logActivePageVisit = remoteFunction('logActivePageVisit')
-
+// Heuristic to decide whether a page can be stored.
+function isStorable({url}) {
+    // Only http(s) pages for now. Ignoring data URLs, newtab, ...
+    const storableUrlPattern = /^https?:\/\//
+    return storableUrlPattern.test(url)
+}
 
 const PageAsListItem = ({ page, highlight }) => {
     return (
@@ -67,7 +72,7 @@ class Main extends React.Component {
 
         let page
         try {
-            const { page: page_ } = await logActivePageVisit()
+            const { page: page_ } = await storeActivePage()
             page = page_
         } catch (err) {
             this.setState({
@@ -110,7 +115,7 @@ class Main extends React.Component {
             previousSnapshots,
         } = this.state
 
-        const snapshottable = isLoggable({url})
+        const snapshottable = isStorable({url})
 
         return (
             <Menu vertical fluid borderless>

@@ -1,7 +1,6 @@
 :root {
     --height: 100px;
     --vertical-spacing: 15px;
-    --compact-scale: 0.6;
 }
 
 .root,
@@ -44,24 +43,6 @@
 /* List entries for which no stored version is available */
 .root:not(.available) > * {
     opacity: 0.5;
-}
-
-/* List entries shown as context around a search result */
-.root.compact {
-    transform: scale(0.6);
-    transform-origin: top;
-
-    /* Compensate margin for scale reduction. */
-    margin-bottom: calc((var(--compact-scale) - 1) * var(--height));
-
-    & > * {
-        opacity: 0.7;
-    }
-
-    &:hover,
-    &:focus > * {
-        opacity: 1;
-    }
 }
 
 .screenshotContainer {

@@ -1,85 +1,44 @@
-import get from 'lodash/fp/get'
 import update from 'lodash/fp/update'
 
-import db, { normaliseFindResult, resultRowsById, keyRangeForPrefix } from 'src/pouchdb'
-import { pageKeyPrefix } from 'src/page-storage'
+import db, { normaliseFindResult, keyRangeForPrefix } from 'src/pouchdb'
+import { pageKeyPrefix, convertPageDocId } from 'src/page-storage'
 import { revisePageFields } from 'src/page-analysis'
-import { getAllNodes } from 'src/util/tree-walker'
-
-
-// Resolve redirects from (deduplicated) pages, replacing them in the results.
-// XXX: We only replace the row.doc, and not row.id, row.key, nor row.value.
-async function resolveRedirects(pagesResult) {
-    // Get the targets of all docs' 'seeInstead' links.
-    const targetPageIds = pagesResult.rows.map(get('doc.seeInstead._id'))
-        .filter(x => x)
-
-    // If these pages contain no redirects, easy job for us.
-    if (targetPageIds.length === 0) return pagesResult
-
-    // Fetch the targeted pages.
-    // Note that multi-step redirections are resolved recursively here.
-    // XXX: a cycle of redirections would kill us.
-    const targetPagesResult = await getPages({
-        pageIds: targetPageIds,
-        followRedirects: true,
-    })
-
-    // Replace each page doc with its redirection target (if it had any).
-    const targetRowsById = resultRowsById(targetPagesResult)
-    const resolvedPagesResult = update('rows', rows => rows.map(
-        update('doc', doc => (!doc.seeInstead)
-            // Leave pages without a 'seeInstead' redirection link untouched...
-            ? doc
-            // ...and replace the contents of the others with the correct page.
-            : {...targetRowsById[doc.seeInstead._id].doc}
-        )
-    ))(pagesResult)
-
-    return resolvedPagesResult
-}
 
 // Post-process result list after any retrieval of pages from the database.
-async function postprocessPagesResult({pagesResult, followRedirects}) {
+async function postprocessPagesResult({ pagesResult }) {
     // Let the page analysis module augment or revise the document attributes.
     pagesResult = update('rows', rows => rows.map(
-        // We can skip those pages that will replaced by a redirect anyway.
-        update('doc', doc => doc.seeInstead ? doc : revisePageFields(doc))
+        update('doc', doc => revisePageFields(doc))
     ))(pagesResult)
-
-    if (followRedirects) {
-        // Resolve pages that redirect to other pages.
-        pagesResult = await resolveRedirects(pagesResult)
-    }
 
     return pagesResult
 }
 
-export async function getPage({pageId, ...otherOptions}) {
-    const pagesResult = await getPages({pageIds: [pageId], ...otherOptions})
+export async function getPage({ pageId }) {
+    const pagesResult = await getPages({ pageIds: [pageId] })
     return pagesResult.rows[0].doc
 }
 
 // Get all pages for a given array of page ids
-export async function getPages({pageIds, ...otherOptions}) {
+export async function getPages({ pageIds }) {
     let pagesResult = await db.allDocs({
         keys: pageIds,
         include_docs: true,
     })
-    pagesResult = await postprocessPagesResult({...otherOptions, pagesResult})
+    pagesResult = await postprocessPagesResult({ pagesResult })
     return pagesResult
 }
 
-export async function getAllPages({...otherOptions}) {
+export async function getAllPages() {
     let pagesResult = await db.allDocs({
         ...keyRangeForPrefix(pageKeyPrefix),
         include_docs: true,
     })
-    pagesResult = await postprocessPagesResult({...otherOptions, pagesResult})
+    pagesResult = await postprocessPagesResult({ pagesResult })
     return pagesResult
 }
 
-export async function findPagesByUrl({url, ...otherOptions}) {
+export async function findPagesByUrl({ url }) {
     const findResult = await db.find({
         selector: {
             _id: { $gte: pageKeyPrefix, $lte: `${pageKeyPrefix}\uffff` },
@@ -87,38 +46,39 @@ export async function findPagesByUrl({url, ...otherOptions}) {
         },
     })
     let pagesResult = normaliseFindResult(findResult)
-    pagesResult = await postprocessPagesResult({...otherOptions, pagesResult})
+    pagesResult = await postprocessPagesResult({ pagesResult })
     return pagesResult
 }
 
-// Find all pages that are (indirectly) connected through 'seeInstead' links.
-export async function getEquivalentPages({pageId}) {
-    const page = await db.get(pageId)
-    // The pages connected by redirects form a tree we can walk through.
-    const pageRedirectionTreeWalker = {
-        getParent: getPageRedirectTarget,
-        getChildren: getRedirectersToPage,
-    }
-    const equivalentPages = await getAllNodes(pageRedirectionTreeWalker)(page)
-    // Shape the list of pages like a PouchDB result object.
-    const result = normaliseFindResult({docs: equivalentPages})
-    return result
-}
-
-async function getPageRedirectTarget(page) {
-    if (page.seeInstead && page.seeInstead._id) {
-        const parent = await db.get(page.seeInstead._id)
-        return parent
-    } else {
-        return undefined
-    }
-}
-
-async function getRedirectersToPage(page) {
-    const findResult = await db.find({
-        selector: {
-            'seeInstead._id': page._id,
+// Find pages in the given date range (and/or up to the given limit), sorted by time (descending).
+export async function findPagesByDate({ startDate, endDate, limit, skipUntil }) {
+    let selector = {
+        // Constrain by id (like with startkey/endkey), both to get only the
+        // page docs, and (if needed) to filter the pages after/before a
+        // given timestamp (this compares timestamps lexically, which only
+        // works while they are of the same length, so we should fix this by
+        // 2286).
+        _id: {
+            $gte: startDate !== undefined
+                ? convertPageDocId({ timestamp: startDate })
+                : pageKeyPrefix,
+            $lte: endDate !== undefined
+                ? convertPageDocId({ timestamp: endDate })
+                : `${pageKeyPrefix}\uffff`,
+            $lt: skipUntil,
         },
+    }
+
+    let findResult = await db.find({
+        selector,
+        // Sort them by time, newest first
+        sort: [{ '_id': 'desc' }],
+        // limit, // XXX pouchdb-find seems to mess up when passing a limit...
     })
-    return findResult.docs
+    // ...so we apply the limit ourselves.
+    findResult = update('docs', docs => docs.slice(0, limit))(findResult)
+
+    let pagesResult = normaliseFindResult(findResult)
+    pagesResult = await postprocessPagesResult({ pagesResult })
+    return pagesResult
 }

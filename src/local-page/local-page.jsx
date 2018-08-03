@@ -6,7 +6,7 @@ import { blobToArrayBuffer } from 'blob-util'
 import db from 'src/pouchdb'
 import { downloadPage } from 'src/page-storage/download-page'
 import { getPage } from 'src/search/find-pages'
-import { getTimestamp } from 'src/activity-logger'
+import { getTimestamp } from 'src/page-storage'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
@@ -14,14 +14,7 @@ import ContentFrame from './ContentFrame'
 
 
 async function showPage(pageId) {
-    const page = await getPage({pageId, followRedirects: true})
-    if (page._id !== pageId) {
-        // Apparently getPage followed one or more redirects. Reload the viewer
-        // with the resolved page's id in the ?page query.
-        const location = new URL(window.location)
-        location.searchParams.set('page', page._id)
-        window.location = location
-    }
+    const page = await getPage({ pageId })
     const timestamp = getTimestamp(page)
 
     // Read the html file from the database.

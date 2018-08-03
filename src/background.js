@@ -80,5 +80,5 @@ browser.commands.onCommand.addListener(command => {
 
 // Run scripts that set their own event listeners.
 /* eslint-disable import/first */
-import 'src/activity-logger/background'
+import 'src/page-storage/background'
 import 'src/omnibar'

@@ -12,3 +12,5 @@ export function generatePageDocId({timestamp, nonce} = {}) {
         nonce: nonce || randomString(),
     })
 }
+
+export const getTimestamp = doc => Number.parseInt(convertPageDocId(doc._id).timestamp)

@@ -5,8 +5,9 @@ import classNames from 'classnames'
 
 import { makeNonlinearTransform } from 'src/util/make-range-transform'
 import { niceDate } from 'src/util/nice-time'
+import { getTimestamp } from 'src/page-storage'
 
-import VisitAsListItem from './VisitAsListItem'
+import PageAsListItem from './PageAsListItem'
 import LoadingIndicator from './LoadingIndicator'
 import styles from './ResultList.css'
 
@@ -31,8 +32,8 @@ function computeRowGaps({searchResult}) {
     return searchResult.rows.map((row, rowIndex) => {
         // Space between two rows depends on the time between them.
         const prevRow = searchResult.rows[rowIndex - 1]
-        const prevTimestamp = prevRow ? prevRow.doc.visitStart : new Date()
-        const timestamp = row.doc.visitStart
+        const prevTimestamp = prevRow ? getTimestamp(prevRow.doc) : new Date()
+        const timestamp = getTimestamp(row.doc)
 
         let spaceGap = 0
         let showConnection = false
@@ -86,7 +87,7 @@ const ResultList = ({
         const timestampComponent = dateStringToShow && (
             <time
                 className={styles.timestamp}
-                dateTime={new Date(row.doc.visitStart)}
+                dateTime={new Date(getTimestamp(row.doc))}
                 style={{
                     height: 16,
                     fontSize: 16,
@@ -108,8 +109,7 @@ const ResultList = ({
             >
                 <div>
                     {timestampComponent}
-                    <VisitAsListItem
-                        compact={row.isContextualResult}
+                    <PageAsListItem
                         doc={row.doc}
                     />
                 </div>

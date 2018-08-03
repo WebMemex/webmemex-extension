@@ -7,32 +7,32 @@ import classNames from 'classnames'
 
 import { hrefForLocalPage } from 'src/local-page'
 import niceTime from 'src/util/nice-time'
+import { getTimestamp } from 'src/page-storage'
 
 import ImgFromPouch from './ImgFromPouch'
-import styles from './VisitAsListItem.css'
-import { deleteVisit } from '../actions'
+import styles from './PageAsListItem.css'
+import { deletePage } from '../actions'
 
 
-const VisitAsListItem = ({doc, compact, onTrashButtonClick}) => {
-    const href = hrefForLocalPage({page: doc.page})
+const PageAsListItem = ({ doc, onTrashButtonClick }) => {
+    const href = hrefForLocalPage({ page: doc })
 
-    const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc.page)
+    const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc)
     const sizeInMB = pageSize !== undefined
         ? Math.round(pageSize / 1024**2 * 10) / 10
         : 0
 
-    const visitClasses = classNames({
+    const classes = classNames({
         [styles.root]: true,
-        [styles.compact]: compact,
         [styles.available]: !!href,
     })
 
-    const hasFavIcon = !!(doc.page._attachments && doc.page._attachments.favIcon)
+    const hasFavIcon = !!(doc._attachments && doc._attachments.favIcon)
     const favIcon = hasFavIcon
         ? (
             <ImgFromPouch
                 className={styles.favIcon}
-                doc={doc.page}
+                doc={doc}
                 attachmentId='favIcon'
             />
         )
@@ -66,17 +66,17 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick}) => {
         <a
             href={href}
             title={href ? undefined : `Page not available. Perhaps storing failed?`}
-            className={visitClasses}
+            className={classes}
             // DEBUG Show document props on ctrl+meta+click
             onClick={e => { if (e.metaKey && e.ctrlKey) { console.log(doc); e.preventDefault() } }}
             onKeyPress={e => { if (e.key==='Delete') { onTrashButtonClick() } }}
         >
             <div className={styles.screenshotContainer}>
-                {doc.page._attachments && doc.page._attachments.screenshot
+                {doc._attachments && doc._attachments.screenshot
                     ? (
                         <ImgFromPouch
                             className={styles.screenshot}
-                            doc={doc.page}
+                            doc={doc}
                             attachmentId='screenshot'
                         />
                     )
@@ -88,13 +88,13 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick}) => {
                     className={styles.title}
                 >
                     {hasFavIcon && favIcon}
-                    <span title={doc.page.title}>
-                        {doc.page.title}
+                    <span title={doc.title}>
+                        {doc.title}
                     </span>
                 </div>
                 <div className={styles.url}>
                     <a
-                        href={doc.page.url}
+                        href={doc.url}
                         target='_blank'
                         title='Visit original location'
                     >
@@ -103,9 +103,9 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick}) => {
                             link
                         />
                     </a>
-                    <span>{doc.page.url}</span>
+                    <span>{doc.url}</span>
                 </div>
-                <div className={styles.time}>{niceTime(doc.visitStart)}</div>
+                <div className={styles.time}>{niceTime(getTimestamp(doc))}</div>
             </div>
             <div className={styles.buttonsContainer}>
                 {deleteButton}
@@ -114,17 +114,16 @@ const VisitAsListItem = ({doc, compact, onTrashButtonClick}) => {
     )
 }
 
-VisitAsListItem.propTypes = {
+PageAsListItem.propTypes = {
     doc: PropTypes.object.isRequired,
-    compact: PropTypes.bool,
     onTrashButtonClick: PropTypes.func,
 }
 
 
 const mapStateToProps = state => ({})
 
-const mapDispatchToProps = (dispatch, {doc}) => ({
-    onTrashButtonClick: () => dispatch(deleteVisit({visitId: doc._id})),
+const mapDispatchToProps = (dispatch, { doc }) => ({
+    onTrashButtonClick: () => dispatch(deletePage({ page: doc })),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(VisitAsListItem)
+export default connect(mapStateToProps, mapDispatchToProps)(PageAsListItem)

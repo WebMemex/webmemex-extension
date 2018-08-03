@@ -1,8 +1,8 @@
 import get from 'lodash/fp/get'
 
 import db from 'src/pouchdb'
-import { getTimestamp } from 'src/activity-logger'
-import { getPage, getAllPages } from 'src/search/find-pages'
+import { getTimestamp } from 'src/page-storage'
+import { getAllPages } from 'src/search/find-pages'
 
 export async function downloadAllPages({folder} = {}) {
     const pagesResult = await getAllPages()
@@ -33,11 +33,6 @@ export async function downloadAllPages({folder} = {}) {
 }
 
 export async function downloadPage({page, folder, filename, saveAs=false}) {
-    // If the page was deduplicated, find its data.
-    if (page.seeInstead) {
-        page = await getPage({pageId: page._id, followRedirects: true})
-    }
-
     // Read the html file from the database.
     const blob = await db.getAttachment(page._id, 'frozen-page.html')
     const url = URL.createObjectURL(blob)

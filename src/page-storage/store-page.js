@@ -18,12 +18,11 @@ export async function storePage({ tabId, url }) {
     // Create a new page doc in the database.
     const page = await createPageStub({ url })
 
-    // Start analysis and (possibly) deduplication, but do not wait for it.
-    const finalPagePromise = analysePage({
+    // Run analysis.
+    const { page: finalPage } = await analysePage({
         tabId,
         page,
     })
 
-    // Return the page stub, and a promise of the analysed & deduped page.
-    return { page, finalPagePromise }
+    return { page: finalPage }
 }

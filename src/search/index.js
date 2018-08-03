@@ -2,12 +2,10 @@ import get from 'lodash/fp/get'
 import last from 'lodash/fp/last'
 
 import { searchableTextFields } from 'src/page-analysis'
-
-import { findVisits, addVisitsContext } from './find-visits'
-
+import { findPagesByDate } from './find-pages'
 
 // Search by keyword query, returning all docs if no query is given
-export async function filterVisitsByQuery({
+export async function filterPagesByQuery({
     query,
     startDate,
     endDate,
@@ -15,7 +13,6 @@ export async function filterVisitsByQuery({
     limit = 10,
     softLimit = false,
     maxWaitDuration = 1000,
-    includeContext = false,
 }) {
     if (limit <= 0) {
         return {
@@ -24,23 +21,23 @@ export async function filterVisitsByQuery({
         }
     }
     if (query === '') {
-        const visitsResult = await findVisits({startDate, endDate, limit, skipUntil})
+        const pagesResult = await findPagesByDate({startDate, endDate, limit, skipUntil})
         // Note whether we reached the bottom.
-        visitsResult.resultsExhausted = visitsResult.rows.length < limit
-        return visitsResult
+        pagesResult.resultsExhausted = pagesResult.rows.length < limit
+        return pagesResult
     } else {
-        // Process visits batch by batch, filtering for ones that match the
+        // Process pages batch by batch, filtering for ones that match the
         // query until we reach the requested limit or have exhausted all
         // of them.
 
         let rows = []
         let resultsExhausted = false
-        // Number of visits we process at a time (rather arbitrary)
+        // Number of pages we process at a time (rather arbitrary)
         const batchSize = 50
         // Time when we have to report back with what we got so far, in case we keep searching.
         const reportingDeadline = Date.now() + maxWaitDuration
         do {
-            let batch = await findVisits({
+            let batch = await findPagesByDate({
                 startDate,
                 endDate,
                 limit: batchSize,
@@ -56,9 +53,9 @@ export async function filterVisitsByQuery({
                 ? last(batchRows).id
                 : skipUntil
 
-            // Filter for visits to pages that contain the query words.
+            // Filter for pages that contain the query words.
             const hits = batchRows.filter(
-                row => pageMatchesQuery({page: row.doc.page, query})
+                row => pageMatchesQuery({page: row.doc, query})
             )
 
             rows = rows.concat(hits)
@@ -76,7 +73,7 @@ export async function filterVisitsByQuery({
             skipUntil = last(rows).id
         }
 
-        let visitsResult = {
+        const result = {
             rows,
             // Remember the last docId, to continue from there when more results
             // are requested.
@@ -84,14 +81,12 @@ export async function filterVisitsByQuery({
             resultsExhausted,
         }
 
-        if (includeContext) { visitsResult = await addVisitsContext({visitsResult}) }
-
-        return visitsResult
+        return result
     }
 }
 
 // We just use a simple literal word filter for now. No index, no ranking.
-function pageMatchesQuery({page, query}) {
+function pageMatchesQuery({ page, query }) {
     // Get page text fields.
     const texts = searchableTextFields.map(fieldName => get(fieldName)(page))
         .filter(text => text) // remove undefined fields

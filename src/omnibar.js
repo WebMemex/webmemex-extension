@@ -2,7 +2,8 @@ import debounce from 'lodash/fp/debounce'
 import fromPairs from 'lodash/fp/fromPairs'
 import escapeHtml from 'lodash/fp/escape'
 
-import { filterVisitsByQuery } from 'src/search'
+import { getTimestamp } from 'src/page-storage'
+import { filterPagesByQuery } from 'src/search'
 import { hrefForLocalPage } from 'src/local-page'
 import niceTime from 'src/util/nice-time'
 
@@ -18,13 +19,13 @@ let browserName
     }
 })()
 
-const visitToSuggestion = doc => {
-    const visitDate = escapeHtml(niceTime(doc.visitStart))
+const pageToSuggestion = doc => {
+    const pageDate = escapeHtml(niceTime(getTimestamp(doc)))
     const url = escapeHtml(doc.url)
-    const title = escapeHtml(doc.page.title)
-    const plainDescription = `⌚ ${visitDate}  —  ${title}  —  ${url}`
+    const title = escapeHtml(doc.title)
+    const plainDescription = `⌚ ${pageDate}  —  ${title}  —  ${url}`
     const markedUpDescription
-        = `⌚ <dim>${visitDate}</dim>    —    ${title}  —  <url>${url}</url>`
+        = `⌚ <dim>${pageDate}</dim>    —    ${title}  —  <url>${url}</url>`
     // Firefox interprets the description as plain text, so we distinguish here.
     const description = (browserName === 'Firefox')
         ? plainDescription
@@ -57,23 +58,23 @@ async function makeSuggestion(query, suggest) {
 
     const queryForOldSuggestions = latestResolvedQuery
 
-    const visitsResult = await filterVisitsByQuery({query, limit: 5})
-    const visitDocs = visitsResult.rows.map(row => row.doc)
+    const pagesResult = await filterPagesByQuery({ query, limit: 5 })
+    const pageDocs = pagesResult.rows.map(row => row.doc)
 
     // A subsequent search could have already started and finished while we
     // were busy searching, so we ensure we do not overwrite its results.
     if (currentQuery !== query && latestResolvedQuery !== queryForOldSuggestions) { return }
 
-    if (visitDocs.length === 0) {
+    if (pageDocs.length === 0) {
         browser.omnibox.setDefaultSuggestion({
             description: 'No results found in your memory. (press enter to search deeper)',
         })
     } else {
         browser.omnibox.setDefaultSuggestion({
-            description: `Found these ${visitDocs.length} pages in your memory: (press enter to search deeper)`,
+            description: `Found these ${pageDocs.length} pages in your memory: (press enter to search deeper)`,
         })
     }
-    const suggestions = visitDocs.map(visitToSuggestion)
+    const suggestions = pageDocs.map(pageToSuggestion)
 
     // Call the callback function to display the suggestions to the user
     suggest(suggestions)
@@ -81,7 +82,7 @@ async function makeSuggestion(query, suggest) {
     // Remember which texts represent which pages, for when the user accepts a suggestion.
     // (the URLs are so ugly and random-looking we rather not show them to the user)
     suggestionToUrl = fromPairs(suggestions.map(
-        (suggestion, i) => [suggestion.content, hrefForLocalPage({page: visitDocs[i].page})]
+        (suggestion, i) => [suggestion.content, hrefForLocalPage({ page: pageDocs[i] })]
     ))
 
     latestResolvedQuery = query
