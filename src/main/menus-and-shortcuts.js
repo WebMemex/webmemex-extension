@@ -1,7 +1,6 @@
 import get from 'lodash/fp/get'
 
-import manifest from './manifest.json'
-
+import manifest from '../manifest.json'
 
 function openOverview() {
     browser.tabs.create({
@@ -77,8 +76,3 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 browser.commands.onCommand.addListener(command => {
     commandActions[command]()
 })
-
-// Run scripts that set their own event listeners.
-/* eslint-disable import/first */
-import 'src/page-storage/background'
-import 'src/omnibar'

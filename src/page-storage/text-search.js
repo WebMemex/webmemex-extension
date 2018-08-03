@@ -2,7 +2,7 @@ import get from 'lodash/fp/get'
 import last from 'lodash/fp/last'
 
 import { searchableTextFields } from 'src/page-analysis'
-import { findPagesByDate } from './find-pages'
+import { getPagesByDate } from '.'
 
 // Search by keyword query, returning all docs if no query is given
 export async function filterPagesByQuery({
@@ -21,7 +21,7 @@ export async function filterPagesByQuery({
         }
     }
     if (query === '') {
-        const pagesResult = await findPagesByDate({startDate, endDate, limit, skipUntil})
+        const pagesResult = await getPagesByDate({startDate, endDate, limit, skipUntil})
         // Note whether we reached the bottom.
         pagesResult.resultsExhausted = pagesResult.rows.length < limit
         return pagesResult
@@ -37,7 +37,7 @@ export async function filterPagesByQuery({
         // Time when we have to report back with what we got so far, in case we keep searching.
         const reportingDeadline = Date.now() + maxWaitDuration
         do {
-            let batch = await findPagesByDate({
+            let batch = await getPagesByDate({
                 startDate,
                 endDate,
                 limit: batchSize,

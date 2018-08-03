@@ -1,8 +1,8 @@
 import update from 'lodash/fp/update'
 
 import db, { normaliseFindResult, keyRangeForPrefix } from 'src/pouchdb'
-import { pageKeyPrefix, convertPageDocId } from 'src/page-storage'
 import { revisePageFields } from 'src/page-analysis'
+import { pageKeyPrefix, convertPageDocId } from '.'
 
 // Post-process result list after any retrieval of pages from the database.
 async function postprocessPagesResult({ pagesResult }) {
@@ -38,7 +38,7 @@ export async function getAllPages() {
     return pagesResult
 }
 
-export async function findPagesByUrl({ url }) {
+export async function getPagesByUrl({ url }) {
     const findResult = await db.find({
         selector: {
             _id: { $gte: pageKeyPrefix, $lte: `${pageKeyPrefix}\uffff` },
@@ -51,7 +51,7 @@ export async function findPagesByUrl({ url }) {
 }
 
 // Find pages in the given date range (and/or up to the given limit), sorted by time (descending).
-export async function findPagesByDate({ startDate, endDate, limit, skipUntil }) {
+export async function getPagesByDate({ startDate, endDate, limit, skipUntil }) {
     let selector = {
         // Constrain by id (like with startkey/endkey), both to get only the
         // page docs, and (if needed) to filter the pages after/before a

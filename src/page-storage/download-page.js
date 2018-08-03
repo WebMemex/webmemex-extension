@@ -1,8 +1,7 @@
 import get from 'lodash/fp/get'
 
 import db from 'src/pouchdb'
-import { getTimestamp } from 'src/page-storage'
-import { getAllPages } from 'src/search/find-pages'
+import { getTimestamp, getAllPages } from '.'
 
 export async function downloadAllPages({folder} = {}) {
     const pagesResult = await getAllPages()

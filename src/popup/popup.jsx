@@ -5,9 +5,7 @@ import classNames from 'classnames'
 import { Button, Divider, Header, Icon, List, Menu, Message } from 'semantic-ui-react'
 
 import { hrefForLocalPage } from 'src/local-page'
-import { findPagesByUrl } from 'src/search/find-pages'
-import { getTimestamp } from 'src/page-storage'
-import { downloadPage } from 'src/page-storage/download-page'
+import { getPagesByUrl, getTimestamp, downloadPage } from 'src/page-storage'
 import niceTime from 'src/util/nice-time'
 import { remoteFunction } from 'src/util/webextensionRPC'
 
@@ -90,7 +88,7 @@ class Main extends React.Component {
     }
 
     async getPreviousSnapshots(url) {
-        const pagesResult = await findPagesByUrl({url})
+        const pagesResult = await getPagesByUrl({url})
         const previousSnapshots = pagesResult.rows.map(row => row.doc)
         previousSnapshots.reverse() // sorts most recent first
         this.setState({
