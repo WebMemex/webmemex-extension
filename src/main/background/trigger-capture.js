@@ -1,5 +1,5 @@
 import { makeRemotelyCallable } from 'src/util/webextensionRPC'
-import analysePage from 'src/page-analysis/background'
+import { analysePage } from 'src/page-analysis/background'
 import { createPageStub } from 'src/page-storage'
 
 // Analyses the page in the specified tab. Returns the page that has been created in the database.

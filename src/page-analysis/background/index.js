@@ -54,7 +54,7 @@ async function performPageAnalysis({ pageId, tabId }) {
     ])
 }
 
-export default async function analysePage({ page, tabId }) {
+export async function analysePage({ page, tabId }) {
     // Wait until its DOM has loaded, in case we got invoked before that.
     await whenPageDOMLoaded({ tabId }) // TODO: catch e.g. tab close.
     await performPageAnalysis({ pageId: page._id, tabId })

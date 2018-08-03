@@ -50,7 +50,7 @@ const staticFiles = {
 
 const sourceFiles = [
     'main/background.js',
-    'content_script.js',
+    'main/content_script.js',
     'overview/overview.jsx',
     'local-page/local-page.jsx',
     'popup/popup.jsx',

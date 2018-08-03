@@ -1,6 +1,6 @@
 import get from 'lodash/fp/get'
 
-import manifest from '../manifest.json'
+import manifest from 'src/manifest.json'
 
 function openOverview() {
     browser.tabs.create({

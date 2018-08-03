@@ -2,7 +2,7 @@ import pick from 'lodash/fp/pick'
 import { getMetadata, metadataRuleSets } from 'page-metadata-parser'
 
 // Extract the text content from a web page.
-export default async function extractPageContent({
+export async function extractPageContent({
     // By default, use the globals window and document.
     url = window.location.href,
     doc = document,

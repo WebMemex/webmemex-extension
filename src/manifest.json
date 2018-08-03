@@ -10,7 +10,7 @@
     },
     "content_scripts": [{
         "matches": ["<all_urls>"],
-        "js": ["lib/browser-polyfill.js", "content_script.js"],
+        "js": ["lib/browser-polyfill.js", "main/content_script.js"],
         "run_at": "document_start"
     }],
     "browser_action": {

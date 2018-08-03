@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import thunk from 'redux-thunk'
 
-import overview from 'src/overview'
+import overview from './overview-ui'
 
 const rootReducer = combineReducers({
     overview: overview.reducer,
