@@ -44,17 +44,17 @@ describe('eventToPromise', () => {
         // We use a bogus await statement to let any resolved promises invoke their callbacks.
         // XXX Not sure if we can rely on this in every ES implementation.
         await null
-        expect(resolveOpts[0].event.listeners.length).toBe(1)
-        expect(resolveOpts[1].event.listeners.length).toBe(1)
-        expect(rejectOpts.event.listeners.length).toBe(1)
+        expect(resolveOpts[0].event.listeners).toHaveLength(1)
+        expect(resolveOpts[1].event.listeners).toHaveLength(1)
+        expect(rejectOpts.event.listeners).toHaveLength(1)
 
         // Trigger any of the events.
         resolveOpts[1].event.trigger()
 
         await null
-        expect(resolveOpts[0].event.listeners.length).toBe(0)
-        expect(resolveOpts[1].event.listeners.length).toBe(0)
-        expect(rejectOpts.event.listeners.length).toBe(0)
+        expect(resolveOpts[0].event.listeners).toHaveLength(0)
+        expect(resolveOpts[1].event.listeners).toHaveLength(0)
+        expect(rejectOpts.event.listeners).toHaveLength(0)
     })
 
     describe('should resolve with given value when a resolve-event occurs', () => {

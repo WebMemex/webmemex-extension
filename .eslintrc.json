@@ -60,6 +60,7 @@
         "react/jsx-filename-extension": "error",
         "react/prefer-stateless-function": "warn",
         "react/sort-comp": "warn",
-        "react/jsx-max-props-per-line": [1, { "when": "multiline" }]
+        "react/jsx-max-props-per-line": [1, { "when": "multiline" }],
+        "jest/no-disabled-tests": "off"
     }
 }

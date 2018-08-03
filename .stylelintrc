@@ -2,6 +2,7 @@
     "extends": "stylelint-config-standard",
     "rules": {
         "indentation": 4,
+        "no-descending-specificity": null,
         "shorthand-property-no-redundant-values": null,
         "font-family-name-quotes": "always-unless-keyword",
         "function-url-quotes": "always",

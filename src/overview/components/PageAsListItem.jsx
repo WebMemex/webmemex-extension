@@ -94,7 +94,6 @@ const PageAsListItem = ({ doc, onTrashButtonClick }) => {
                 <div className={styles.url}>
                     <a
                         href={doc.url}
-                        target='_blank'
                         title='Visit original location'
                     >
                         <Icon
