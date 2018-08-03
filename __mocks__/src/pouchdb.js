@@ -1,13 +1,11 @@
 import PouchDB from 'pouchdb-core'
+import PouchDBFind from 'pouchdb-find'
 
 import PouchDBMemory from 'pouchdb-adapter-memory'
-import mapreduce from 'pouchdb-mapreduce'
-import replication from 'pouchdb-replication'
 
 PouchDB
   .plugin(PouchDBMemory)
-  .plugin(mapreduce)
-  .plugin(replication)
+  .plugin(PouchDBFind)
 
 const pouchdbOptions = {
     name: 'testdb',

@@ -3,9 +3,6 @@
   "globals": {
     "browser": {}
   },
-  "testMatch": [
-    "<rootDir>/src/**/*.test.(js|jsx)"
-  ],
   "rootDir": ".",
   "transform": {
     "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest"
@@ -16,17 +13,7 @@
   "moduleNameMapper": {
     "\\.(css|less)$": "identity-obj-proxy"
   },
-  "moduleFileExtensions": [
-    "js",
-    "jsx"
-  ],
   "setupFiles": [
     "./setupJest.js"
-  ],
-  "unmockedModulePathPatterns": [
-    "<rootDir>/node_modules/react",
-    "<rootDir>/node_modules/react-dom",
-    "<rootDir>/node_modules/react-addons-test-utils",
-    "<rootDir>/node_modules/fbjs"
   ]
 }
