@@ -18,7 +18,7 @@ import watchify from 'watchify'
 import babelify from 'babelify'
 import envify from 'loose-envify/custom'
 import cssModulesify from 'css-modulesify'
-import cssnext from 'postcss-cssnext'
+import postcssPresetEnv from 'postcss-preset-env'
 import uglifyjs from 'uglify-es'
 import uglifyComposer from 'gulp-uglify/composer'
 
@@ -87,7 +87,9 @@ async function createBundle({filePath, watch = false, production = false}) {
         rootDir: path.join('src', dir),
         // output: path.join(destination, cssOutput), // We read the stream instead (see below)
         postcssBefore: [
-            cssnext,
+            postcssPresetEnv({
+                stage: 0,
+            }),
         ],
     })
     b.on('css stream', stream => {
@@ -96,7 +98,7 @@ async function createBundle({filePath, watch = false, production = false}) {
         stream
             .pipe(source('css-modules-output.css')) // pretend the streamed data had this filename.
             .pipe(buffer()) // concatCss & clipEmptyFiles do not support streamed files.
-            .pipe(addsrc.prepend(cssInputPath))
+            .pipe(fs.existsSync(cssInputPath) ? addsrc.prepend(cssInputPath) : identity())
             .pipe(concatCss(cssOutput, {inlineImports: false}))
             .pipe(clipEmptyFiles()) // Drop file if no output was produced (e.g. no background.css)
             .pipe(gulp.dest(destination))

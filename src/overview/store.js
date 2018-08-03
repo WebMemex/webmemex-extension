@@ -13,10 +13,12 @@ const rootEpic = combineEpics(
 )
 
 export default function configureStore({ReduxDevTools = undefined} = {}) {
+    const epicMiddleware = createEpicMiddleware()
+
     const enhancers = [
         overview.enhancer,
         applyMiddleware(
-            createEpicMiddleware(rootEpic),
+            epicMiddleware,
             thunk
         ),
     ]
@@ -30,6 +32,8 @@ export default function configureStore({ReduxDevTools = undefined} = {}) {
         undefined, // initial state
         enhancer
     )
+
+    epicMiddleware.run(rootEpic)
 
     return store
 }

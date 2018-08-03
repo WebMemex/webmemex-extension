@@ -1,6 +1,4 @@
-import 'rxjs/add/operator/debounceTime'
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/filter'
+import { debounceTime, filter, map } from 'rxjs/operators'
 
 import * as actions from './actions'
 
@@ -12,7 +10,8 @@ const searchUpdateActions = [
 ]
 
 // When the query changed, refresh the search results
-export const refreshSearchResultsUponQueryChange = action$ => action$
-    .filter(action => searchUpdateActions.includes(action.type))
-    .debounceTime(500) // wait until typing stops for 500ms
-    .map(() => actions.updateSearch())
+export const refreshSearchResultsUponQueryChange = action$ => action$.pipe(
+    filter(action => searchUpdateActions.includes(action.type)),
+    debounceTime(500), // wait until typing stops for 500ms
+    map(() => actions.updateSearch()),
+)
