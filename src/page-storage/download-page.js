@@ -1,7 +1,7 @@
 import get from 'lodash/fp/get'
 
 import db from 'src/pouchdb'
-import { getTimestamp, getAllPages } from '.'
+import { getAllPages } from '.'
 
 export async function downloadAllPages({folder} = {}) {
     const pagesResult = await getAllPages()
@@ -38,7 +38,7 @@ export async function downloadPage({page, folder, filename, saveAs=false}) {
 
     if (filename === undefined) {
         // Use title as filename, after removing (back)slashes.
-        const date = new Date(getTimestamp(page)).toISOString().substring(0, 10)
+        const date = new Date(page.timestamp).toISOString().substring(0, 10)
         filename = `${date} - ${page.title.replace(/[\\/]/g, '-')}.html`
     }
     if (folder !== undefined) {

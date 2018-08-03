@@ -4,7 +4,7 @@ import { Button, Icon, Image } from 'semantic-ui-react'
 import { blobToArrayBuffer } from 'blob-util'
 
 import db from 'src/pouchdb'
-import { downloadPage, getPage, getTimestamp } from 'src/page-storage'
+import { downloadPage, getPage } from 'src/page-storage'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
@@ -13,7 +13,7 @@ import ContentFrame from './ContentFrame'
 
 async function showPage(pageId) {
     const page = await getPage({ pageId })
-    const timestamp = getTimestamp(page)
+    const timestamp = page.timestamp
 
     // Read the html file from the database.
     const blob = await db.getAttachment(pageId, 'frozen-page.html')

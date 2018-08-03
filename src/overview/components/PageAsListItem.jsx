@@ -7,7 +7,6 @@ import classNames from 'classnames'
 
 import { hrefForLocalPage } from 'src/local-page'
 import niceTime from 'src/util/nice-time'
-import { getTimestamp } from 'src/page-storage'
 
 import ImgFromPouch from './ImgFromPouch'
 import styles from './PageAsListItem.css'
@@ -105,7 +104,7 @@ const PageAsListItem = ({ doc, onTrashButtonClick }) => {
                     </a>
                     <span>{doc.url}</span>
                 </div>
-                <div className={styles.time}>{niceTime(getTimestamp(doc))}</div>
+                <div className={styles.time}>{niceTime(doc.timestamp)}</div>
             </div>
             <div className={styles.buttonsContainer}>
                 {deleteButton}

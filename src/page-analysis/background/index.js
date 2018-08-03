@@ -1,13 +1,13 @@
 import merge from 'lodash/fp/merge'
 import { dataURLToBlob } from 'blob-util'
+import whenAllSettled from 'when-all-settled'
 
 import { whenPageDOMLoaded } from 'src/util/tab-events'
 import { remoteFunction } from 'src/util/webextensionRPC'
-import whenAllSettled from 'when-all-settled'
-import db from 'src/pouchdb'
 import updateDoc, { setAttachment } from 'src/util/pouchdb-update-doc'
+import db from 'src/pouchdb'
+import { getPage } from 'src/page-storage'
 
-import { revisePageFields } from '..'
 import getFavIcon from './get-fav-icon'
 import makeScreenshot from './make-screenshot'
 
@@ -58,7 +58,7 @@ export default async function analysePage({page, tabId}) {
     // Wait until its DOM has loaded, in case we got invoked before that.
     await whenPageDOMLoaded({tabId}) // TODO: catch e.g. tab close.
     await performPageAnalysis({pageId: page._id, tabId})
-    // Get and return the page.
-    page = revisePageFields(await db.get(page._id))
+    // Get the page again and return it.
+    page = await getPage({ pageId: page._id })
     return {page}
 }

@@ -2,7 +2,7 @@ import debounce from 'lodash/fp/debounce'
 import fromPairs from 'lodash/fp/fromPairs'
 import escapeHtml from 'lodash/fp/escape'
 
-import { getTimestamp, filterPagesByQuery } from 'src/page-storage'
+import { filterPagesByQuery } from 'src/page-storage'
 import { hrefForLocalPage } from 'src/local-page'
 import niceTime from 'src/util/nice-time'
 
@@ -19,7 +19,7 @@ let browserName
 })()
 
 const pageToSuggestion = doc => {
-    const pageDate = escapeHtml(niceTime(getTimestamp(doc)))
+    const pageDate = escapeHtml(niceTime(doc.timestamp))
     const url = escapeHtml(doc.url)
     const title = escapeHtml(doc.title)
     const plainDescription = `⌚ ${pageDate}  —  ${title}  —  ${url}`

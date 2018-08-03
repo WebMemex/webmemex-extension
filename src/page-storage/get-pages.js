@@ -6,9 +6,13 @@ import { pageKeyPrefix, convertPageDocId } from '.'
 
 // Post-process result list after any retrieval of pages from the database.
 async function postprocessPagesResult({ pagesResult }) {
-    // Let the page analysis module augment or revise the document attributes.
     pagesResult = update('rows', rows => rows.map(
-        update('doc', doc => revisePageFields(doc))
+        update('doc', doc => ({
+            // Let the page analysis module augment or revise the document's attributes.
+            ...revisePageFields(doc),
+            // The creation time is encoded in the doc._id; expose it for convenience.
+            timestamp: Number.parseInt(convertPageDocId(doc._id).timestamp),
+        }))
     ))(pagesResult)
 
     return pagesResult

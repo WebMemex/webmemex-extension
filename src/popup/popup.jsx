@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { Button, Divider, Header, Icon, List, Menu, Message } from 'semantic-ui-react'
 
 import { hrefForLocalPage } from 'src/local-page'
-import { getPagesByUrl, getTimestamp, downloadPage } from 'src/page-storage'
+import { getPagesByUrl, downloadPage } from 'src/page-storage'
 import niceTime from 'src/util/nice-time'
 import { remoteFunction } from 'src/util/webextensionRPC'
 
@@ -29,7 +29,7 @@ const PageAsListItem = ({ page, highlight }) => {
             >
                 <div>
                     <Icon name='camera' />
-                    {niceTime(getTimestamp(page))}
+                    {niceTime(page.timestamp)}
                 </div>
                 <Button
                     icon
