@@ -30,7 +30,7 @@ export const normaliseFindResult = result => ({
         doc,
         id: doc._id,
         key: doc._id,
-        value: {rev: doc._rev},
+        value: { rev: doc._rev },
     })),
 })
 
@@ -41,7 +41,7 @@ export const resultRowsById = result =>
 // Get an attachment from a doc as a data URL string.
 // Pass either a docId or a doc itself, and the attachmentId.
 // Returns undefined if non-existent.
-export async function getAttachmentAsDataUrl({doc, docId=doc._id, attachmentId}) {
+export async function getAttachmentAsDataUrl({ doc, docId=doc._id, attachmentId }) {
     if (!docId
         || !attachmentId
         // If we got passed the doc itself, we can check whether the attachment exists.

@@ -33,7 +33,7 @@ async function showPage(pageId) {
             <span id='description'>
                 <Icon name='camera' />
                 Snapshot of
-                <a href={page.url} style={{margin: '0 4px'}}>
+                <a href={page.url} style={{ margin: '0 4px' }}>
                     {shortUrl(page.url)}
                 </a>
                 <Icon name='clock' />
@@ -44,7 +44,7 @@ async function showPage(pageId) {
             <Button
                 compact
                 size='tiny'
-                onClick={() => downloadPage({page, saveAs: true})}
+                onClick={() => downloadPage({ page, saveAs: true })}
             >
                 <Icon name='download' />
                 Save page as…

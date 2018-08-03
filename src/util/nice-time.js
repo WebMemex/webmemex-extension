@@ -15,7 +15,7 @@ function monthString(date) {
 }
 
 // Get something nicely readable - at least to my personal taste.
-export default function niceTime(date, {now = undefined} = {}) {
+export default function niceTime(date, { now = undefined } = {}) {
     const then = new Date(date)
     now = now || new Date()
     const secondsAgo = (now - then) / 1000
@@ -36,7 +36,7 @@ export default function niceTime(date, {now = undefined} = {}) {
     return `${then.getDate()} ${monthString(then)} ${then.getFullYear()}`
 }
 
-export function niceDate(date, {now = new Date()} = {}) {
+export function niceDate(date, { now = new Date() } = {}) {
     const then = new Date(date)
     if (then.getYear() !== now.getYear()) {
         return `${then.getDate()} ${monthString(then)} ${then.getFullYear()}`

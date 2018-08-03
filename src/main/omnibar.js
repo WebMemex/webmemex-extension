@@ -100,13 +100,13 @@ const acceptInput = (text, disposition) => {
     // Open it in the place the browser requests us to.
     switch (disposition) {
         case 'currentTab':
-            browser.tabs.update({url})
+            browser.tabs.update({ url })
             break
         case 'newForegroundTab':
-            browser.tabs.create({url})
+            browser.tabs.create({ url })
             break
         case 'newBackgroundTab':
-            browser.tabs.create({url, active: false})
+            browser.tabs.create({ url, active: false })
             break
     }
 }

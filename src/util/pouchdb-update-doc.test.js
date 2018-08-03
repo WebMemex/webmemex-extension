@@ -14,8 +14,8 @@ describe('updateDoc', () => {
     })
 
     test('should update the doc with the updateFunc', async () => {
-        const docBeforeChange = {test: 1}
-        const docAfterChange = {test: 2}
+        const docBeforeChange = { test: 1 }
+        const docAfterChange = { test: 2 }
         const docId = 'mydoc'
         db.get.mockReturnValueOnce(docBeforeChange)
         const updateFunc = jest.fn().mockReturnValueOnce(docAfterChange)
@@ -30,7 +30,7 @@ describe('updateDoc', () => {
     test('should survive a conflict', async () => {
         const docId = 'mydoc'
         const updateFunc = jest.fn()
-        const conflictError = {name: 'conflict', status: 409, error: true}
+        const conflictError = { name: 'conflict', status: 409, error: true }
         db.put.mockImplementationOnce(doc => { throw conflictError })
 
         await expect(updateDoc(db, docId, updateFunc)).resolves.toBeUndefined()
@@ -39,7 +39,7 @@ describe('updateDoc', () => {
     test('should give up after persistent conflict', async () => {
         const docId = 'mydoc'
         const updateFunc = jest.fn()
-        const conflictError = {name: 'conflict', status: 409, error: true}
+        const conflictError = { name: 'conflict', status: 409, error: true }
         db.put.mockImplementation(doc => { throw conflictError })
 
         await expect(updateDoc(db, docId, updateFunc)).rejects.toMatchObject(conflictError)

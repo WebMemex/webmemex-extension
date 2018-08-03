@@ -30,7 +30,7 @@ export async function setAttachment(db, docId, attachmentId, blob) {
     await updateDoc(db, docId,
         doc => assocPath(
             ['_attachments', attachmentId],
-            {content_type: blob.type, data: blob}
+            { content_type: blob.type, data: blob }
         )(doc)
     )
 }

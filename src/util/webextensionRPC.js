@@ -36,7 +36,7 @@ const RPC_RESPONSE = '__RPC_RESPONSE__'
 //       tabId: The id of the tab whose content script is the remote side.
 //              Leave undefined to call the background script (from a tab).
 //   }
-export function remoteFunction(funcName, {tabId} = {}) {
+export function remoteFunction(funcName, { tabId } = {}) {
     const otherSide = (tabId !== undefined)
         ? "the tab's content script"
         : 'the background script'
@@ -129,7 +129,7 @@ let enabled = false
 //           the details of the tab that sent the message.
 //   }
 
-export function makeRemotelyCallable(functions, {insertExtraArg = false} = {}) {
+export function makeRemotelyCallable(functions, { insertExtraArg = false } = {}) {
     // Every function is passed an extra argument with sender information,
     // so remove this from the call if this was not desired.
     if (!insertExtraArg) {

@@ -21,7 +21,7 @@ export async function filterPagesByQuery({
         }
     }
     if (query === '') {
-        const pagesResult = await getPagesByDate({startDate, endDate, limit, skipUntil})
+        const pagesResult = await getPagesByDate({ startDate, endDate, limit, skipUntil })
         // Note whether we reached the bottom.
         pagesResult.resultsExhausted = pagesResult.rows.length < limit
         return pagesResult
@@ -55,7 +55,7 @@ export async function filterPagesByQuery({
 
             // Filter for pages that contain the query words.
             const hits = batchRows.filter(
-                row => pageMatchesQuery({page: row.doc, query})
+                row => pageMatchesQuery({ page: row.doc, query })
             )
 
             rows = rows.concat(hits)

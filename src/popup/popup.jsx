@@ -12,7 +12,7 @@ import { remoteFunction } from 'src/util/webextensionRPC'
 const storeActivePage = remoteFunction('storeActivePage')
 
 // Heuristic to decide whether a page can be stored.
-function isStorable({url}) {
+function isStorable({ url }) {
     // Only http(s) pages for now. Ignoring data URLs, newtab, ...
     const storableUrlPattern = /^https?:\/\//
     return storableUrlPattern.test(url)
@@ -20,10 +20,10 @@ function isStorable({url}) {
 
 const PageAsListItem = ({ page, highlight }) => {
     return (
-        <List.Item className={classNames({highlight})}>
+        <List.Item className={classNames({ highlight })}>
             <List.Content
                 className='listContent'
-                href={hrefForLocalPage({page})}
+                href={hrefForLocalPage({ page })}
                 target='_blank'
                 title='View the snapshot'
             >
@@ -34,7 +34,7 @@ const PageAsListItem = ({ page, highlight }) => {
                 <Button
                     icon
                     size='tiny'
-                    onClick={event => { event.preventDefault(); downloadPage({page, saveAs: true}) }}
+                    onClick={event => { event.preventDefault(); downloadPage({ page, saveAs: true }) }}
                     title='Save page as…'
                 >
                     {highlight && 'Save as…'}
@@ -88,7 +88,7 @@ class Main extends React.Component {
     }
 
     async getPreviousSnapshots(url) {
-        const pagesResult = await getPagesByUrl({url})
+        const pagesResult = await getPagesByUrl({ url })
         const previousSnapshots = pagesResult.rows.map(row => row.doc)
         previousSnapshots.reverse() // sorts most recent first
         this.setState({
@@ -113,7 +113,7 @@ class Main extends React.Component {
             previousSnapshots,
         } = this.state
 
-        const snapshottable = isStorable({url})
+        const snapshottable = isStorable({ url })
 
         return (
             <Menu vertical fluid borderless>
@@ -135,7 +135,7 @@ class Main extends React.Component {
                             <Button
                                 fluid
                                 positive
-                                href={hrefForLocalPage({page: snapshottedPage})}
+                                href={hrefForLocalPage({ page: snapshottedPage })}
                                 target='_blank'
                                 title='View the snapshot'
                             >
@@ -173,7 +173,7 @@ class Main extends React.Component {
                     </Menu.Item>
                 )}
                 {!snapshottable && (
-                    <Menu.Item style={{textAlign: 'center'}}>
+                    <Menu.Item style={{ textAlign: 'center' }}>
                         <em className='faint'>
                             Cannot snapshot this page.
                         </em>
@@ -197,7 +197,7 @@ Main.propTypes = {
 
 
 async function main() {
-    const url = (await browser.tabs.query({active: true, currentWindow: true}))[0].url
+    const url = (await browser.tabs.query({ active: true, currentWindow: true }))[0].url
 
     ReactDOM.render(
         <Main url={url} />,

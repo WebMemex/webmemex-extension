@@ -7,7 +7,7 @@ import * as actions from './actions'
 
 const defaultState = {
     // The current search result list.
-    searchResult: {rows: []},
+    searchResult: { rows: [] },
     // The current input values.
     currentQueryParams: {
         query: '',
@@ -20,15 +20,15 @@ const defaultState = {
 }
 
 function setQuery(state, query) {
-    return {...state, currentQueryParams: {...state.currentQueryParams, query}}
+    return { ...state, currentQueryParams: { ...state.currentQueryParams, query } }
 }
 
 function setStartDate(state, date) {
-    return {...state, currentQueryParams: {...state.currentQueryParams, startDate: date}}
+    return { ...state, currentQueryParams: { ...state.currentQueryParams, startDate: date } }
 }
 
 function setEndDate(state, date) {
-    return {...state, currentQueryParams: {...state.currentQueryParams, endDate: date}}
+    return { ...state, currentQueryParams: { ...state.currentQueryParams, endDate: date } }
 }
 
 function startNewSearch(state) {
@@ -37,7 +37,7 @@ function startNewSearch(state) {
         // Remove the currently displayed results
         searchResult: defaultState.searchResult,
         waitingForResults: true,
-        activeQueryParams: {...state.currentQueryParams},
+        activeQueryParams: { ...state.currentQueryParams },
     }
 }
 
@@ -45,11 +45,11 @@ function startExpandSearch(state) {
     return {
         ...state,
         waitingForResults: true,
-        activeQueryParams: {...state.currentQueryParams},
+        activeQueryParams: { ...state.currentQueryParams },
     }
 }
 
-function finishNewSearch(state, {value, error, cancelled}) {
+function finishNewSearch(state, { value, error, cancelled }) {
     const searchResult = value || state.searchResult
     return {
         ...state,

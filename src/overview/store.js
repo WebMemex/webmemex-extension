@@ -12,7 +12,7 @@ const rootEpic = combineEpics(
     ...Object.values(overview.epics)
 )
 
-export default function configureStore({ReduxDevTools = undefined} = {}) {
+export default function configureStore({ ReduxDevTools = undefined } = {}) {
     const epicMiddleware = createEpicMiddleware()
 
     const enhancers = [

@@ -23,7 +23,7 @@ async function updateOrCreateContextMenuItem(id, options) {
     try {
         await browser.contextMenus.update(id, options)
     } catch (err) {
-        await browser.contextMenus.create({id, ...options})
+        await browser.contextMenus.create({ id, ...options })
     }
 }
 
@@ -68,7 +68,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
     if (type === 'command') {
         commandActions[id]()
     } else if (type === 'setting') {
-        await browser.storage.local.set({[id]: info.checked})
+        await browser.storage.local.set({ [id]: info.checked })
     }
 })
 

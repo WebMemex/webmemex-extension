@@ -13,13 +13,13 @@ describe('remoteFunction', () => {
     })
 
     test('should create a function', () => {
-        const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
         expect(remoteFunc.name).toBe('remoteFunc_RPC')
         expect(typeof remoteFunc).toBe('function')
     })
 
     test('should throw an error when unable to sendMessage', async () => {
-        const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
         browser.tabs.sendMessage.mockImplementationOnce(() => { throw new Error() })
         await expect(remoteFunc()).rejects.toMatchObject({
             message: `Got no response when trying to call 'remoteFunc'. Did you enable RPC in the tab's content script?`,
@@ -27,7 +27,7 @@ describe('remoteFunction', () => {
     })
 
     test('should call the browser.tabs function when tabId is given', async () => {
-        const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
         try {
             await remoteFunc()
         } catch (e) {}
@@ -45,7 +45,7 @@ describe('remoteFunction', () => {
     })
 
     test('should throw an error if response does not contain RPC token', async () => {
-        const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
         await expect(remoteFunc()).rejects.toMatchObject({
             message: 'RPC got a response from an interfering listener.',
         })
@@ -56,7 +56,7 @@ describe('remoteFunction', () => {
             __RPC_RESPONSE__: '__RPC_RESPONSE__',
             errorMessage: 'Remote function error',
         })
-        const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
         await expect(remoteFunc()).rejects.toMatchObject({
             message: 'Remote function error',
         })
@@ -67,7 +67,7 @@ describe('remoteFunction', () => {
             __RPC_RESPONSE__: '__RPC_RESPONSE__',
             returnValue: 'Remote function return value',
         })
-        const remoteFunc = remoteFunction('remoteFunc', {tabId: 1})
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
         await expect(remoteFunc()).resolves.toBe('Remote function return value')
     })
 })

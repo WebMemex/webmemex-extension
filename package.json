@@ -16,7 +16,7 @@
     "test": "jest --verbose --config=.jest-config.json",
     "firefox": "web-ext -s extension run --bc",
     "lint": "gulp lint",
-    "lint-fix": "eslint --ext js,jsx --fix ."
+    "lint-fix": "eslint --ext js,jsx --fix src/"
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",

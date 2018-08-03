@@ -26,7 +26,7 @@ const timeGapToSpaceGap = makeNonlinearTransform({
     nonlinearity: Math.log,
 })
 
-function computeRowGaps({searchResult}) {
+function computeRowGaps({ searchResult }) {
     // The space and possibly a time stamp before each row
     return searchResult.rows.map((row, rowIndex) => {
         // Space between two rows depends on the time between them.
@@ -78,7 +78,7 @@ const ResultList = ({
         )
     }
 
-    const rowGaps = computeRowGaps({searchResult})
+    const rowGaps = computeRowGaps({ searchResult })
 
     const listItems = searchResult.rows.map((row, rowIndex) => {
         const { marginTop, showConnection, dateStringToShow } = rowGaps[rowIndex]
