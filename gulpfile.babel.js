@@ -62,6 +62,22 @@ const browserifySettings = {
     paths: ['.'],
 }
 
+// Define babel config here, as .babelrc is already used for converting this gulpfile itself.
+const babelifySettings = {
+    presets: [
+        'react',
+        'stage-3',
+        ['env', {
+            targets: {
+                browsers: [
+                    'last 2 Firefox versions',
+                    'last 2 Chrome versions'
+                ]
+            }
+        }]
+    ],
+}
+
 async function createBundle({filePath, watch = false, production = false}) {
     const { dir, name } = path.parse(filePath)
     const entries = [path.join('src', filePath)]
@@ -77,7 +93,7 @@ async function createBundle({filePath, watch = false, production = false}) {
         ? watchify(browserify({...watchify.args, ...browserifySettings, entries}))
             .on('update', bundle)
         : browserify({...browserifySettings, entries})
-    b.transform(babelify)
+    b.transform(babelify, babelifySettings)
     b.transform(envify({
         NODE_ENV: production ? 'production' : 'development',
     }), {global: true})
