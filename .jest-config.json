@@ -4,17 +4,11 @@
     "browser": {}
   },
   "rootDir": ".",
-  "transform": {
-    "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest"
-  },
   "modulePaths": [
     "<rootDir>"
   ],
   "moduleNameMapper": {
     "\\.(css|less)$": "identity-obj-proxy"
   },
-  "setupFiles": [
-    "./setupJest.js"
-  ],
   "testURL": "https://example.com"
 }
