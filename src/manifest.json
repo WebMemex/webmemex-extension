@@ -47,9 +47,6 @@
         "unlimitedStorage",
         "webNavigation"
     ],
-    "web_accessible_resources": [
-      "/lib/pdf.worker.min.js"
-    ],
     "omnibox": { "keyword" : "m" },
     "manifest_version": 2
 }
