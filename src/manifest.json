@@ -6,11 +6,11 @@
         "96": "assets/webmemex-96.png"
     },
     "background": {
-        "scripts": ["lib/browser-polyfill.js", "background.js"]
+        "scripts": ["lib/browser-polyfill.js", "main/background.js"]
     },
     "content_scripts": [{
         "matches": ["<all_urls>"],
-        "js": ["lib/browser-polyfill.js", "content_script.js"],
+        "js": ["lib/browser-polyfill.js", "main/content_script.js"],
         "run_at": "document_start"
     }],
     "browser_action": {
@@ -47,9 +47,5 @@
         "unlimitedStorage",
         "webNavigation"
     ],
-    "web_accessible_resources": [
-      "/lib/pdf.worker.min.js"
-    ],
-    "omnibox": { "keyword" : "m" },
     "manifest_version": 2
 }

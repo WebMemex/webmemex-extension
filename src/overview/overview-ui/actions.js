@@ -2,8 +2,7 @@ import last from 'lodash/fp/last'
 import isEqual from 'lodash/fp/isEqual'
 import { createAction } from 'redux-act'
 
-import { filterVisitsByQuery } from 'src/search'
-import { deleteVisitAndPage } from 'src/page-storage/deletion'
+import { filterPagesByQuery, deletePage as deletePageFromDb } from 'src/page-storage'
 import asyncActionCreator from 'src/util/redux-async-action-creator'
 
 import { ourState } from './selectors'
@@ -14,7 +13,7 @@ import { ourState } from './selectors'
 export const setQuery = createAction('overview/setQuery')
 export const setStartDate = createAction('overview/setStartDate')
 export const setEndDate = createAction('overview/setEndDate')
-export const hideVisit = createAction('overview/hideVisit')
+export const hideResult = createAction('overview/hideResult')
 
 
 // == Actions that trigger other actions ==
@@ -27,20 +26,19 @@ export function init() {
     }
 }
 
-export function deleteVisit({visitId}) {
+export function deletePage({ page }) {
     return async function (dispatch, getState) {
-        // Hide the visit directly (optimistically).
-        dispatch(hideVisit({visitId}))
+        // Hide the page directly (optimistically).
+        dispatch(hideResult({ id: page._id }))
         // Remove it from the database.
-        await deleteVisitAndPage({visitId})
+        await deletePageFromDb({ page })
     }
 }
 
 export const newSearch = asyncActionCreator(() => async (dispatch, getState) => {
     const { currentQueryParams } = ourState(getState())
-    const searchResult = await filterVisitsByQuery({
+    const searchResult = await filterPagesByQuery({
         ...currentQueryParams,
-        includeContext: true,
         limit: 10,
         softLimit: true,
     })
@@ -54,9 +52,8 @@ export const expandSearch = asyncActionCreator(() => async (dispatch, getState) 
         || (searchResult.rows.length && last(searchResult.rows).id)
         || undefined
     // Get the items that are to be appended.
-    const newSearchResult = await filterVisitsByQuery({
+    const newSearchResult = await filterPagesByQuery({
         ...currentQueryParams,
-        includeContext: true,
         skipUntil,
         limit: 10,
         softLimit: true,

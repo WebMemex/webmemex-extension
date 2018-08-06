@@ -38,7 +38,7 @@ export default class ContentFrame extends React.Component {
         iframe.contentWindow.focus()
 
         // Keep the iframe's location #hash in sync with that of the window.
-        syncLocationHashes([window, iframe.contentWindow], {initial: window})
+        syncLocationHashes([window, iframe.contentWindow], { initial: window })
     }
 
     render() {

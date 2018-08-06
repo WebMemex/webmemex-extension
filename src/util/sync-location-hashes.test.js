@@ -5,7 +5,7 @@ import syncLocationHashes from './sync-location-hashes'
 
 const createWindowMock = () => {
     const win = {
-        location: {_hash: ''},
+        location: { _hash: '' },
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
     }
@@ -52,7 +52,7 @@ describe('syncLocationHashes', () => {
             win.removeEventListener.mockReset()
             // Do not reset getter/setter implementations, but clear their call log.
             // (note that the _hash value is left intact, to the value we just gave it)
-            const {get, set} = Object.getOwnPropertyDescriptor(win.location, 'hash')
+            const { get, set } = Object.getOwnPropertyDescriptor(win.location, 'hash')
             get.mockClear()
             set.mockClear()
         })
@@ -80,7 +80,7 @@ describe('syncLocationHashes', () => {
 
     test('should directly perform an initial sync if specified', () => {
         win2.location.hash = '#somehash'
-        syncLocationHashes(windows, {initial: win2})
+        syncLocationHashes(windows, { initial: win2 })
 
         windows.forEach(win => {
             expect(win.location.hash).toEqual('#somehash')

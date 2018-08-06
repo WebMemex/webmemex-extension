@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import thunk from 'redux-thunk'
 
-import overview from 'src/overview'
+import overview from './overview-ui'
 
 const rootReducer = combineReducers({
     overview: overview.reducer,
@@ -12,11 +12,13 @@ const rootEpic = combineEpics(
     ...Object.values(overview.epics)
 )
 
-export default function configureStore({ReduxDevTools = undefined} = {}) {
+export default function configureStore({ ReduxDevTools = undefined } = {}) {
+    const epicMiddleware = createEpicMiddleware()
+
     const enhancers = [
         overview.enhancer,
         applyMiddleware(
-            createEpicMiddleware(rootEpic),
+            epicMiddleware,
             thunk
         ),
     ]
@@ -30,6 +32,8 @@ export default function configureStore({ReduxDevTools = undefined} = {}) {
         undefined, // initial state
         enhancer
     )
+
+    epicMiddleware.run(rootEpic)
 
     return store
 }

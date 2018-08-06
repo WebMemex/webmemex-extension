@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { makeNonlinearTransform } from 'src/util/make-range-transform'
 import { niceDate } from 'src/util/nice-time'
 
-import VisitAsListItem from './VisitAsListItem'
+import PageAsListItem from './PageAsListItem'
 import LoadingIndicator from './LoadingIndicator'
 import styles from './ResultList.css'
 
@@ -26,13 +26,13 @@ const timeGapToSpaceGap = makeNonlinearTransform({
     nonlinearity: Math.log,
 })
 
-function computeRowGaps({searchResult}) {
+function computeRowGaps({ searchResult }) {
     // The space and possibly a time stamp before each row
     return searchResult.rows.map((row, rowIndex) => {
         // Space between two rows depends on the time between them.
         const prevRow = searchResult.rows[rowIndex - 1]
-        const prevTimestamp = prevRow ? prevRow.doc.visitStart : new Date()
-        const timestamp = row.doc.visitStart
+        const prevTimestamp = prevRow ? prevRow.doc.timestamp : new Date()
+        const timestamp = row.doc.timestamp
 
         let spaceGap = 0
         let showConnection = false
@@ -78,7 +78,7 @@ const ResultList = ({
         )
     }
 
-    const rowGaps = computeRowGaps({searchResult})
+    const rowGaps = computeRowGaps({ searchResult })
 
     const listItems = searchResult.rows.map((row, rowIndex) => {
         const { marginTop, showConnection, dateStringToShow } = rowGaps[rowIndex]
@@ -86,7 +86,7 @@ const ResultList = ({
         const timestampComponent = dateStringToShow && (
             <time
                 className={styles.timestamp}
-                dateTime={new Date(row.doc.visitStart)}
+                dateTime={new Date(row.doc.timestamp)}
                 style={{
                     height: 16,
                     fontSize: 16,
@@ -108,8 +108,7 @@ const ResultList = ({
             >
                 <div>
                     {timestampComponent}
-                    <VisitAsListItem
-                        compact={row.isContextualResult}
+                    <PageAsListItem
                         doc={row.doc}
                     />
                 </div>

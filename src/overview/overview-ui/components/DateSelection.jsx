@@ -17,7 +17,7 @@ const DateSelection = ({
         // react-datepicker passes this className to the <Input> component.
         className={classNames(
             styles.root,
-            {[styles.expanded]: date !== undefined}
+            { [styles.expanded]: date !== undefined }
         )}
         customInput={
             <Input

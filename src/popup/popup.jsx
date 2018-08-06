@@ -2,36 +2,39 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Button, Checkbox, Divider, Header, Icon, List, Menu, Message } from 'semantic-ui-react'
+import { Button, Divider, Header, Icon, List, Menu, Message } from 'semantic-ui-react'
 
 import { hrefForLocalPage } from 'src/local-page'
-import { findPagesByUrl } from 'src/search/find-pages'
-import { isLoggable, getTimestamp } from 'src/activity-logger'
-import { downloadPage } from 'src/page-storage/download-page'
+import { getPagesByUrl, downloadPage } from 'src/page-storage'
 import niceTime from 'src/util/nice-time'
 import { remoteFunction } from 'src/util/webextensionRPC'
 
+const storeActivePage = remoteFunction('storeActivePage')
 
-const logActivePageVisit = remoteFunction('logActivePageVisit')
-
+// Heuristic to decide whether a page can be stored.
+function isStorable({ url }) {
+    // Only http(s) pages for now. Ignoring data URLs, newtab, ...
+    const storableUrlPattern = /^https?:\/\//
+    return storableUrlPattern.test(url)
+}
 
 const PageAsListItem = ({ page, highlight }) => {
     return (
-        <List.Item className={classNames({highlight})}>
+        <List.Item className={classNames({ highlight })}>
             <List.Content
                 className='listContent'
-                href={hrefForLocalPage({page})}
+                href={hrefForLocalPage({ page })}
                 target='_blank'
                 title='View the snapshot'
             >
                 <div>
                     <Icon name='camera' />
-                    {niceTime(getTimestamp(page))}
+                    {niceTime(page.timestamp)}
                 </div>
                 <Button
                     icon
                     size='tiny'
-                    onClick={event => { event.preventDefault(); downloadPage({page, saveAs: true}) }}
+                    onClick={event => { event.preventDefault(); downloadPage({ page, saveAs: true }) }}
                     title='Save page as…'
                 >
                     {highlight && 'Save as…'}
@@ -52,7 +55,6 @@ class Main extends React.Component {
         super(props)
         this.storeThisPage = this.storeThisPage.bind(this)
         this.openOverview = this.openOverview.bind(this)
-        this.toggleLoggingEnabled = this.toggleLoggingEnabled.bind(this)
 
         this.state = {
             snapshotState: 'initial',
@@ -61,7 +63,6 @@ class Main extends React.Component {
 
     componentDidMount() {
         this.getPreviousSnapshots(this.props.url)
-        this.loadSettings()
     }
 
     async storeThisPage() {
@@ -69,7 +70,7 @@ class Main extends React.Component {
 
         let page
         try {
-            const { page: page_ } = await logActivePageVisit()
+            const { page: page_ } = await storeActivePage()
             page = page_
         } catch (err) {
             this.setState({
@@ -87,7 +88,7 @@ class Main extends React.Component {
     }
 
     async getPreviousSnapshots(url) {
-        const pagesResult = await findPagesByUrl({url})
+        const pagesResult = await getPagesByUrl({ url })
         const previousSnapshots = pagesResult.rows.map(row => row.doc)
         previousSnapshots.reverse() // sorts most recent first
         this.setState({
@@ -102,21 +103,6 @@ class Main extends React.Component {
         window.close()
     }
 
-    async loadSettings() {
-        // Load initial checkbox value from storage
-        // (note that we do not keep this value in sync bidirectionally; should be okay for a popup)
-        const { loggingEnabled } = await browser.storage.local.get('loggingEnabled')
-        this.setState({
-            loggingEnabled,
-        })
-    }
-
-    async toggleLoggingEnabled(event, { checked }) {
-        await browser.storage.local.set({ loggingEnabled: checked })
-        // refresh the UI.
-        await this.loadSettings()
-    }
-
     render() {
         const { url } = this.props
 
@@ -125,10 +111,9 @@ class Main extends React.Component {
             snapshottedPage,
             errorMessage,
             previousSnapshots,
-            loggingEnabled,
         } = this.state
 
-        const snapshottable = isLoggable({url})
+        const snapshottable = isStorable({ url })
 
         return (
             <Menu vertical fluid borderless>
@@ -150,7 +135,7 @@ class Main extends React.Component {
                             <Button
                                 fluid
                                 positive
-                                href={hrefForLocalPage({page: snapshottedPage})}
+                                href={hrefForLocalPage({ page: snapshottedPage })}
                                 target='_blank'
                                 title='View the snapshot'
                             >
@@ -188,7 +173,7 @@ class Main extends React.Component {
                     </Menu.Item>
                 )}
                 {!snapshottable && (
-                    <Menu.Item style={{textAlign: 'center'}}>
+                    <Menu.Item style={{ textAlign: 'center' }}>
                         <em className='faint'>
                             Cannot snapshot this page.
                         </em>
@@ -201,20 +186,6 @@ class Main extends React.Component {
                         See all your snapshots
                     </Button>
                 </Menu.Item>
-                <Menu.Item>
-                    {loggingEnabled !== undefined && (
-                        <Checkbox
-                            checked={loggingEnabled}
-                            toggle
-                            label={(
-                                <label>
-                                    Store <em>every</em> visited webpage <em>(experimental)</em>
-                                </label>
-                            )}
-                            onChange={this.toggleLoggingEnabled}
-                        />
-                    )}
-                </Menu.Item>
             </Menu>
         )
     }
@@ -226,7 +197,7 @@ Main.propTypes = {
 
 
 async function main() {
-    const url = (await browser.tabs.query({active: true, currentWindow: true}))[0].url
+    const url = (await browser.tabs.query({ active: true, currentWindow: true }))[0].url
 
     ReactDOM.render(
         <Main url={url} />,

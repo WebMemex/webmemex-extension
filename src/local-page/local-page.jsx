@@ -4,9 +4,7 @@ import { Button, Icon, Image } from 'semantic-ui-react'
 import { blobToArrayBuffer } from 'blob-util'
 
 import db from 'src/pouchdb'
-import { downloadPage } from 'src/page-storage/download-page'
-import { getPage } from 'src/search/find-pages'
-import { getTimestamp } from 'src/activity-logger'
+import { downloadPage, getPage } from 'src/page-storage'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
@@ -14,15 +12,8 @@ import ContentFrame from './ContentFrame'
 
 
 async function showPage(pageId) {
-    const page = await getPage({pageId, followRedirects: true})
-    if (page._id !== pageId) {
-        // Apparently getPage followed one or more redirects. Reload the viewer
-        // with the resolved page's id in the ?page query.
-        const location = new URL(window.location)
-        location.searchParams.set('page', page._id)
-        window.location = location
-    }
-    const timestamp = getTimestamp(page)
+    const page = await getPage({ pageId })
+    const timestamp = page.timestamp
 
     // Read the html file from the database.
     const blob = await db.getAttachment(pageId, 'frozen-page.html')
@@ -42,7 +33,7 @@ async function showPage(pageId) {
             <span id='description'>
                 <Icon name='camera' />
                 Snapshot of
-                <a href={page.url} style={{margin: '0 4px'}}>
+                <a href={page.url} style={{ margin: '0 4px' }}>
                     {shortUrl(page.url)}
                 </a>
                 <Icon name='clock' />
@@ -53,7 +44,7 @@ async function showPage(pageId) {
             <Button
                 compact
                 size='tiny'
-                onClick={() => downloadPage({page, saveAs: true})}
+                onClick={() => downloadPage({ page, saveAs: true })}
             >
                 <Icon name='download' />
                 Save page as…

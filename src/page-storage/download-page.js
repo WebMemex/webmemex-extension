@@ -1,10 +1,9 @@
 import get from 'lodash/fp/get'
 
 import db from 'src/pouchdb'
-import { getTimestamp } from 'src/activity-logger'
-import { getPage, getAllPages } from 'src/search/find-pages'
+import { getAllPages } from '.'
 
-export async function downloadAllPages({folder} = {}) {
+export async function downloadAllPages({ folder } = {}) {
     const pagesResult = await getAllPages()
     if (folder === undefined) {
         folder = `WebMemex snapshots dump ${new Date().toISOString().substring(0, 10)}`
@@ -19,32 +18,27 @@ export async function downloadAllPages({folder} = {}) {
         }
 
         try {
-            await downloadPage({page, folder})
+            await downloadPage({ page, folder })
         } catch (error) {
-            failedDownloads.push({page, error})
+            failedDownloads.push({ page, error })
         }
     }
     if (failedDownloads) {
-        const errorMessages = failedDownloads.map(({page, error}) =>
+        const errorMessages = failedDownloads.map(({ page, error }) =>
             `${page._id} ("${page.title}"): ${error.message}\n`
         )
         throw new Error(`Some downloads failed:\n${errorMessages}`)
     }
 }
 
-export async function downloadPage({page, folder, filename, saveAs=false}) {
-    // If the page was deduplicated, find its data.
-    if (page.seeInstead) {
-        page = await getPage({pageId: page._id, followRedirects: true})
-    }
-
+export async function downloadPage({ page, folder, filename, saveAs=false }) {
     // Read the html file from the database.
     const blob = await db.getAttachment(page._id, 'frozen-page.html')
     const url = URL.createObjectURL(blob)
 
     if (filename === undefined) {
         // Use title as filename, after removing (back)slashes.
-        const date = new Date(getTimestamp(page)).toISOString().substring(0, 10)
+        const date = new Date(page.timestamp).toISOString().substring(0, 10)
         filename = `${date} - ${page.title.replace(/[\\/]/g, '-')}.html`
     }
     if (folder !== undefined) {

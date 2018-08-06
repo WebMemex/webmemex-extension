@@ -1,10 +1,9 @@
 import get from 'lodash/fp/get'
 
-export function hrefForLocalPage({page}) {
-    // Return if it does not have a stored page attached at all, nor is a redirect.
+export function hrefForLocalPage({ page }) {
+    // Return if it does not have a stored page attached at all.
     if (
         !get(['_attachments', 'frozen-page.html'])(page)
-        && !page.seeInstead
     ) {
         return undefined
     }

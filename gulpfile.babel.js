@@ -18,7 +18,7 @@ import watchify from 'watchify'
 import babelify from 'babelify'
 import envify from 'loose-envify/custom'
 import cssModulesify from 'css-modulesify'
-import cssnext from 'postcss-cssnext'
+import postcssPresetEnv from 'postcss-preset-env'
 import uglifyjs from 'uglify-es'
 import uglifyComposer from 'gulp-uglify/composer'
 
@@ -44,14 +44,13 @@ const staticFiles = {
     'src/*.html': 'extension',
     'src/assets/*': 'extension/assets/',
     'node_modules/webextension-polyfill/dist/browser-polyfill.js': 'extension/lib',
-    'node_modules/pdfjs-dist/build/pdf.worker.min.js': 'extension/lib',
     'node_modules/semantic-ui-css/semantic.min.css': 'extension/lib/semantic-ui',
     'node_modules/semantic-ui-css/themes/**/*': 'extension/lib/semantic-ui/themes',
 }
 
 const sourceFiles = [
-    'background.js',
-    'content_script.js',
+    'main/background.js',
+    'main/content_script.js',
     'overview/overview.jsx',
     'local-page/local-page.jsx',
     'popup/popup.jsx',
@@ -61,6 +60,22 @@ const browserifySettings = {
     debug: true,
     extensions: ['.jsx', '.css'],
     paths: ['.'],
+}
+
+// Define babel config here, as .babelrc is already used for converting this gulpfile itself.
+const babelifySettings = {
+    presets: [
+        'react',
+        'stage-3',
+        ['env', {
+            targets: {
+                browsers: [
+                    'last 2 Firefox versions',
+                    'last 2 Chrome versions'
+                ]
+            }
+        }]
+    ],
 }
 
 async function createBundle({filePath, watch = false, production = false}) {
@@ -78,7 +93,7 @@ async function createBundle({filePath, watch = false, production = false}) {
         ? watchify(browserify({...watchify.args, ...browserifySettings, entries}))
             .on('update', bundle)
         : browserify({...browserifySettings, entries})
-    b.transform(babelify)
+    b.transform(babelify, babelifySettings)
     b.transform(envify({
         NODE_ENV: production ? 'production' : 'development',
     }), {global: true})
@@ -88,7 +103,9 @@ async function createBundle({filePath, watch = false, production = false}) {
         rootDir: path.join('src', dir),
         // output: path.join(destination, cssOutput), // We read the stream instead (see below)
         postcssBefore: [
-            cssnext,
+            postcssPresetEnv({
+                stage: 0,
+            }),
         ],
     })
     b.on('css stream', stream => {
@@ -97,7 +114,7 @@ async function createBundle({filePath, watch = false, production = false}) {
         stream
             .pipe(source('css-modules-output.css')) // pretend the streamed data had this filename.
             .pipe(buffer()) // concatCss & clipEmptyFiles do not support streamed files.
-            .pipe(addsrc.prepend(cssInputPath))
+            .pipe(fs.existsSync(cssInputPath) ? addsrc.prepend(cssInputPath) : identity())
             .pipe(concatCss(cssOutput, {inlineImports: false}))
             .pipe(clipEmptyFiles()) // Drop file if no output was produced (e.g. no background.css)
             .pipe(gulp.dest(destination))

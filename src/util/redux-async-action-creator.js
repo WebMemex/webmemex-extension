@@ -46,7 +46,7 @@ export default function asyncActionCreator(
 
             // Run the actionCreator
             const action = actionCreator(...args)
-            dispatch(pending({action, args}))
+            dispatch(pending({ action, args }))
 
             const removeFromTransactionList = () => {
                 runningTransactions = runningTransactions.filter(
@@ -57,7 +57,7 @@ export default function asyncActionCreator(
             // Cancels this transaction. Put more accurately, we just ignore its
             // results, because a Javascript Promise cannot really be cancelled.
             const cancel = () => {
-                cancelled && dispatch(cancelled({action, args}))
+                cancelled && dispatch(cancelled({ action, args }))
                 finished && dispatch(finished({
                     value: undefined,
                     error: undefined,
@@ -82,9 +82,9 @@ export default function asyncActionCreator(
             // If the transaction was not cancelled, dispatch some actions.
             if (runningTransactions.includes(transaction)) {
                 if (err) {
-                    error && dispatch(error({error: err}))
+                    error && dispatch(error({ error: err }))
                 } else {
-                    complete && dispatch(complete({value}))
+                    complete && dispatch(complete({ value }))
                 }
                 finished && dispatch(finished({
                     value,

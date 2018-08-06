@@ -23,10 +23,10 @@ describe('whenPageDOMLoaded', () => {
                 Promise.resolve()
             ),
         }
-        await whenPageDOMLoaded({tabId})
+        await whenPageDOMLoaded({ tabId })
         expect(browser.tabs.executeScript).toHaveBeenCalledWith(
             tabId,
-            {code: 'undefined', runAt: 'document_end'},
+            { code: 'undefined', runAt: 'document_end' },
         )
     })
 
@@ -38,7 +38,7 @@ describe('whenPageDOMLoaded', () => {
             ),
         }
         try {
-            await whenPageDOMLoaded({tabId})
+            await whenPageDOMLoaded({ tabId })
         } catch (err) {
             expect(err.message).toBe('Script unable to execute')
         }
@@ -54,7 +54,7 @@ describe('whenPageDOMLoaded', () => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.reject(new Error('Tab was changed'))
         )
-        await expect(whenPageDOMLoaded({tabId})).rejects.toMatchObject({message: 'Tab was changed'})
+        await expect(whenPageDOMLoaded({ tabId })).rejects.toMatchObject({ message: 'Tab was changed' })
     })
 })
 
@@ -76,7 +76,7 @@ describe('whenPageLoadComplete', () => {
                 status: 'complete',
             }),
         }
-        await whenPageLoadComplete({tabId})
+        await whenPageLoadComplete({ tabId })
         expect(browser.tabs.get).toHaveBeenCalledWith(tabId)
         expect(eventToPromise.default).not.toHaveBeenCalled()
     })
@@ -89,7 +89,7 @@ describe('whenPageLoadComplete', () => {
         }
         // Add a 'shibboleth' to be able to check that *this* Promise was returned & resolved.
         eventToPromise.default.mockReturnValueOnce(Promise.resolve('shibboleth'))
-        await expect(whenPageLoadComplete({tabId})).resolves.toBe('shibboleth')
+        await expect(whenPageLoadComplete({ tabId })).resolves.toBe('shibboleth')
     })
 
     test('should run eventToPromise and reject if its Promise rejects', async () => {
@@ -101,7 +101,7 @@ describe('whenPageLoadComplete', () => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.reject(new Error('Tab was changed'))
         )
-        await expect(whenPageLoadComplete({tabId})).rejects.toMatchObject({message: 'Tab was changed'})
+        await expect(whenPageLoadComplete({ tabId })).rejects.toMatchObject({ message: 'Tab was changed' })
     })
 })
 
@@ -117,29 +117,29 @@ describe('whenTabActive', () => {
 
     test('should return directly if the tab is already active', async () => {
         browser.tabs = {
-            query: jest.fn().mockReturnValueOnce([{id: 1}]),
+            query: jest.fn().mockReturnValueOnce([{ id: 1 }]),
         }
-        await whenTabActive({tabId: 1})
-        expect(browser.tabs.query).toHaveBeenCalledWith({active: true})
+        await whenTabActive({ tabId: 1 })
+        expect(browser.tabs.query).toHaveBeenCalledWith({ active: true })
         expect(eventToPromise.default).not.toHaveBeenCalled()
     })
 
     test('should run eventToPromise and resolve if its Promise resolves', async () => {
         browser.tabs = {
-            query: jest.fn().mockReturnValueOnce([{id: 2}]),
+            query: jest.fn().mockReturnValueOnce([{ id: 2 }]),
         }
         // Add a 'shibboleth' to be able to check that *this* Promise was returned & resolved.
         eventToPromise.default.mockReturnValueOnce(Promise.resolve('shibboleth'))
-        await expect(whenTabActive({tabId: 1})).resolves.toBe('shibboleth')
+        await expect(whenTabActive({ tabId: 1 })).resolves.toBe('shibboleth')
     })
 
     test('should run eventToPromise and reject if its Promise rejects', async () => {
         browser.tabs = {
-            query: jest.fn().mockReturnValueOnce([{id: 2}]),
+            query: jest.fn().mockReturnValueOnce([{ id: 2 }]),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.reject(new Error('Tab was changed'))
         )
-        await expect(whenTabActive({tabId: 1})).rejects.toMatchObject({message: 'Tab was changed'})
+        await expect(whenTabActive({ tabId: 1 })).rejects.toMatchObject({ message: 'Tab was changed' })
     })
 })

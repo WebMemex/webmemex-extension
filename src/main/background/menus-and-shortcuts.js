@@ -1,7 +1,6 @@
 import get from 'lodash/fp/get'
 
-import manifest from './manifest.json'
-
+import manifest from 'src/manifest.json'
 
 function openOverview() {
     browser.tabs.create({
@@ -16,7 +15,6 @@ const commandActions = {
 
 // Checkbox settings to be shown in the context menu.
 const settings = {
-    'loggingEnabled': {title: 'Store every visited page'},
 }
 
 const commands = manifest.commands
@@ -25,7 +23,7 @@ async function updateOrCreateContextMenuItem(id, options) {
     try {
         await browser.contextMenus.update(id, options)
     } catch (err) {
-        await browser.contextMenus.create({id, ...options})
+        await browser.contextMenus.create({ id, ...options })
     }
 }
 
@@ -70,7 +68,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
     if (type === 'command') {
         commandActions[id]()
     } else if (type === 'setting') {
-        await browser.storage.local.set({[id]: info.checked})
+        await browser.storage.local.set({ [id]: info.checked })
     }
 })
 
@@ -78,8 +76,3 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 browser.commands.onCommand.addListener(command => {
     commandActions[command]()
 })
-
-// Run scripts that set their own event listeners.
-/* eslint-disable import/first */
-import 'src/activity-logger/background'
-import 'src/omnibar'

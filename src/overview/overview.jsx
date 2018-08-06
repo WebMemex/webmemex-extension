@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import configureStore from './store'
-import overview from 'src/overview'
+import overview from './overview-ui'
 
 import './base.css'
 
 // DEBUG expose for manual making dumps, while not supported by GUI.
-import { downloadAllPages } from 'src/page-storage/download-page'
+import { downloadAllPages } from 'src/page-storage'
 window.downloadAllPages = downloadAllPages
 
 // Include development tools if we are not building for production
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Set up the Redux store
-const store = configureStore({ReduxDevTools})
+const store = configureStore({ ReduxDevTools })
 
 store.dispatch(overview.actions.init())
 

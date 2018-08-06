@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { getAttachmentAsDataUrl } from 'src/pouchdb'
 
 
-const readHash = ({doc, attachmentId}) =>
+const readHash = ({ doc, attachmentId }) =>
     doc && attachmentId && get(['_attachments', attachmentId, 'digest'])(doc)
 
 export default class ImgFromPouch extends React.Component {
@@ -17,16 +17,16 @@ export default class ImgFromPouch extends React.Component {
         }
     }
 
-    componentWillMount() {
-        // Fetch the attachment. Note we will not have it on our first mount.
+    componentDidMount() {
+        // Fetch the attachment.
         this._isMounted = true
-        this.updateFile(this.props)
+        this.updateFile()
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
         // If the attachment has changed, rerun the update
-        if (readHash(nextProps) !== readHash(this.props)) {
-            this.updateFile(nextProps)
+        if (readHash(prevProps) !== readHash(this.props)) {
+            this.updateFile()
         }
     }
 
@@ -34,10 +34,11 @@ export default class ImgFromPouch extends React.Component {
         this._isMounted = false
     }
 
-    async updateFile({doc, attachmentId}) {
-        const dataUrl = await getAttachmentAsDataUrl({doc, attachmentId})
+    async updateFile() {
+        const { doc, attachmentId } = this.props
+        const dataUrl = await getAttachmentAsDataUrl({ doc, attachmentId })
         if (this._isMounted) {
-            this.setState({dataUrl})
+            this.setState({ dataUrl })
         }
     }
 

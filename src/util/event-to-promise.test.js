@@ -32,10 +32,10 @@ describe('eventToPromise', () => {
     test('should listen and unlisten to the events', async () => {
         // We try both passing multiple events (for resolveOpts) and a single event (for rejectOpts).
         const resolveOpts = [
-            {event: new MockEvent()},
-            {event: new MockEvent()},
+            { event: new MockEvent() },
+            { event: new MockEvent() },
         ]
-        const rejectOpts = {event: new MockEvent()}
+        const rejectOpts = { event: new MockEvent() }
         eventToPromise({
             resolve: resolveOpts,
             reject: rejectOpts,
@@ -44,27 +44,27 @@ describe('eventToPromise', () => {
         // We use a bogus await statement to let any resolved promises invoke their callbacks.
         // XXX Not sure if we can rely on this in every ES implementation.
         await null
-        expect(resolveOpts[0].event.listeners.length).toBe(1)
-        expect(resolveOpts[1].event.listeners.length).toBe(1)
-        expect(rejectOpts.event.listeners.length).toBe(1)
+        expect(resolveOpts[0].event.listeners).toHaveLength(1)
+        expect(resolveOpts[1].event.listeners).toHaveLength(1)
+        expect(rejectOpts.event.listeners).toHaveLength(1)
 
         // Trigger any of the events.
         resolveOpts[1].event.trigger()
 
         await null
-        expect(resolveOpts[0].event.listeners.length).toBe(0)
-        expect(resolveOpts[1].event.listeners.length).toBe(0)
-        expect(rejectOpts.event.listeners.length).toBe(0)
+        expect(resolveOpts[0].event.listeners).toHaveLength(0)
+        expect(resolveOpts[1].event.listeners).toHaveLength(0)
+        expect(rejectOpts.event.listeners).toHaveLength(0)
     })
 
     describe('should resolve with given value when a resolve-event occurs', () => {
         const values = {
-            object: {someKey: 'someValue'},
-            function: () => ({someKey: 'someValue'}),
+            object: { someKey: 'someValue' },
+            function: () => ({ someKey: 'someValue' }),
         }
         Object.entries(values).forEach(([type, value]) => {
             test(`when value is a: ${type}`, async () => {
-                const resolveOpts = {event: new MockEvent(), value}
+                const resolveOpts = { event: new MockEvent(), value }
                 const resolveHandler = jest.fn()
                 eventToPromise({
                     resolve: resolveOpts,
@@ -76,7 +76,7 @@ describe('eventToPromise', () => {
                 resolveOpts.event.trigger()
 
                 await null
-                expect(resolveHandler).toBeCalledWith({someKey: 'someValue'})
+                expect(resolveHandler).toBeCalledWith({ someKey: 'someValue' })
             })
         })
     })
@@ -84,7 +84,7 @@ describe('eventToPromise', () => {
     const reasons = {
         string: 'something',
         function: () => 'something else',
-        object: {someKey: 'something'},
+        object: { someKey: 'something' },
     }
     describe('should reject with Error(string) if a reject-event occurs', () => {
         Object.entries(reasons).forEach(([type, reason]) => {

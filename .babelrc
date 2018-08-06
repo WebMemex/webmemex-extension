@@ -1,13 +1,9 @@
 {
   "presets": [
-    "react",
     "stage-3",
     ["env", {
       "targets": {
-        "browsers": [
-          "last 2 Firefox versions",
-          "last 2 Chrome versions"
-        ]
+        "node": "current"
       }
     }]
   ]

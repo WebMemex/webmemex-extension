@@ -3,4 +3,3 @@ extension
 dist
 .chrome-extension-key.pem
 .api-keys.json
-jest_0/
