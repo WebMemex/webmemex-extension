@@ -47,6 +47,5 @@
         "unlimitedStorage",
         "webNavigation"
     ],
-    "omnibox": { "keyword" : "m" },
     "manifest_version": 2
 }
