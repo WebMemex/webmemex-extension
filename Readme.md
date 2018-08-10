@@ -37,9 +37,8 @@ your copyrights on any contributions you make. See e.g. [unlicense.org][] for mo
 ## Hacking
 
 See [`Codetour.md`](Codetour.md) for an explanation of the repository structure. In short, it is a
-[WebExtension][] (runs on Firefox and Chrome/Chromium browsers), bundled by [browserify][] with some
-[babel][] ES6–7→ES5 compilation, that logs and stores pages in [PouchDB][], and provides a viewer
-for this personal web based on [React][]+[Redux][].
+[WebExtension][] (runs on Firefox and Chrome/Chromium browsers), bundled by [browserify][], that
+logs and stores pages in [PouchDB][], and provides a viewer built with [React][]+[Redux][].
 
 ### Build and run it
 
@@ -47,7 +46,7 @@ for this personal web based on [React][]+[Redux][].
 2. Get [Node/NPM][]≥7.
 3. Run `make` to install dependencies and compile the source files.
 4. Load it in Firefox or Chromium/Chrome:
-    * In Firefox (≥49): run `npm run firefox` (or run [web-ext][] directly for more control).
+    * In Firefox: run `npm run firefox` (or run [web-ext][] directly for more control).
       Alternatively, go to `about:debugging`, choose 'Load Temporary Add-on', and pick
       `extension/manifest.json` from this repo.
     * In Chromium/Chrome: go to Tools→Extensions (`chrome://extensions`), enable 'Developer mode',
@@ -64,7 +63,6 @@ automatically. Otherwise, manually press the reload button in the extension list
 
 [WebExtension]: https://developer.mozilla.org/en-US/Add-ons/WebExtensions
 [browserify]: http://browserify.org/
-[babel]: https://babeljs.io/
 [PouchDB]: https://pouchdb.com/
 [React]: https://facebook.github.io/react/
 [Redux]: http://redux.js.org/

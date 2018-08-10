@@ -26,6 +26,8 @@ all: check_requirements
 
 .PHONY: check_requirements
 check_requirements:
-	### Checking availability of Node/NPM. ###
+	###
+	### Checking availability of Node/NPM.
+	###
 	command -v npm >/dev/null || { echo ${NPM_ABSENT_MSG}; exit 1; }
 	test `node -p "process.versions.node.split('.')[0]"` -ge ${MIN_NODE_VERSION} || { echo ${NODE_VERSION_MSG}; exit 1; }
