@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import configureStore from './store'
-import overview from './overview-ui'
+import * as overview from './overview-ui'
 
 import './base.css'
 
