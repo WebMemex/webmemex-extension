@@ -2,7 +2,7 @@ import last from 'lodash/fp/last'
 import isEqual from 'lodash/fp/isEqual'
 import { createAction } from 'redux-act'
 
-import { filterPagesByQuery, deletePage as deletePageFromDb } from 'src/page-storage'
+import { filterPagesByQuery, deletePage as deletePageFromDb } from 'src/local-storage'
 import asyncActionCreator from 'src/util/redux-async-action-creator'
 
 import { ourState } from './selectors'

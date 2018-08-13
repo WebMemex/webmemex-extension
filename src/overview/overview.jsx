@@ -8,7 +8,7 @@ import * as overview from './overview-ui'
 import './base.css'
 
 // DEBUG expose for manual making dumps, while not supported by GUI.
-import { downloadAllPages } from 'src/page-storage'
+import { downloadAllPages } from 'src/local-storage'
 window.downloadAllPages = downloadAllPages
 
 // Include development tools if we are not building for production

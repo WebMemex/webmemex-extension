@@ -36,7 +36,7 @@ This extracts and stores information about the page in a given tab, such as:
 Part of the code for these features are run in the background script, part is performed in the
 content script running inside the tab.
 
-### [`src/page-storage/`](src/page-storage/): (web)page storage
+### [`src/local-storage/`](src/local-storage/): (web)page storage
 
 Everything related to managing the pages stored in the database.
 

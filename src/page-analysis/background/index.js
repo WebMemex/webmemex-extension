@@ -6,7 +6,7 @@ import { whenPageDOMLoaded } from 'src/util/tab-events'
 import { remoteFunction } from 'src/util/webextensionRPC'
 import updateDoc, { setAttachment } from 'src/util/pouchdb-update-doc'
 import db from 'src/pouchdb'
-import { getPage } from 'src/page-storage'
+import { getPage } from 'src/local-storage'
 
 import getFavIcon from './get-fav-icon'
 import makeScreenshot from './make-screenshot'

@@ -4,7 +4,7 @@ import { Button, Icon, Image } from 'semantic-ui-react'
 import { blobToArrayBuffer } from 'blob-util'
 
 import db from 'src/pouchdb'
-import { downloadPage, getPage } from 'src/page-storage'
+import { downloadPage, getPage } from 'src/local-storage'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
