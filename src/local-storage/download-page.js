@@ -1,7 +1,6 @@
 import get from 'lodash/fp/get'
 
-import db from 'src/pouchdb'
-import { getAllPages } from '.'
+import { getAllPages, getPageBlob } from '.'
 
 export async function downloadAllPages({ folder } = {}) {
     const pagesResult = await getAllPages()
@@ -33,7 +32,7 @@ export async function downloadAllPages({ folder } = {}) {
 
 export async function downloadPage({ page, folder, filename, saveAs=false }) {
     // Read the html file from the database.
-    const blob = await db.getAttachment(page._id, 'frozen-page.html')
+    const blob = await getPageBlob({ page })
     const url = URL.createObjectURL(blob)
 
     if (filename === undefined) {

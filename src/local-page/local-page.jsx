@@ -1,10 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Button, Icon, Image } from 'semantic-ui-react'
-import { blobToArrayBuffer } from 'blob-util'
 
-import db from 'src/pouchdb'
-import { downloadPage, getPage } from 'src/local-storage'
+import { downloadPage, getPage, getPageHtml } from 'src/local-storage'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
@@ -13,12 +11,8 @@ import ContentFrame from './ContentFrame'
 
 async function showPage(pageId) {
     const page = await getPage({ pageId })
+    const html = await getPageHtml({ pageId })
     const timestamp = page.timestamp
-
-    // Read the html file from the database.
-    const blob = await db.getAttachment(pageId, 'frozen-page.html')
-    // We assume utf-8 encoding. TODO: read encoding from document.
-    const html = new TextDecoder('utf-8').decode(await blobToArrayBuffer(blob))
 
     document.title = `${page.title}`
 

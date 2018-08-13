@@ -2,8 +2,9 @@ import get from 'lodash/fp/get'
 import omit from 'lodash/fp/omit'
 import React from 'react'
 import PropTypes from 'prop-types'
+import { blobToDataURL } from 'blob-util'
 
-import { getAttachmentAsDataUrl } from 'src/pouchdb'
+import db from 'src/pouchdb'
 
 
 const readHash = ({ doc, attachmentId }) =>
@@ -36,7 +37,14 @@ export default class ImgFromPouch extends React.Component {
 
     async updateFile() {
         const { doc, attachmentId } = this.props
-        const dataUrl = await getAttachmentAsDataUrl({ doc, attachmentId })
+
+        let blob
+        try {
+            blob = await db.getAttachment(doc._id, attachmentId)
+        } catch (err) {}
+
+        const dataUrl = blob ? await blobToDataURL(blob) : undefined
+
         if (this._isMounted) {
             this.setState({ dataUrl })
         }
