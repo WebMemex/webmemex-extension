@@ -1,17 +1,14 @@
 import { makeRemotelyCallable } from 'src/util/webextensionRPC'
 import { analysePage } from 'src/page-analysis/background'
-import { createPageStub } from 'src/local-storage'
+import { createPage } from 'src/local-storage'
 
 // Analyses the page in the specified tab. Returns the page that has been created in the database.
 async function storePage({ tabId, url }) {
-    // Create a new page doc in the database.
-    const pageStub = await createPageStub({ url })
-
     // Run analysis.
-    const { page } = await analysePage({
-        tabId,
-        page: pageStub,
-    })
+    const captureResult = await analysePage({ tabId })
+
+    // Create a new page doc in the database.
+    const page = await createPage({ url, ...captureResult })
 
     return { page }
 }

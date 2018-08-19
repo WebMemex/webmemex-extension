@@ -7,16 +7,18 @@ import { pageKeyPrefix, convertPageDocId } from '.'
 // Post-process result list after any retrieval of pages from the database.
 async function postprocessPagesResult({ pagesResult }) {
     pagesResult = update('rows', rows => rows.map(
-        update('doc', doc => ({
-            // Let the page analysis module augment or revise the document's attributes.
-            ...revisePageFields(doc),
-            // The creation time is encoded in the doc._id; expose it for convenience.
-            timestamp: Number.parseInt(convertPageDocId(doc._id).timestamp),
-        }))
+        update('doc', postProcessPage)
     ))(pagesResult)
 
     return pagesResult
 }
+
+export const postProcessPage = page => ({
+    // Let the page analysis module augment or revise the document's attributes.
+    ...revisePageFields(page),
+    // The creation time is encoded in the doc._id; expose it for convenience.
+    timestamp: Number.parseInt(convertPageDocId(page._id).timestamp),
+})
 
 export async function getPage({ pageId }) {
     const pagesResult = await getPages({ pageIds: [pageId] })
