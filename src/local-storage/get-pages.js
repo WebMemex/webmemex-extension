@@ -1,7 +1,7 @@
 import update from 'lodash/fp/update'
 
 import db, { normaliseFindResult, keyRangeForPrefix } from 'src/pouchdb'
-import { revisePageFields } from 'src/page-analysis'
+import { revisePageFields } from 'src/page-capture'
 import { pageKeyPrefix, convertPageDocId } from '.'
 
 // Post-process result list after any retrieval of pages from the database.
@@ -14,7 +14,7 @@ async function postprocessPagesResult({ pagesResult }) {
 }
 
 export const postProcessPage = page => ({
-    // Let the page analysis module augment or revise the document's attributes.
+    // Let the page-capture module augment or revise the document's attributes.
     ...revisePageFields(page),
     // The creation time is encoded in the doc._id; expose it for convenience.
     timestamp: Number.parseInt(convertPageDocId(page._id).timestamp),

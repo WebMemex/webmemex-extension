@@ -1,7 +1,7 @@
 import get from 'lodash/fp/get'
 import last from 'lodash/fp/last'
 
-import { searchableTextFields } from 'src/page-analysis'
+import { searchableTextFields } from 'src/page-capture'
 import { getPagesByDate } from '.'
 
 // Search by keyword query, returning all docs if no query is given

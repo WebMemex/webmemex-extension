@@ -1,1 +1,1 @@
-import 'src/page-analysis/content_script'
+import 'src/page-capture/content_script'

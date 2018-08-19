@@ -9,7 +9,7 @@ import makeScreenshot from './make-screenshot'
 
 
 // Captures and extracts stuff from the current page in the given tab.
-export async function analysePage({ tabId }) {
+export async function capturePage({ tabId }) {
     // Wait until its DOM has loaded, in case we got invoked before that.
     await whenPageDOMLoaded({ tabId }) // TODO: catch e.g. tab close.
 

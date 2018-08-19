@@ -8,8 +8,8 @@ To comply with the [anatomy of a WebExtension](https://developer.mozilla.org/en-
 this extension consists of the following parts (found in [`extension/`](extension/) after building):
 
 - The background script (`main/background/index.js`) always runs, in an 'empty invisible tab',
-  listening for messages and events.  
-- The content script (`main/content_script/index.js`) is loaded into every web page that is    
+  listening for messages and events.
+- The content script (`main/content_script/index.js`) is loaded into every web page that is
   visited. It is invisible from that web page's own scripts, and can talk to the background script.
 - The `html` files, with their resources in corresponding folders, provide the user interface.
 
@@ -25,7 +25,7 @@ The parts communicate in two ways:
 
 The glue between things. Contains the main background script and content script.
 
-### [`src/page-analysis/`](src/page-analysis/): webpage capturing/analysis
+### [`src/page-capture/`](src/page-capture/): webpage capturing & extraction
 
 This extracts and stores information about the page in a given tab, such as:
 - A full html version of the rendered page, by 'freeze-drying' it.
