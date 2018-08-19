@@ -33,12 +33,14 @@ export async function capturePage({ tabId }) {
         new Blob([htmlString], { type: 'text/html;charset=UTF-8' })
     )
 
-    // Wait until every task has either completed or failed.
-    const [ favIcon, screenshot, pageContent, frozenPage ] = await whenAllSettled([
+    // Wait until freeze-dry has completed; throw if it fails.
+    const frozenPage = await frozenPageP
+
+    // Wait until every other task has either completed or failed.
+    const [ favIcon, screenshot, pageContent ] = await whenAllSettled([
         favIconP,
         screenshotP,
         pageContentP,
-        frozenPageP,
     ])
 
     return { favIcon, screenshot, pageContent, frozenPage }
