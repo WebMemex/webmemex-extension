@@ -19,6 +19,8 @@ export default class TakeSnapshotButton extends React.Component {
     }
 
     async takeSnapshot() {
+        const { onSnapshotted } = this.props
+
         this.setState({ snapshotState: 'shooting' })
 
         let snapshottedPage
@@ -36,6 +38,8 @@ export default class TakeSnapshotButton extends React.Component {
             snapshotState: 'success',
             snapshottedPage: snapshottedPage,
         }))
+
+        if (onSnapshotted) onSnapshotted()
     }
 
     render () {
@@ -84,4 +88,5 @@ export default class TakeSnapshotButton extends React.Component {
 }
 
 TakeSnapshotButton.propTypes = {
+    onSnapshotted: PropTypes.func,
 }

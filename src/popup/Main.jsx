@@ -16,7 +16,9 @@ function isStorable({ url }) {
 export default class Main extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {}
         this.openOverview = this.openOverview.bind(this)
+        this.updateModificationTime = this.updateModificationTime.bind(this)
     }
 
     async openOverview() {
@@ -26,8 +28,15 @@ export default class Main extends React.Component {
         window.close()
     }
 
+    updateModificationTime() {
+        this.setState({
+            lastModificationTime: Date.now(),
+        })
+    }
+
     render() {
         const { tabId, tabUrl, snapshotInfo } = this.props
+        const { lastModificationTime } = this.state
 
         const isSnapshot = !!snapshotInfo
         const snapshottable = !isSnapshot && isStorable({ url: tabUrl })
@@ -42,6 +51,7 @@ export default class Main extends React.Component {
                 {snapshottable && (
                     <TakeSnapshotButton
                         {...this.state}
+                        onSnapshotted={this.updateModificationTime}
                     />
                 )}
                 {isSnapshot && (
@@ -70,6 +80,7 @@ export default class Main extends React.Component {
                         <SnapshotList
                             originalUrl={originalUrl}
                             currentlyViewedUrl={tabUrl}
+                            lastModificationTime={lastModificationTime}
                         />
                     </Menu.Item>
                 )}

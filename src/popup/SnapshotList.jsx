@@ -19,7 +19,10 @@ export default class SnapshotList extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.originalUrl !== prevProps.originalUrl) {
+        if (
+            this.props.originalUrl !== prevProps.originalUrl
+            || this.props.lastModificationTime !== prevProps.lastModificationTime
+        ) {
             this.refreshSnapshotList()
         }
     }
@@ -61,6 +64,7 @@ export default class SnapshotList extends React.Component {
 SnapshotList.propTypes = {
     originalUrl: PropTypes.string,
     currentlyViewedUrl: PropTypes.string,
+    lastModificationTime: PropTypes.number,
 }
 
 const SnapshotAsListItem = ({ page, highlight }) => {
