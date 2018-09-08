@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Button, Popup, Icon } from 'semantic-ui-react'
 import classNames from 'classnames'
 
-import { hrefForLocalPage } from 'src/local-page'
+import { relativeUrlForLocalPage } from 'src/local-page'
 import niceTime from 'src/util/nice-time'
 
 import ImgFromPouch from './ImgFromPouch'
@@ -14,7 +14,7 @@ import { deletePage } from '../actions'
 
 
 const PageAsListItem = ({ doc, onTrashButtonClick }) => {
-    const href = hrefForLocalPage({ page: doc })
+    const href = relativeUrlForLocalPage(doc)
 
     const pageSize = get(['_attachments', 'frozen-page.html', 'length'])(doc)
     const sizeInMB = pageSize !== undefined

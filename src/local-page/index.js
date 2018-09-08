@@ -1,6 +1,6 @@
 import get from 'lodash/fp/get'
 
-export function hrefForLocalPage({ page }) {
+export function relativeUrlForLocalPage(page) {
     // Return if it does not have a stored page attached at all.
     if (
         !get(['_attachments', 'frozen-page.html'])(page)
@@ -12,4 +12,10 @@ export function hrefForLocalPage({ page }) {
     const hash = (page.url && page.url.split('#')[1])
     const href = (hash !== undefined) ? url + '#' + hash : url
     return href
+}
+
+export function absoluteUrlForLocalPage(page) {
+    const href = relativeUrlForLocalPage(page)
+    if (!href) return undefined
+    return browser.runtime.getURL(href)
 }

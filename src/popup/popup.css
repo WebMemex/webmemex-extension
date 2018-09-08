@@ -9,12 +9,14 @@ body {
 }
 
 .item.highlight .listContent {
-    background: white;
+    background: #bef;
 }
 
 .listContent {
     color: unset;
     height: 40px;
+    border-radius: 2px;
+    padding: 0 4px;
     display: flex;
     align-items: center;
 }
