@@ -1,12 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import { Button, Icon, List } from 'semantic-ui-react'
+import { List } from 'semantic-ui-react'
 
 import { absoluteUrlForLocalPage } from 'src/local-page'
-import { getPagesByUrl, downloadPage, deletePage } from 'src/local-storage'
-import niceTime from 'src/util/nice-time'
-import LinkOpenInTab from './LinkOpenInTab'
+import { getPagesByUrl } from 'src/local-storage'
+import SnapshotListItem from './SnapshotListItem'
 
 export default class SnapshotList extends React.Component {
     constructor(props) {
@@ -50,7 +48,7 @@ export default class SnapshotList extends React.Component {
                     : previousSnapshots.length === 0
                         ? <List.Item className='faint'>No snapshots yet</List.Item>
                         : previousSnapshots.map(page => (
-                            <SnapshotAsListItem
+                            <SnapshotListItem
                                 key={page._id}
                                 page={page}
                                 highlight={absoluteUrlForLocalPage(page) === currentlyViewedUrl}
@@ -67,55 +65,4 @@ SnapshotList.propTypes = {
     originalUrl: PropTypes.string,
     currentlyViewedUrl: PropTypes.string,
     lastModificationTime: PropTypes.number,
-}
-
-const SnapshotAsListItem = ({ page, highlight, refreshSnapshotList }) => {
-    return (
-        <List.Item className={classNames({ highlight })}>
-            <List.Content
-                as={LinkOpenInTab}
-                className='listContent'
-                href={absoluteUrlForLocalPage(page)}
-                title='View the snapshot'
-            >
-                <div>
-                    <Icon name='camera' />
-                    {niceTime(page.timestamp)}
-                </div>
-                <Button
-                    className='downloadButton'
-                    icon
-                    size='tiny'
-                    onClick={event => {
-                        event.preventDefault()
-                        event.stopPropagation()
-                        downloadPage({ page, saveAs: true })
-                    }}
-                    title='Save page as…'
-                >
-                    <Icon name='download' />
-                </Button>
-                <Button
-                    className='downloadButton'
-                    icon
-                    size='tiny'
-                    onClick={async event => {
-                        event.preventDefault()
-                        event.stopPropagation()
-                        await deletePage({ page })
-                        refreshSnapshotList()
-                    }}
-                    title='Delete this snapshot'
-                >
-                    <Icon name='trash' />
-                </Button>
-            </List.Content>
-        </List.Item>
-    )
-}
-
-SnapshotAsListItem.propTypes = {
-    page: PropTypes.object,
-    highlight: PropTypes.bool,
-    refreshSnapshotList: PropTypes.func,
 }
