@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Button, Icon, List } from 'semantic-ui-react'
+import { Popup, Button, Icon, List } from 'semantic-ui-react'
 
 import { absoluteUrlForLocalPage } from 'src/local-page'
 import { downloadPage, deletePage } from 'src/local-storage'
@@ -11,6 +11,52 @@ import LinkOpenInTab from './LinkOpenInTab'
 export default class SnapshotListItem extends React.Component {
     render() {
         const { page, isBeingViewed, refreshSnapshotList } = this.props
+
+        const downloadButton = (
+            <Button
+                icon
+                size='tiny'
+                onClick={event => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    downloadPage({ page, saveAs: true })
+                }}
+                title='Save snapshot as…'
+            >
+                <Icon name='download' />
+            </Button>
+        )
+
+        const deleteButton = (
+            <Popup
+                trigger={
+                    <Button
+                        icon='trash'
+                        size='tiny'
+                        onClick={async event => {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }}
+                        title='Delete this snapshot'
+                    />
+                }
+                content={
+                    <Button
+                        negative
+                        content='Delete this snapshot'
+                        onClick={async event => {
+                            event.preventDefault()
+                            event.stopPropagation()
+                            await deletePage({ page })
+                            refreshSnapshotList()
+                        }}
+                    />
+                }
+                on='focus'
+                hoverable
+                position='right center'
+            />
+        )
 
         return (
             <List.Item className={classNames({ highlight: isBeingViewed })}>
@@ -24,33 +70,8 @@ export default class SnapshotListItem extends React.Component {
                         <Icon name='camera' />
                         {niceTime(page.timestamp)}
                     </div>
-                    <Button
-                        className='downloadButton'
-                        icon
-                        size='tiny'
-                        onClick={event => {
-                            event.preventDefault()
-                            event.stopPropagation()
-                            downloadPage({ page, saveAs: true })
-                        }}
-                        title='Save snapshot as…'
-                    >
-                        <Icon name='download' />
-                    </Button>
-                    <Button
-                        className='downloadButton'
-                        icon
-                        size='tiny'
-                        onClick={async event => {
-                            event.preventDefault()
-                            event.stopPropagation()
-                            await deletePage({ page })
-                            refreshSnapshotList()
-                        }}
-                        title='Delete this snapshot'
-                    >
-                        <Icon name='trash' />
-                    </Button>
+                    {downloadButton}
+                    {deleteButton}
                 </List.Content>
             </List.Item>
         )
