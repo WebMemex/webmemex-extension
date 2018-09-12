@@ -8,26 +8,6 @@ body {
     background: none;
 }
 
-.item.highlight .listContent {
-    background: white;
-}
-
-.listContent {
-    color: unset;
-    height: 40px;
-    display: flex;
-    align-items: center;
-}
-
-.listContent :first-child {
-    flex-grow: 1;
-}
-
-.listContent:hover {
-    color: unset;
-    background: white;
-}
-
 .faint {
     color: gray;
     font-style: italic;

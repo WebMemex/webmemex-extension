@@ -1,0 +1,9 @@
+.thisIsASnapshotMessage {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20em; /* hack to avoid stretching the pop up; pop up auto-sizing is awful */
+}
+
+.thisIsASnapshotMessage .url {
+    white-space: nowrap;
+}
