@@ -1,10 +1,18 @@
-
-.highlight.listContent {
-    background: #def;
-}
-
 .listContent {
     color: unset; /* would otherwise be blue, as it is a link */
+
+    &:hover {
+        color: unset;
+    }
+
+    &.highlight {
+        background: #def;
+    }
+
+    &:not(.highlight):hover {
+        background: white;
+    }
+
     height: 40px;
     border-radius: 2px;
     padding: 0 4px;
@@ -14,9 +22,4 @@
 
 .listContent :first-child {
     flex-grow: 1;
-}
-
-.listContent:not(.highlight):hover {
-    color: unset;
-    background: white;
 }

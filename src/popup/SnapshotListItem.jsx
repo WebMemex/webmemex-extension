@@ -63,8 +63,8 @@ export default class SnapshotListItem extends React.Component {
             <List.Item>
                 <List.Content
                     className={classNames(styles.listContent, { [styles.highlight]: isBeingViewed })}
-                    as={!isBeingViewed ? LinkOpenInTab : undefined}
-                    href={!isBeingViewed ? absoluteUrlForLocalPage(page) : undefined}
+                    as={LinkOpenInTab}
+                    href={absoluteUrlForLocalPage(page)}
                     title={!isBeingViewed ? 'View this snapshot' : 'Currently displayed'}
                 >
                     <div>
