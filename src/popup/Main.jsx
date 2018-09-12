@@ -6,6 +6,7 @@ import shortUrl from 'src/util/short-url'
 import TakeSnapshotButton from './TakeSnapshotButton'
 import SnapshotList from './SnapshotList'
 import LinkOpenInTab from './LinkOpenInTab'
+import styles from './Main.css'
 
 // Heuristic to decide whether a page can be stored.
 function isStorable({ url }) {
@@ -57,10 +58,10 @@ export default class Main extends React.Component {
                 )}
                 {isSnapshot && (
                     <Menu.Item>
-                        <Message info className='thisIsASnapshotMessage'>
+                        <Message info className={styles.thisIsASnapshotMessage}>
                             You are viewing a snapshot of:<br />
                             <LinkOpenInTab
-                                className='url'
+                                className={styles.url}
                                 href={snapshotInfo.originalUrl}
                                 title={snapshotInfo.originalUrl}
                                 tabId={tabId}

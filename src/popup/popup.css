@@ -1,43 +1,11 @@
 body {
     background: #f8f8f8;
     border: none;
-    width: 15em;
 }
 
 /* override semantic-ui */
 .ui.vertical.menu {
     background: none;
-}
-
-.thisIsASnapshotMessage {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.thisIsASnapshotMessage .url {
-    white-space: nowrap;
-}
-
-.item.highlight .listContent {
-    background: #def;
-}
-
-.listContent {
-    color: unset;
-    height: 40px;
-    border-radius: 2px;
-    padding: 0 4px;
-    display: flex;
-    align-items: center;
-}
-
-.listContent :first-child {
-    flex-grow: 1;
-}
-
-.listContent:hover {
-    color: unset;
-    background: white;
 }
 
 .faint {

@@ -7,6 +7,7 @@ import { absoluteUrlForLocalPage } from 'src/local-page'
 import { downloadPage, deletePage } from 'src/local-storage'
 import niceTime from 'src/util/nice-time'
 import LinkOpenInTab from './LinkOpenInTab'
+import styles from './SnapshotListItem.css'
 
 export default class SnapshotListItem extends React.Component {
     render() {
@@ -59,9 +60,9 @@ export default class SnapshotListItem extends React.Component {
         )
 
         return (
-            <List.Item className={classNames({ highlight: isBeingViewed })}>
+            <List.Item>
                 <List.Content
-                    className='listContent'
+                    className={classNames(styles.listContent, { [styles.highlight]: isBeingViewed })}
                     as={!isBeingViewed ? LinkOpenInTab : undefined}
                     href={!isBeingViewed ? absoluteUrlForLocalPage(page) : undefined}
                     title={!isBeingViewed ? 'View this snapshot' : 'Currently displayed'}
