@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Divider, Header, Icon, Menu } from 'semantic-ui-react'
+import { Button, Divider, Icon, Menu, Message } from 'semantic-ui-react'
 
+import shortUrl from 'src/util/short-url'
 import TakeSnapshotButton from './TakeSnapshotButton'
 import SnapshotList from './SnapshotList'
 import LinkOpenInTab from './LinkOpenInTab'
@@ -56,13 +57,17 @@ export default class Main extends React.Component {
                 )}
                 {isSnapshot && (
                     <Menu.Item>
-                        This is a snapshot of{' '}
-                        <LinkOpenInTab
-                            href={snapshotInfo.originalUrl}
-                            tabId={tabId}
-                        >
-                            {snapshotInfo.originalUrl}
-                        </LinkOpenInTab>
+                        <Message info className='thisIsASnapshotMessage'>
+                            You are viewing a snapshot of:<br />
+                            <LinkOpenInTab
+                                className='url'
+                                href={snapshotInfo.originalUrl}
+                                title={snapshotInfo.originalUrl}
+                                tabId={tabId}
+                            >
+                                {shortUrl(snapshotInfo.originalUrl)}
+                            </LinkOpenInTab>
+                        </Message>
                     </Menu.Item>
                 )}
                 {!(isSnapshot || snapshottable) && (
@@ -73,16 +78,11 @@ export default class Main extends React.Component {
                     </Menu.Item>
                 )}
                 {(snapshottable || isSnapshot) && (
-                    <Menu.Item>
-                        <Header size='tiny'>
-                            Your snapshots of this page:
-                        </Header>
-                        <SnapshotList
-                            originalUrl={originalUrl}
-                            currentlyViewedUrl={tabUrl}
-                            lastModificationTime={lastModificationTime}
-                        />
-                    </Menu.Item>
+                    <SnapshotList
+                        originalUrl={originalUrl}
+                        currentlyViewedUrl={tabUrl}
+                        lastModificationTime={lastModificationTime}
+                    />
                 )}
                 <Divider />
                 <Menu.Item>

@@ -1,6 +1,7 @@
 body {
     background: #f8f8f8;
     border: none;
+    width: 15em;
 }
 
 /* override semantic-ui */
@@ -8,8 +9,17 @@ body {
     background: none;
 }
 
+.thisIsASnapshotMessage {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.thisIsASnapshotMessage .url {
+    white-space: nowrap;
+}
+
 .item.highlight .listContent {
-    background: #bef;
+    background: #def;
 }
 
 .listContent {

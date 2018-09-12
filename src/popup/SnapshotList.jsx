@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { List } from 'semantic-ui-react'
+import { Menu, Header, List } from 'semantic-ui-react'
 
 import { absoluteUrlForLocalPage } from 'src/local-page'
 import { getPagesByUrl } from 'src/local-storage'
@@ -41,22 +41,29 @@ export default class SnapshotList extends React.Component {
         const { currentlyViewedUrl } = this.props
         const { previousSnapshots } = this.state
 
+        const isBeingViewed = page => absoluteUrlForLocalPage(page) === currentlyViewedUrl
+
         return (
-            <List divided relaxed verticalAlign='middle'>
-                {previousSnapshots === undefined
-                    ? <List.Item className='faint'>digging..</List.Item>
-                    : previousSnapshots.length === 0
-                        ? <List.Item className='faint'>No snapshots yet</List.Item>
-                        : previousSnapshots.map(page => (
-                            <SnapshotListItem
-                                key={page._id}
-                                page={page}
-                                highlight={absoluteUrlForLocalPage(page) === currentlyViewedUrl}
-                                refreshSnapshotList={this.refreshSnapshotList}
-                            />
-                        ))
-                }
-            </List>
+            <Menu.Item>
+                <Header size='tiny'>
+                    Your snapshots of this page:
+                </Header>
+                <List divided relaxed verticalAlign='middle'>
+                    {previousSnapshots === undefined
+                        ? <List.Item className='faint'>digging..</List.Item>
+                        : previousSnapshots.length === 0
+                            ? <List.Item className='faint'>No snapshots yet</List.Item>
+                            : previousSnapshots.map(page => (
+                                <SnapshotListItem
+                                    key={page._id}
+                                    page={page}
+                                    isBeingViewed={isBeingViewed(page)}
+                                    refreshSnapshotList={this.refreshSnapshotList}
+                                />
+                            ))
+                    }
+                </List>
+            </Menu.Item>
         )
     }
 }

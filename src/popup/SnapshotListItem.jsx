@@ -10,15 +10,15 @@ import LinkOpenInTab from './LinkOpenInTab'
 
 export default class SnapshotListItem extends React.Component {
     render() {
-        const { page, highlight, refreshSnapshotList } = this.props
+        const { page, isBeingViewed, refreshSnapshotList } = this.props
 
         return (
-            <List.Item className={classNames({ highlight })}>
+            <List.Item className={classNames({ highlight: isBeingViewed })}>
                 <List.Content
-                    as={LinkOpenInTab}
                     className='listContent'
-                    href={absoluteUrlForLocalPage(page)}
-                    title='View the snapshot'
+                    as={!isBeingViewed ? LinkOpenInTab : undefined}
+                    href={!isBeingViewed ? absoluteUrlForLocalPage(page) : undefined}
+                    title={!isBeingViewed ? 'View this snapshot' : 'Currently displayed'}
                 >
                     <div>
                         <Icon name='camera' />
@@ -33,7 +33,7 @@ export default class SnapshotListItem extends React.Component {
                             event.stopPropagation()
                             downloadPage({ page, saveAs: true })
                         }}
-                        title='Save page as…'
+                        title='Save snapshot as…'
                     >
                         <Icon name='download' />
                     </Button>
@@ -59,6 +59,6 @@ export default class SnapshotListItem extends React.Component {
 
 SnapshotListItem.propTypes = {
     page: PropTypes.object,
-    highlight: PropTypes.bool,
+    isBeingViewed: PropTypes.bool,
     refreshSnapshotList: PropTypes.func,
 }
