@@ -10,7 +10,25 @@ import ContentFrame from './ContentFrame'
 
 
 async function showPage(pageId) {
-    const page = await getPage({ pageId })
+    const containerElement = document.getElementById('app')
+
+    let page
+    try {
+        page = await getPage({ pageId })
+    } catch (err) {
+        let content
+        if (err.status === 404) {
+            content = <span>
+                Snapshot not found
+                {err.reason === 'deleted' && ' (it has been deleted)'}
+            </span>
+        } else {
+            content = 'Unknown error'
+        }
+        ReactDOM.render(<h1>{content}</h1>, containerElement)
+        throw err
+    }
+
     const html = await getPageHtml({ pageId })
     const timestamp = page.timestamp
 
@@ -50,7 +68,7 @@ async function showPage(pageId) {
             {bar}
             <ContentFrame html={html} />
         </div>,
-        document.getElementById('app')
+        containerElement
     )
 }
 

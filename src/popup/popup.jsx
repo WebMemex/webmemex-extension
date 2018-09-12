@@ -5,6 +5,8 @@ import { getPage } from 'src/local-storage'
 import Main from './Main'
 
 async function render({ tab } = {}) {
+    const containerElement = document.getElementById('app')
+
     // Get the active tab if it was not given.
     const currentTab = tab || (await browser.tabs.query({ active: true, currentWindow: true }))[0]
 
@@ -12,7 +14,13 @@ async function render({ tab } = {}) {
     let snapshotInfo
     if (currentTab.url.startsWith(browser.runtime.getURL('/local-page.html'))) {
         const pageId = new URL(currentTab.url).searchParams.get('page')
-        const page = await getPage({ pageId })
+        let page
+        try {
+            page = await getPage({ pageId })
+        } catch (err) {
+            ReactDOM.render(<b>Error: cannot get snapshot info</b>, containerElement)
+            throw err
+        }
         snapshotInfo = {
             originalUrl: page.url,
             timestamp: page.timestamp,
@@ -25,7 +33,7 @@ async function render({ tab } = {}) {
             tabUrl={currentTab.url}
             snapshotInfo={snapshotInfo}
         />,
-        document.getElementById('app')
+        containerElement
     )
 }
 
