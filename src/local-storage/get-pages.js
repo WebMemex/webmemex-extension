@@ -21,18 +21,8 @@ export const postProcessPage = page => ({
 })
 
 export async function getPage({ pageId }) {
-    const pagesResult = await getPages({ pageIds: [pageId] })
-    return pagesResult.rows[0].doc
-}
-
-// Get all pages for a given array of page ids
-export async function getPages({ pageIds }) {
-    let pagesResult = await db.allDocs({
-        keys: pageIds,
-        include_docs: true,
-    })
-    pagesResult = await postprocessPagesResult({ pagesResult })
-    return pagesResult
+    const page = await db.get(pageId)
+    return postProcessPage(page)
 }
 
 export async function getAllPages() {
