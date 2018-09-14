@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Waypoint from 'react-waypoint'
-import classNames from 'classnames'
 
 import { makeNonlinearTransform } from 'src/util/make-range-transform'
 import { niceDate } from 'src/util/nice-time'
@@ -9,10 +8,6 @@ import { niceDate } from 'src/util/nice-time'
 import PageAsListItem from './PageAsListItem'
 import LoadingIndicator from './LoadingIndicator'
 import styles from './ResultList.css'
-
-
-// Draw a line between gaps of at most 20 minutes.
-const maxBridgableTimeGap = 1000 * 60 * 20
 
 // Map a time duration between log entries to a number of pixels between them.
 const timeGapToSpaceGap = makeNonlinearTransform({
@@ -33,18 +28,9 @@ function computeRowGaps({ searchResult }) {
         const prevRow = searchResult.rows[rowIndex - 1]
         const prevTimestamp = prevRow ? prevRow.doc.timestamp : new Date()
         const timestamp = row.doc.timestamp
-
-        let spaceGap = 0
-        let showConnection = false
-        if (timestamp && prevTimestamp) {
-            const timeGap = prevTimestamp - timestamp
-
-            spaceGap = timeGapToSpaceGap(timeGap)
-
-            if (prevRow && (timeGap < maxBridgableTimeGap)) {
-                showConnection = true
-            }
-        }
+        const spaceGap = (timestamp && prevTimestamp)
+            ? timeGapToSpaceGap(prevTimestamp - timestamp)
+            : 0
 
         // On the day boundaries, we show the date.
         const dateString = niceDate(timestamp)
@@ -53,7 +39,6 @@ function computeRowGaps({ searchResult }) {
 
         return {
             marginTop: spaceGap,
-            showConnection,
             dateStringToShow: showDate ? dateString : undefined,
         }
     })
@@ -66,14 +51,13 @@ const ResultList = ({
     onBottomReached,
 }) => {
     // If there are no results, show a message.
-    const noResultMessage = 'no results'
     if (searchResult.rows.length === 0
         && searchQuery !== ''
         && !waitingForResults
     ) {
         return (
             <p className={styles.noResultMessage}>
-                {noResultMessage}
+                no results
             </p>
         )
     }
@@ -81,7 +65,7 @@ const ResultList = ({
     const rowGaps = computeRowGaps({ searchResult })
 
     const listItems = searchResult.rows.map((row, rowIndex) => {
-        const { marginTop, showConnection, dateStringToShow } = rowGaps[rowIndex]
+        const { marginTop, dateStringToShow } = rowGaps[rowIndex]
 
         const timestampComponent = dateStringToShow && (
             <time
@@ -99,12 +83,7 @@ const ResultList = ({
         return (
             <li
                 key={row.doc._id}
-                style={{
-                    marginTop,
-                }}
-                className={classNames({
-                    [styles.showConnection]: showConnection,
-                })}
+                style={{ marginTop }}
             >
                 <div>
                     {timestampComponent}
