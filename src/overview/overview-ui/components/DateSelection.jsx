@@ -29,6 +29,7 @@ const DateSelection = ({
         disabledKeyboardNavigation={date !== undefined}
         dateFormat='DD-MM-YYYY'
         placeholderText='jump to date…'
+        title='Jump to date…'
         isClearable
         selected={date && moment(date)}
         openToDate={(date && moment(date)) || moment()}

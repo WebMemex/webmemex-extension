@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Waypoint from 'react-waypoint'
+import moment from 'moment'
 
 import { makeNonlinearTransform } from 'src/util/make-range-transform'
 import { niceDate } from 'src/util/nice-time'
@@ -21,12 +22,16 @@ const timeGapToSpaceGap = makeNonlinearTransform({
     nonlinearity: Math.log,
 })
 
-function computeRowGaps({ searchResult }) {
+function computeRowGaps({ searchResult, endDate }) {
     // The space and possibly a time stamp before each row
     return searchResult.rows.map((row, rowIndex) => {
         // Space between two rows depends on the time between them.
         const prevRow = searchResult.rows[rowIndex - 1]
-        const prevTimestamp = prevRow ? prevRow.doc.timestamp : new Date()
+        const prevTimestamp = prevRow
+            ? prevRow.doc.timestamp
+            : endDate // a detail: the gap above the first result depends on the query's end date.
+                ? endDate
+                : Date.now()
         const timestamp = row.doc.timestamp
         const spaceGap = (timestamp && prevTimestamp)
             ? timeGapToSpaceGap(prevTimestamp - timestamp)
@@ -44,9 +49,14 @@ function computeRowGaps({ searchResult }) {
     })
 }
 
+function dateString(timestamp) {
+    return moment(timestamp).format('DD-MM-YYYY')
+}
+
 const ResultList = ({
     searchResult,
     searchQuery,
+    endDate,
     waitingForResults,
     onBottomReached,
 }) => {
@@ -57,12 +67,12 @@ const ResultList = ({
     ) {
         return (
             <p className={styles.noResultMessage}>
-                no results
+                no results {endDate && `(up to ${dateString(endDate)})`}
             </p>
         )
     }
 
-    const rowGaps = computeRowGaps({ searchResult })
+    const rowGaps = computeRowGaps({ searchResult, endDate })
 
     const listItems = searchResult.rows.map((row, rowIndex) => {
         const { marginTop, dateStringToShow } = rowGaps[rowIndex]
@@ -105,6 +115,11 @@ const ResultList = ({
 
     return (
         <ul className={styles.root}>
+            {endDate && (
+                <li className={styles.skippingToDateMessage}>
+                    …skipping snapshots made after {dateString(endDate)}…
+                </li>
+            )}
             {listItems}
             {waitingForResults && <LoadingIndicator />}
         </ul>

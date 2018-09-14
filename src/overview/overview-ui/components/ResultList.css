@@ -20,7 +20,8 @@
     }
 }
 
-.noResultMessage {
+/* hack: adding p. for extra specificity, to override semantic-ui's margin-top */
+p.noResultMessage {
     text-align: center;
     margin-top: 80px;
     font-size: 20px;
@@ -31,6 +32,15 @@
     animation-duration: 0.5s;
     animation-iteration-count: 1;
     animation-timing-function: ease-in;
+}
+
+.skippingToDateMessage {
+    text-align: center;
+    margin-top: 80px;
+    font-size: 16px;
+    font-family: sans-serif;
+    font-style: italic;
+    color: grey;
 }
 
 @keyframes fadeIn {

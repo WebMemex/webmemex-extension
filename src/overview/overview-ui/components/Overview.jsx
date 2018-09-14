@@ -47,6 +47,7 @@ class Overview extends React.Component {
                     <ResultList
                         searchResult={this.props.searchResult}
                         searchQuery={this.props.query}
+                        endDate={this.props.endDate}
                         onBottomReached={this.props.onBottomReached}
                         waitingForResults={this.props.waitingForResults}
                     />
