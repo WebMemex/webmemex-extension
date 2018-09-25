@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Button, Icon, Image } from 'semantic-ui-react'
+import { Icon, Image } from 'semantic-ui-react'
 
-import { downloadPage, getPage, getPageHtml } from 'src/local-storage'
+import { getPage, getPageHtml, deletePage } from 'src/local-storage'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
 import ContentFrame from './ContentFrame'
-
+import { SaveAsButton, DeleteButton } from 'src/common-components'
 
 async function showPage(pageId) {
     const containerElement = document.getElementById('app')
@@ -53,14 +53,15 @@ async function showPage(pageId) {
                     {niceTime(timestamp)}
                 </time>
             </span>
-            <Button
-                compact
-                size='tiny'
-                onClick={() => downloadPage({ page, saveAs: true })}
-            >
-                <Icon name='download' />
-                Save page as…
-            </Button>
+            <SaveAsButton page={page} label />
+            <DeleteButton
+                page={page}
+                onClick={async () => {
+                    await deletePage({ page })
+                    window.location.replace('about:blank')
+                }}
+                label
+            />
         </div>
     )
     ReactDOM.render(
