@@ -9,6 +9,19 @@ import niceTime from 'src/util/nice-time'
 import ContentFrame from './ContentFrame'
 import { SaveAsButton, DeleteButton } from 'src/common-components'
 
+const SnapshotChrome = ({ children }) => (
+    <div id='bar'>
+        <Image
+            title='WebMemex'
+            src='assets/webmemex-32.png'
+            as='a'
+            href='/overview.html'
+            wrapped
+        />
+        {children}
+    </div>
+)
+
 async function showPage(pageId) {
     const containerElement = document.getElementById('app')
 
@@ -16,16 +29,27 @@ async function showPage(pageId) {
     try {
         page = await getPage({ pageId })
     } catch (err) {
-        let content
-        if (err.status === 404) {
-            content = <span>
-                Snapshot not found
-                {err.reason === 'deleted' && ' (it has been deleted)'}
-            </span>
+        let message
+        if (err.status === 404 && err.reason === 'deleted') {
+            message = 'This snapshot has been deleted'
+        } else if (err.status === 404) {
+
+            message = 'Snapshot not found'
         } else {
-            content = 'Unknown error'
+            message = 'Unknown error'
         }
-        ReactDOM.render(<h1>{content}</h1>, containerElement)
+
+        ReactDOM.render(
+            <div id='rootContainer'>
+                <SnapshotChrome>
+                    <div id='errorMessage'>
+                        {message}
+                    </div>
+                </SnapshotChrome>
+                <div id='page' className='placeholder'></div>
+            </div>,
+            containerElement
+        )
         throw err
     }
 
@@ -34,39 +58,30 @@ async function showPage(pageId) {
 
     document.title = `${page.title}`
 
-    const bar = (
-        <div id='bar'>
-            <Image
-                title='WebMemex'
-                src='assets/webmemex-32.png'
-                as='a'
-                href='/overview.html'
-                wrapped />
-            <span id='description'>
-                <Icon name='camera' />
-                Snapshot of
-                <a href={page.url} style={{ margin: '0 4px' }}>
-                    {shortUrl(page.url)}
-                </a>
-                <Icon name='clock' />
-                <time dateTime={new Date(timestamp)}>
-                    {niceTime(timestamp)}
-                </time>
-            </span>
-            <SaveAsButton page={page} label />
-            <DeleteButton
-                page={page}
-                onClick={async () => {
-                    await deletePage({ page })
-                    window.location.replace('about:blank')
-                }}
-                label
-            />
-        </div>
-    )
     ReactDOM.render(
         <div id='rootContainer'>
-            {bar}
+            <SnapshotChrome>
+                <span id='description'>
+                    <Icon name='camera' />
+                    Snapshot of
+                    <a href={page.url} style={{ margin: '0 4px' }}>
+                        {shortUrl(page.url)}
+                    </a>
+                    <Icon name='clock' />
+                    <time dateTime={new Date(timestamp)}>
+                        {niceTime(timestamp)}
+                    </time>
+                </span>
+                <SaveAsButton page={page} label />
+                <DeleteButton
+                    page={page}
+                    onClick={async () => {
+                        await deletePage({ page })
+                        window.location.replace(window.location)
+                    }}
+                    label
+                />
+            </SnapshotChrome>
             <ContentFrame html={html} />
         </div>,
         containerElement

@@ -6,7 +6,7 @@ body {
     box-sizing: border-box;
 }
 
-#rootContainer {
+#app, #rootContainer {
     width: 100%;
     height: 100%;
     display: flex;
@@ -29,6 +29,12 @@ body {
     text-align: center;
 }
 
+#bar #errorMessage {
+    flex-grow: 1;
+    text-align: center;
+    font-style: italic;
+}
+
 #bar .button {
     margin: 2px;
 }
@@ -36,6 +42,10 @@ body {
 #page {
     width: 100%;
     flex-grow: 1;
+}
+
+#page.placeholder {
+    background: lightgrey;
 }
 
 iframe[seamless] {
