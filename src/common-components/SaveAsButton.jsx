@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon } from 'semantic-ui-react'
 
-import { downloadPage } from 'src/local-storage'
+import { remoteFunction } from 'src/util/webextensionRPC'
+
+const downloadPage = remoteFunction('downloadPage')
 
 const SaveAsButton = ({ page, label = false }) => (
     <Button
