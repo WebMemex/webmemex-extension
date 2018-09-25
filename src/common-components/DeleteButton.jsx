@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Popup, Button, Icon } from 'semantic-ui-react'
 
 // onClick is passed as prop, as its implementation differs a bit between overview, popup, etc.
-const DeleteButton = ({ onClick, label }) => (
+const DeleteButton = ({ onClick, label, ...otherProps }) => (
     <Popup
         trigger={
             <Button
@@ -14,6 +14,7 @@ const DeleteButton = ({ onClick, label }) => (
                     event.stopPropagation()
                 }}
                 title='Delete this snapshot'
+                {...otherProps}
             >
                 <Icon name='trash' />
                 {label && ' Delete'}

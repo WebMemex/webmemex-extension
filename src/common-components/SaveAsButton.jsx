@@ -6,7 +6,7 @@ import { remoteFunction } from 'src/util/webextensionRPC'
 
 const downloadPage = remoteFunction('downloadPage')
 
-const SaveAsButton = ({ page, label = false }) => (
+const SaveAsButton = ({ page, label = false, ...otherProps }) => (
     <Button
         icon
         size='tiny'
@@ -16,6 +16,7 @@ const SaveAsButton = ({ page, label = false }) => (
             downloadPage({ page, saveAs: true })
         }}
         title='Save snapshot as…'
+        {...otherProps}
     >
         <Icon name='download' />
         {label && ' Save as…'}

@@ -26,9 +26,9 @@ export default class SnapshotListItem extends React.Component {
                         <Icon name='camera' />
                         {niceTime(page.timestamp)}
                     </div>
-                    <SaveAsButton page={page} />
+                    <SaveAsButton className={styles.showOnHover} page={page} />
                     <DeleteButton
-                        page={page}
+                        className={styles.showOnHover}
                         onClick={async () => {
                             await deletePage({ page })
                             refreshSnapshotList()

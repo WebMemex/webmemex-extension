@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import { Icon, Image } from 'semantic-ui-react'
 
@@ -22,6 +23,10 @@ const SnapshotChrome = ({ children }) => (
     </div>
 )
 
+SnapshotChrome.propTypes = {
+    children: PropTypes.node,
+}
+
 async function showPage(pageId) {
     const containerElement = document.getElementById('app')
 
@@ -33,7 +38,6 @@ async function showPage(pageId) {
         if (err.status === 404 && err.reason === 'deleted') {
             message = 'This snapshot has been deleted'
         } else if (err.status === 404) {
-
             message = 'Snapshot not found'
         } else {
             message = 'Unknown error'
@@ -46,7 +50,7 @@ async function showPage(pageId) {
                         {message}
                     </div>
                 </SnapshotChrome>
-                <div id='page' className='placeholder'></div>
+                <div id='page' className='placeholder' />
             </div>,
             containerElement
         )
@@ -74,7 +78,6 @@ async function showPage(pageId) {
                 </span>
                 <SaveAsButton page={page} label />
                 <DeleteButton
-                    page={page}
                     onClick={async () => {
                         await deletePage({ page })
                         window.location.replace(window.location)

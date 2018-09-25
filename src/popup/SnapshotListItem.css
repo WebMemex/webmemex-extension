@@ -23,3 +23,7 @@
 .listContent :first-child {
     flex-grow: 1;
 }
+
+.listContent:not(:hover) .showOnHover:not(:focus) {
+    opacity: 0.2;
+}
