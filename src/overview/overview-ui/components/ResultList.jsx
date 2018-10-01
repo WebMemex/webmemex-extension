@@ -3,51 +3,9 @@ import PropTypes from 'prop-types'
 import Waypoint from 'react-waypoint'
 import moment from 'moment'
 
-import { makeNonlinearTransform } from 'src/util/make-range-transform'
-import { niceDate } from 'src/util/nice-time'
-
 import PageAsListItem from './PageAsListItem'
 import LoadingIndicator from './LoadingIndicator'
 import styles from './ResultList.css'
-
-// Map a time duration between log entries to a number of pixels between them.
-const timeGapToSpaceGap = makeNonlinearTransform({
-    // A gap of <5 mins gets no extra space, a >24 hours gap gets the maximum space.
-    domain: [1000 * 60 * 5, 1000 * 60 * 60 * 24],
-    // Minimum and maximum added space, in pixels.
-    range: [0, 100],
-    // Clamp excessive values to stay within the output range.
-    clampOutput: true,
-    // Use a logarithm to squeeze the larger numbers.
-    nonlinearity: Math.log,
-})
-
-function computeRowGaps({ searchResult, endDate }) {
-    // The space and possibly a time stamp before each row
-    return searchResult.rows.map((row, rowIndex) => {
-        // Space between two rows depends on the time between them.
-        const prevRow = searchResult.rows[rowIndex - 1]
-        const prevTimestamp = prevRow
-            ? prevRow.doc.timestamp
-            : endDate // a detail: the gap above the first result depends on the query's end date.
-                ? endDate
-                : Date.now()
-        const timestamp = row.doc.timestamp
-        const spaceGap = (timestamp && prevTimestamp)
-            ? timeGapToSpaceGap(prevTimestamp - timestamp)
-            : 0
-
-        // On the day boundaries, we show the date.
-        const dateString = niceDate(timestamp)
-        const prevDateString = niceDate(prevTimestamp)
-        const showDate = (dateString !== prevDateString)
-
-        return {
-            marginTop: spaceGap,
-            dateStringToShow: showDate ? dateString : undefined,
-        }
-    })
-}
 
 function dateString(timestamp) {
     return moment(timestamp).format('DD-MM-YYYY')
@@ -72,38 +30,17 @@ const ResultList = ({
         )
     }
 
-    const rowGaps = computeRowGaps({ searchResult, endDate })
-
-    const listItems = searchResult.rows.map((row, rowIndex) => {
-        const { marginTop, dateStringToShow } = rowGaps[rowIndex]
-
-        const timestampComponent = dateStringToShow && (
-            <time
-                className={styles.timestamp}
-                dateTime={new Date(row.doc.timestamp)}
-                style={{
-                    height: 16,
-                    fontSize: 16,
-                }}
-            >
-                {dateStringToShow}
-            </time>
-        )
-
-        return (
-            <li
-                key={row.doc._id}
-                style={{ marginTop }}
-            >
-                <div>
-                    {timestampComponent}
-                    <PageAsListItem
-                        doc={row.doc}
-                    />
-                </div>
-            </li>
-        )
-    })
+    const listItems = searchResult.rows.map(row => (
+        <li
+            key={row.doc._id}
+        >
+            <div>
+                <PageAsListItem
+                    doc={row.doc}
+                />
+            </div>
+        </li>
+    ))
 
     // Insert waypoint to trigger loading new items when scrolling down.
     if (!waitingForResults && !searchResult.resultsExhausted) {
@@ -129,6 +66,7 @@ const ResultList = ({
 ResultList.propTypes = {
     searchResult: PropTypes.object,
     searchQuery: PropTypes.string,
+    endDate: PropTypes.number,
     waitingForResults: PropTypes.bool,
     onBottomReached: PropTypes.func,
 }

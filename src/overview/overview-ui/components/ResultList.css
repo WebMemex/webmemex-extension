@@ -1,23 +1,11 @@
 .root {
     list-style: none;
-    margin: 40px auto;
+    margin: 40px;
     padding: 0;
-    max-width: 600px;
-}
-
-.timestamp {
-    display: inline-block;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 5px;
-
-    &::before {
-        content: '— ';
-    }
-
-    &::after {
-        content: ' —';
-    }
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    justify-content: space-around;
 }
 
 /* hack: adding p. for extra specificity, to override semantic-ui's margin-top */

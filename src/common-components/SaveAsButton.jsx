@@ -9,16 +9,17 @@ const downloadPage = remoteFunction('downloadPage')
 const SaveAsButton = ({ page, label = false, ...otherProps }) => (
     <Button
         icon
-        size='tiny'
+        size='medium'
+        compact
         onClick={event => {
             event.preventDefault()
             event.stopPropagation()
             downloadPage({ page, saveAs: true })
         }}
-        title='Save snapshot as…'
+        title='Save snapshot to floppy disk…'
         {...otherProps}
     >
-        <Icon name='download' />
+        <Icon name='save' />
         {label && ' Save as…'}
     </Button>
 )

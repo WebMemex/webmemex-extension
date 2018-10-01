@@ -8,7 +8,8 @@ const DeleteButton = ({ onClick, label, ...otherProps }) => (
         trigger={
             <Button
                 icon
-                size='tiny'
+                size='medium'
+                compact
                 onClick={async event => {
                     event.preventDefault()
                     event.stopPropagation()
@@ -33,7 +34,7 @@ const DeleteButton = ({ onClick, label, ...otherProps }) => (
         }
         on='focus'
         hoverable
-        position='right center'
+        position='bottom center'
     />
 )
 

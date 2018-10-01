@@ -1,21 +1,15 @@
-:root {
-    --height: 100px;
-    --vertical-spacing: 15px;
-}
-
 .root,
 .root * {
     box-sizing: border-box;
 }
 
 .root {
-    position: relative;
     display: flex;
-    height: var(--height);
+    flex-flow: column nowrap;
+}
+
+.root > .card {
     box-sizing: content-box;
-    justify-content: space-between;
-    overflow: hidden;
-    margin-top: var(--vertical-spacing);
     border: 1px solid grey;
     border-radius: 3px;
     background-color: snow;
@@ -26,18 +20,20 @@
     &:hover {
         color: inherit;
         text-decoration: none;
-        border: 1px solid black;
-        box-shadow: 3px 4px 3px #888;
     }
-
-    transition: border 200ms, box-shadow 200ms;
 
     &:focus {
         outline: none;
+    }
+
+    &:focus,
+    &:hover {
         border: 1px solid black;
         box-shadow: 3px 4px 3px #888;
         margin-left: -1px;
     }
+
+    transition: border 200ms, box-shadow 200ms;
 }
 
 /* List entries for which no stored version is available */
@@ -46,8 +42,8 @@
 }
 
 .screenshotContainer {
-    flex-shrink: 0;
-    width: 200px;
+    width: 100%;
+    height: 160px;
     overflow: hidden;
     display: flex;
     align-items: flex-start;
@@ -69,51 +65,33 @@
     }
 }
 
-.descriptionContainer {
-    flex: 1 1 auto;
-    padding: 10px 0 10px 10px;
-    display: flex;
-    flex-direction: column;
+.title {
+    padding: 10px;
+    font-size: 18px;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
 
-    & .title {
-        padding-bottom: 6px;
-        font-size: 18px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        & .favIcon {
-            height: 16px;
-            margin-right: 4px;
-        }
-    }
-
-    & .url {
-        font-size: 15px;
-        flex-grow: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    & .time {
-        align-self: flex-end;
-        font-size: 13px;
+    & .favIcon {
+        height: 1em;
+        margin-right: 4px;
+        vertical-align: text-bottom;
     }
 }
 
-/* Fainten the original URL, except when the link icon is hovered */
-.url a:not(:hover) + * {
-    opacity: 0.6;
+.url {
+    margin-top: 0.5em;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.buttonsContainer {
-    & button {
-        opacity: 0.4;
+/* Show buttons only on hover/focus */
+.root:not(:focus):not(:hover) .buttonsContainer button:not(:focus) {
+    opacity: 0;
+}
 
-        &:hover {
-            opacity: 1;
-        }
-    }
+.root .buttonsContainer button {
+    transition: opacity 0.2s;
 }
