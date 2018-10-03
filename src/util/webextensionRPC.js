@@ -26,6 +26,19 @@ import mapValues from 'lodash/fp/mapValues'
 const RPC_CALL = '__RPC_CALL__'
 const RPC_RESPONSE = '__RPC_RESPONSE__'
 
+export class RpcError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = this.constructor.name
+    }
+}
+
+export class RemoteError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = this.constructor.name
+    }
+}
 
 // === Initiating side ===
 
@@ -55,7 +68,7 @@ export function remoteFunction(funcName, { tabId } = {}) {
                 ? await browser.tabs.sendMessage(tabId, message)
                 : await browser.runtime.sendMessage(message)
         } catch (err) {
-            throw new Error(
+            throw new RpcError(
                 `Got no response when trying to call '${funcName}'. `
                 + `Did you enable RPC in ${otherSide}?`
             )
@@ -63,12 +76,17 @@ export function remoteFunction(funcName, { tabId } = {}) {
 
         // Check if it was *our* listener that responded.
         if (!response || response[RPC_RESPONSE] !== RPC_RESPONSE) {
-            throw new Error(`RPC got a response from an interfering listener.`)
+            throw new RpcError(`RPC got a response from an interfering listener.`)
+        }
+
+        // If we could not invoke the function on the other side, throw an error.
+        if (response.rpcError) {
+            throw new RpcError(response.rpcError)
         }
 
         // Return the value or throw the error we received from the other side.
         if (response.errorMessage) {
-            throw new Error(response.errorMessage)
+            throw new RemoteError(response.errorMessage)
         } else {
             return response.returnValue
         }
@@ -82,8 +100,6 @@ export function remoteFunction(funcName, { tabId } = {}) {
 
 // === Executing side ===
 
-const noSuchFunctionError = 'Received RPC for unknown function: '
-
 const remotelyCallableFunctions = {}
 
 function incomingRPCListener(message, sender) {
@@ -92,18 +108,27 @@ function incomingRPCListener(message, sender) {
         const args = message.hasOwnProperty('args') ? message.args : []
         const func = remotelyCallableFunctions[funcName]
         if (func === undefined) {
-            console.error(noSuchFunctionError, funcName)
-            return {
-                error: `No such function registered for RPC: ${funcName}`,
+            console.error(`Received RPC for unknown function: ${funcName}`)
+            return Promise.resolve({
+                rpcError: `No such function registered for RPC: ${funcName}`,
                 [RPC_RESPONSE]: RPC_RESPONSE,
-            }
+            })
         }
         const extraArg = {
             tab: sender.tab,
         }
 
-        // Run the function, and await its value if it returns a promise.
-        const returnValue = func(extraArg, ...args)
+        // Run the function
+        let returnValue
+        try {
+            returnValue = func(extraArg, ...args)
+        } catch (error) {
+            return Promise.resolve({
+                errorMessage: error.message,
+                [RPC_RESPONSE]: RPC_RESPONSE,
+            })
+        }
+        // Return the function's return value. If it is a promise, first await its result.
         return Promise.resolve(returnValue).then(returnValue => ({
             returnValue,
             [RPC_RESPONSE]: RPC_RESPONSE,
