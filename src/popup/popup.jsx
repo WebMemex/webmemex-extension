@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import { remoteFunction } from 'src/util/webextensionRPC'
 import { getPage } from 'src/local-storage'
 import Main from './Main'
 
@@ -27,11 +28,28 @@ async function render({ tab } = {}) {
         }
     }
 
+    // Check if we can snapshot this page
+    let canTakeSnapshot = false
+    if (!snapshotInfo) {
+        // Is our content script loaded in the tab..?
+        const canRunFreezeDry = remoteFunction('canRunFreezeDry', { tabId: currentTab.id })
+        try {
+            canTakeSnapshot = await canRunFreezeDry()
+        } catch (error) {
+            // ..apparently not.
+        }
+    }
+
+    // Heuristically decide whether we would *expect* to have been able to store the page.
+    const shouldBeSnapshottable = /^https?:\/\//.test(currentTab.url)
+
     ReactDOM.render(
         <Main
             tabId={currentTab.id}
             tabUrl={currentTab.url}
             snapshotInfo={snapshotInfo}
+            canTakeSnapshot={canTakeSnapshot}
+            shouldBeSnapshottable={shouldBeSnapshottable}
         />,
         containerElement
     )

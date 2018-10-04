@@ -8,13 +8,6 @@ import SnapshotList from './SnapshotList'
 import LinkOpenInTab from './LinkOpenInTab'
 import styles from './Main.css'
 
-// Heuristic to decide whether a page can be stored.
-function isStorable({ url }) {
-    // Only http(s) pages for now. Ignoring data URLs, newtab, ...
-    const storableUrlPattern = /^https?:\/\//
-    return storableUrlPattern.test(url)
-}
-
 export default class Main extends React.Component {
     constructor(props) {
         super(props)
@@ -37,11 +30,10 @@ export default class Main extends React.Component {
     }
 
     render() {
-        const { tabId, tabUrl, snapshotInfo } = this.props
+        const { tabId, tabUrl, snapshotInfo, canTakeSnapshot, shouldBeSnapshottable } = this.props
         const { lastModificationTime } = this.state
 
         const isSnapshot = !!snapshotInfo
-        const snapshottable = !isSnapshot && isStorable({ url: tabUrl })
 
         // When viewing a snapshot, don't list snapshots of the snapshot, but of the original.
         const originalUrl = isSnapshot
@@ -50,7 +42,7 @@ export default class Main extends React.Component {
 
         return (
             <Menu vertical fluid borderless>
-                {snapshottable && (
+                {canTakeSnapshot && (
                     <TakeSnapshotButton
                         {...this.state}
                         onSnapshotted={this.updateModificationTime}
@@ -71,14 +63,20 @@ export default class Main extends React.Component {
                         </Message>
                     </Menu.Item>
                 )}
-                {!(isSnapshot || snapshottable) && (
+                {!(isSnapshot || canTakeSnapshot) && (
                     <Menu.Item style={{ textAlign: 'center' }}>
                         <em className='faint'>
                             Cannot snapshot this page.
+                            {shouldBeSnapshottable && (
+                                <p>
+                                    (was this extension just installed/enabled <b>after</b> this
+                                    page was loaded?)
+                                </p>
+                            )}
                         </em>
                     </Menu.Item>
                 )}
-                {(snapshottable || isSnapshot) && (
+                {(isSnapshot || canTakeSnapshot || shouldBeSnapshottable) && (
                     <SnapshotList
                         originalUrl={originalUrl}
                         currentlyViewedUrl={tabUrl}
@@ -101,4 +99,6 @@ Main.propTypes = {
     tabId: PropTypes.number,
     tabUrl: PropTypes.string,
     snapshotInfo: PropTypes.object,
+    canTakeSnapshot: PropTypes.bool,
+    shouldBeSnapshottable: PropTypes.bool,
 }
