@@ -8,6 +8,11 @@ body {
     background: none;
 }
 
+.ui.menu.borderless {
+    /* Also remove its outside border */
+    border: none;
+}
+
 .faint {
     color: gray;
     font-style: italic;
