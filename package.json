@@ -23,7 +23,7 @@
     "blob-util": "^2.0.2",
     "classnames": "^2.2.6",
     "docuri": "^4.2.2",
-    "freeze-dry": "^0.2.0",
+    "freeze-dry": "^0.2.1",
     "lodash": "^4.17.4",
     "moment": "^2.22.2",
     "page-metadata-parser": "^1.1.2",
