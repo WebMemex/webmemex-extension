@@ -9,7 +9,13 @@ export default class LinkOpenInTab extends React.Component {
 
     async onClick(event) {
         const { href, tabId } = this.props
-        browser.tabs.update(tabId, { url: href })
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
+            browser.tabs.create({ url: href })
+        } else if (event.shiftKey) {
+            browser.window.create({ url: href })
+        } else {
+            browser.tabs.update(tabId, { url: href })
+        }
         event.preventDefault()
     }
 
