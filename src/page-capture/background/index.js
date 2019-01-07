@@ -17,6 +17,9 @@ export async function capturePage({ tabId }) {
     const extractPageContent = remoteFunction('extractPageContent', { tabId })
     const freezeDry = remoteFunction('freezeDry', { tabId })
 
+    // Read the page's URL
+    const { url } = await browser.tabs.get(tabId)
+
     // Get and store the fav-icon
     const favIconP = getFavIcon({ tabId })
         .then(async dataUrl => await dataURLToBlob(dataUrl))
@@ -43,5 +46,5 @@ export async function capturePage({ tabId }) {
         pageContentP,
     ])
 
-    return { favIcon, screenshot, pageContent, frozenPage }
+    return { url, favIcon, screenshot, pageContent, frozenPage }
 }
