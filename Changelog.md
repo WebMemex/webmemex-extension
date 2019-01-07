@@ -1,5 +1,10 @@
 # Changelog for webmemex-extension
 
+## 0.3.1 (2019-01-08)
+
+- Support opening a snapshot in a new tab.
+- If storing to IndexedDB fails, fall back to directly downloading the snapshot.
+
 ## 0.3.0 (2018-10-04)
 
 - Thoroughly simplify code base
