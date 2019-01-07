@@ -30,19 +30,33 @@ export async function downloadAllPages({ folder } = {}) {
     }
 }
 
-export async function downloadPage({ page, folder, filename, saveAs=false }) {
+export async function downloadPage({ page, folder, filename, saveAs }) {
     // Read the html file from the database.
     const blob = await getPageBlob({ page })
-    const url = URL.createObjectURL(blob)
 
     if (filename === undefined) {
-        // Use title as filename, after removing (back)slashes.
-        const date = new Date(page.timestamp).toISOString().substring(0, 10)
-        filename = `${date} - ${page.title.replace(/[\\/]/g, '-')}.html`
+        filename = makeFilename({
+            folder,
+            timestamp: page.timestamp,
+            title: page.title,
+        })
     }
+
+    await downloadBlob({ blob, filename, saveAs })
+}
+
+export function makeFilename({ folder, title, timestamp }) {
+    // Use title as filename, after removing (back)slashes.
+    const date = new Date(timestamp).toISOString().substring(0, 10)
+    let filename = `${date} - ${title.replace(/[\\/]/g, '-')}.html`
     if (folder !== undefined) {
         filename = [folder, filename].join('/')
     }
+    return filename
+}
+
+export async function downloadBlob({ blob, filename, saveAs = false }) {
+    const url = URL.createObjectURL(blob)
 
     const tryDownload = filename => browser.downloads.download({
         url,
