@@ -54,6 +54,7 @@ const sourceFiles = [
     'overview/overview.jsx',
     'local-page/local-page.jsx',
     'popup/popup.jsx',
+    'options/options.jsx',
 ]
 
 const browserifySettings = {

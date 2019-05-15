@@ -6,6 +6,7 @@ export * from './delete-page'
 export * from './download-page'
 export * from './get-pages'
 export * from './get-page-content'
+export * from './statistics'
 export * from './text-search'
 
 export const pageKeyPrefix = 'page/'

@@ -1,0 +1,11 @@
+body {
+    padding: 2em;
+}
+
+h1 {
+    font-size: 1.4rem;
+}
+
+button + label {
+    margin-left: 0.5em;
+}

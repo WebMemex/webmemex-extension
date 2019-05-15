@@ -5,6 +5,11 @@
         "48": "assets/webmemex-48.png",
         "96": "assets/webmemex-96.png"
     },
+    "options_ui": {
+      "page": "options.html",
+      "browser_style": true,
+      "chrome_style": true
+    },
     "background": {
         "scripts": ["lib/browser-polyfill.js", "main/background.js"]
     },
