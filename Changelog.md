@@ -1,5 +1,11 @@
 # Changelog for webmemex-extension
 
+## 0.3.2 (2019-05-16)
+
+- Add an options page with:
+  - a button to download all snapshots from IndexedDB to the downloads folder.
+  - a checkbox to have every new snapshot to directly be saved as a download.
+
 ## 0.3.1 (2019-01-08)
 
 - Support opening a snapshot in a new tab.
