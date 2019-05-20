@@ -19,7 +19,7 @@ const settings = {
 
 const commands = manifest.commands
 
-async function updateOrCreateContextMenuItem(id, options) {
+export async function updateOrCreateContextMenuItem(id, options) {
     try {
         await browser.contextMenus.update(id, options)
     } catch (err) {

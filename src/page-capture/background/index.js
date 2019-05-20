@@ -1,15 +1,15 @@
 import { dataURLToBlob } from 'blob-util'
 import whenAllSettled from 'when-all-settled'
 
+import delay from 'src/util/delay'
 import { whenPageDOMLoaded } from 'src/util/tab-events'
 import { remoteFunction } from 'src/util/webextensionRPC'
 
 import getFavIcon from './get-fav-icon'
 import makeScreenshot from './make-screenshot'
 
-
 // Captures and extracts stuff from the current page in the given tab.
-export async function capturePage({ tabId }) {
+export async function capturePage({ tabId, needScreenshot = true }) {
     // Wait until its DOM has loaded, in case we got invoked before that.
     await whenPageDOMLoaded({ tabId }) // TODO: catch e.g. tab close.
 
@@ -42,7 +42,8 @@ export async function capturePage({ tabId }) {
     // Wait until every other task has either completed or failed.
     const [ favIcon, screenshot, pageContent ] = await whenAllSettled([
         favIconP,
-        screenshotP,
+        // If a screenshot is not required, we do not wait long for a chance to make one.
+        needScreenshot ? screenshotP : Promise.race([screenshotP, delay(500)]),
         pageContentP,
     ])
 

@@ -1,3 +1,4 @@
+import delay from './delay'
 import eventToPromise from './event-to-promise'
 
 const tabClosedEvent = tabId => ({
@@ -67,6 +68,35 @@ export async function whenPageLoadComplete({ tabId, ignoreLocationChanges = fals
         },
         reject: tabChangedEvents(tabId, ignoreLocationChanges),
     })
+}
+
+// Wait for the tab to have loaded some page; but wait a bit to catch any redirections.
+export async function whenPageLoadCompleteWithRedirections({ tabId, timeToWait = 2500 }) {
+    async function innerFunction() {
+        while (true) {
+            // Wait for the page to load (allowing for redirections before a page completes loading)
+            await whenPageLoadComplete({ tabId, ignoreLocationChanges: true })
+            // Wait a bit longer; the page might still redirect to another page.
+            try {
+                await Promise.race([
+                    // Resolve after the specified time..
+                    delay(timeToWait),
+                    // ..or reject if the location changes in the meantime.
+                    eventToPromise({ reject: tabNavigatedEvent(tabId) }),
+                ])
+                // We finished waiting and assume this is the final page.
+                return
+            } catch (err) {
+                // The location changed. Start again, wait for the new page to load.
+            }
+        }
+    }
+
+    // Run and wait for the innerFunction, but reject if the tab is closed in the meantime.
+    await Promise.race([
+        innerFunction(),
+        eventToPromise({ reject: tabClosedEvent(tabId) }),
+    ])
 }
 
 // Resolve if or when the tab is active.
