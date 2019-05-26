@@ -44,10 +44,29 @@ describe('remoteFunction', () => {
         expect(browser.runtime.sendMessage).toHaveBeenCalledTimes(1)
     })
 
-    test('should throw an error if response does not contain RPC token', async () => {
+    test('should throw an "interfering listener" error if response is unrecognised', async () => {
+        browser.tabs.sendMessage.mockReturnValueOnce('some unexpected return value')
         const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
         await expect(remoteFunc()).rejects.toMatchObject({
-            message: 'RPC got a response from an interfering listener.',
+            message: expect.stringContaining('RPC got a response from an interfering listener'),
+        })
+    })
+
+    test('should throw a "no response" error if sending the message fails', async () => {
+        browser.tabs.sendMessage.mockReturnValueOnce(Promise.reject(new Error()))
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
+        await expect(remoteFunc()).rejects.toMatchObject({
+            message: expect.stringContaining('Got no response'),
+        })
+    })
+
+    test('should throw a "no response" error if response is undefined', async () => {
+        // It seems we can get back undefined when the tab is closed before the response is sent.
+        // In such cases 'no response' seems a better error message than 'interfering listener'.
+        browser.tabs.sendMessage.mockReturnValueOnce(undefined)
+        const remoteFunc = remoteFunction('remoteFunc', { tabId: 1 })
+        await expect(remoteFunc()).rejects.toMatchObject({
+            message: expect.stringContaining('Got no response'),
         })
     })
 
