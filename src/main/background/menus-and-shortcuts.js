@@ -19,11 +19,17 @@ const settings = {
 
 const commands = manifest.commands
 
+// A hacky way to create/update context menu items. Firefox appears not to throw when updating a
+// non-existent item, and Chromium appears to throw an uncatchable error when creating an item that
+// already exists; so a simple try-catch approach, either way around, always fails in some browser.
+// There is no browser API to read what exists, so we keep our own list of items we created.
+const createdContextMenuItems = []
 export async function updateOrCreateContextMenuItem(id, options) {
-    try {
+    if (createdContextMenuItems.includes(id)) {
         await browser.contextMenus.update(id, options)
-    } catch (err) {
+    } else {
         await browser.contextMenus.create({ id, ...options })
+        createdContextMenuItems.push(id)
     }
 }
 
