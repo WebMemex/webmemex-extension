@@ -1,3 +1,4 @@
+import { parallelise, forAwait } from 'src/util/parallel-generator'
 import { remoteFunction } from 'src/util/webextensionRPC'
 import { capturePage } from 'src/page-capture/background'
 import { autoVisitUrls } from './auto-visit'
@@ -6,13 +7,17 @@ import { updateOrCreateContextMenuItem } from './menus-and-shortcuts'
 
 // Visit and capture each url, while storing the results.
 async function visitAndCaptureAndStore(urls) {
+    // Use a few tabs in parallel to speed things up, but not so many that it bogs things down.
+    const nTabs = Math.min(4, urls.length)
+    const parallelAutoVisitUrls = parallelise(autoVisitUrls, nTabs)
+    const urlIterator = urls[Symbol.iterator]() // a shared iterator, to not visit each URL n times.
     // Visit.
-    for await (const { tabId } of autoVisitUrls(urls)) {
+    await forAwait(parallelAutoVisitUrls(urlIterator), async ({ tabId }) => {
         // Capture.
         const captureResult = await capturePage({ tabId, needScreenshot: false })
         // Store.
         await storeCaptureResult(captureResult)
-    }
+    })
 }
 
 const linkMenuItemId = 'snapshotLinkedPage'
