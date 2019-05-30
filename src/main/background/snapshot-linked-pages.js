@@ -11,13 +11,24 @@ async function visitAndCaptureAndStore(urls) {
     const nTabs = Math.min(4, urls.length)
     const parallelAutoVisitUrls = parallelise(autoVisitUrls, nTabs)
     const urlIterator = urls[Symbol.iterator]() // a shared iterator, to not visit each URL n times.
+
+    let successes = 0
     // Visit.
     await forAwait(parallelAutoVisitUrls(urlIterator), async ({ tabId }) => {
-        // Capture.
-        const captureResult = await capturePage({ tabId, needScreenshot: false })
-        // Store.
-        await storeCaptureResult(captureResult)
+        try {
+            // Capture.
+            const captureResult = await capturePage({ tabId, needScreenshot: false })
+            // Store.
+            await storeCaptureResult(captureResult)
+            successes++
+        } catch (err) {}
     })
+
+    // Simply throw an error when not all pages were captured.
+    // TODO improve this: let know which URLs failed, catch errors inside autoVisitUrls, etcetera.
+    if (successes < urls.length) {
+        throw new Error(`Only ${successes} out of ${urls.length} were successfully stored.`)
+    }
 }
 
 const linkMenuItemId = 'snapshotLinkedPage'
@@ -46,12 +57,24 @@ setDefaultContextMenuItems()
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
     if (info.menuItemId === linkMenuItemId) {
         const url = info.linkUrl
-        await visitAndCaptureAndStore([url])
+        try {
+            await visitAndCaptureAndStore([url])
+        } catch (err) {
+            const message = `Failed to store the linked page.`
+            console.error(message, err)
+            alert(message)
+        }
     }
 
     if (info.menuItemId === selectionMenuItemId) {
         const urls = await getLinksInSelectionOfTab(tab.id)
-        await visitAndCaptureAndStore(urls)
+        try {
+            await visitAndCaptureAndStore(urls)
+        } catch (err) {
+            const message = `Failed to store some or any of the linked pages.`
+            console.error(message, err)
+            alert(message)
+        }
     }
 })
 
