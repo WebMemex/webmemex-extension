@@ -4,20 +4,20 @@ import eventToPromise from './event-to-promise'
 const tabClosedEvent = tabId => ({
     event: browser.tabs.onRemoved,
     filter: closedTabId => (closedTabId === tabId),
-    reason: { message: 'Tab was closed before event occurred.' },
+    reason: 'Tab was closed before event occurred.',
 })
 
 const tabNavigatedEvent = tabId => ({
     event: browser.webNavigation.onCommitted,
     filter: details => (details.tabId === tabId && details.frameId === 0),
-    reason: { message: 'Tab URL changed before event occurred.' },
+    reason: 'Tab URL changed before event occurred.',
 })
 
 // TODO Handle history state updates more carefully. Ignoring these events for now.
 // const tabHistoryStateUpdatedEvent = tabId => ({
 //     event: browser.webNavigation.onHistoryStateUpdated,
 //     filter: details => (details.tabId === tabId && details.frameId === 0),
-//     reason: {message: 'Tab URL changed before event occurred.'},
+//     reason: 'Tab URL changed before event occurred.',
 // })
 
 function tabChangedEvents(tabId, ignoreLocationChanges) {
