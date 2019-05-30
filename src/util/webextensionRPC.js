@@ -67,7 +67,10 @@ export function remoteFunction(funcName, { tabId } = {}) {
             response = (tabId !== undefined)
                 ? await browser.tabs.sendMessage(tabId, message)
                 : await browser.runtime.sendMessage(message)
-        } catch (err) {
+        } catch (err) {}
+
+        // Check if we got an error or no response.
+        if (response === undefined) {
             throw new RpcError(
                 `Got no response when trying to call '${funcName}'. `
                 + `Did you enable RPC in ${otherSide}?`
@@ -75,8 +78,11 @@ export function remoteFunction(funcName, { tabId } = {}) {
         }
 
         // Check if it was *our* listener that responded.
-        if (!response || response[RPC_RESPONSE] !== RPC_RESPONSE) {
-            throw new RpcError(`RPC got a response from an interfering listener.`)
+        if (response === null || response[RPC_RESPONSE] !== RPC_RESPONSE) {
+            throw new RpcError(
+                `RPC got a response from an interfering listener while calling '${funcName}' in `
+                + `${otherSide}`
+            )
         }
 
         // If we could not invoke the function on the other side, throw an error.

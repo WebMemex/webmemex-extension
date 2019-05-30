@@ -15,6 +15,11 @@ export default class Main extends React.Component {
 
     componentDidMount() {
         this.loadSettings()
+        browser.storage.onChanged.addListener(this.loadSettings)
+    }
+
+    componentWillUnmount() {
+        this.storage.onChanged.removeListener(this.loadSettings)
     }
 
     async saveAllPages() {

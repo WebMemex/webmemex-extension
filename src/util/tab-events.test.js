@@ -4,14 +4,17 @@
 import { whenPageDOMLoaded, whenPageLoadComplete, whenTabActive } from './tab-events'
 import * as eventToPromise from './event-to-promise'
 
+beforeAll(() => {
+    browser.webNavigation = {
+        onCommitted: jest.fn(),
+    }
+})
+
 describe('whenPageDOMLoaded', () => {
     const tabId = 1
 
     beforeEach(() => {
         browser.tabs = {}
-        browser.webNavigation = {
-            onCommitted: jest.fn(),
-        }
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.resolve()
         )
@@ -65,9 +68,6 @@ describe('whenPageLoadComplete', () => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.resolve()
         )
-        browser.webNavigation = {
-            onCommitted: jest.fn(),
-        }
     })
 
     test('should return directly if the tab status is complete', async () => {
@@ -110,9 +110,6 @@ describe('whenTabActive', () => {
         eventToPromise.default = jest.fn().mockReturnValue(
             Promise.resolve()
         )
-        browser.webNavigation = {
-            onCommitted: jest.fn(),
-        }
     })
 
     test('should return directly if the tab is already active', async () => {
