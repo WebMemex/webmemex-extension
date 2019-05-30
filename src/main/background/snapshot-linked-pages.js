@@ -1,5 +1,6 @@
 import { parallelise, forAwait } from 'src/util/parallel-generator'
 import { remoteFunction } from 'src/util/webextensionRPC'
+import notify from 'src/util/notify'
 import { capturePage } from 'src/page-capture/background'
 import { autoVisitUrls } from './auto-visit'
 import { storeCaptureResult } from './store-capture-result'
@@ -62,7 +63,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
         } catch (err) {
             const message = `Failed to store the linked page.`
             console.error(message, err)
-            alert(message)
+            notify({ message, iconUrl: '/assets/webmemex-48.png' })
         }
     }
 
@@ -73,7 +74,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
         } catch (err) {
             const message = `Failed to store some or any of the linked pages.`
             console.error(message, err)
-            alert(message)
+            notify({ message, iconUrl: '/assets/webmemex-48.png' })
         }
     }
 })
