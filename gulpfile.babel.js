@@ -287,6 +287,7 @@ gulp.task('publish-amo', async () => {
 })
 
 // Publish to Chrome Web Store
+// TODO use gulp-crx-pack instead of using crx through exec()
 gulp.task('publish-cws', async () => {
     const { ChromeWebStore } = readApiKeys()
     const publishCwsCommand = (
