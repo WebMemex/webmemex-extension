@@ -66,9 +66,8 @@ const browserifySettings = {
 // Define babel config here, as .babelrc is already used for converting this gulpfile itself.
 const babelifySettings = {
     presets: [
-        'react',
-        'stage-3',
-        ['env', {
+        '@babel/preset-react',
+        ['@babel/preset-env', {
             targets: {
                 browsers: [
                     'last 2 Firefox versions',

@@ -19,7 +19,6 @@
     "lint-fix": "eslint --ext js,jsx --fix src/"
   },
   "dependencies": {
-    "babel-runtime": "^6.23.0",
     "blob-util": "^2.0.2",
     "classnames": "^2.2.6",
     "docuri": "^4.2.2",
@@ -50,11 +49,11 @@
     "when-all-settled": "^0.1.1"
   },
   "devDependencies": {
-    "babel-jest": "^23.4.2",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1",
-    "babelify": "^8.0.0",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.4.4",
+    "babel-jest": "^24.8.0",
+    "babelify": "^10.0.0",
     "browserify": "^16.2.3",
     "crx": "^5.0.0",
     "css-modulesify": "git+https://github.com/Treora/css-modulesify.git#95447d1",
