@@ -23,7 +23,7 @@ import postcssPresetEnv from 'postcss-preset-env'
 import uglifyjs from 'uglify-es'
 import uglifyComposer from 'gulp-uglify/composer'
 
-const uglify = uglifyComposer(uglifyjs, console);
+const uglify = uglifyComposer(uglifyjs, console)
 
 const exec = promisify((command, callback) => {
     // Let exec also display the shell command and its output
@@ -70,14 +70,14 @@ const babelifySettings = {
             targets: {
                 browsers: [
                     'last 2 Firefox versions',
-                    'last 2 Chrome versions'
-                ]
-            }
-        }]
+                    'last 2 Chrome versions',
+                ],
+            },
+        }],
     ],
 }
 
-async function createBundle({filePath, watch = false, production = false}) {
+async function createBundle({ filePath, watch = false, production = false }) {
     const { dir, name } = path.parse(filePath)
     const entries = [path.join('src', filePath)]
     const destination = path.join('extension', dir)
@@ -89,13 +89,13 @@ async function createBundle({filePath, watch = false, production = false}) {
     const cssOutput = `${name}.css`
 
     let b = watch
-        ? watchify(browserify({...watchify.args, ...browserifySettings, entries}))
+        ? watchify(browserify({ ...watchify.args, ...browserifySettings, entries }))
             .on('update', bundle)
-        : browserify({...browserifySettings, entries})
+        : browserify({ ...browserifySettings, entries })
     b.transform(babelify, babelifySettings)
     b.transform(envify({
         NODE_ENV: production ? 'production' : 'development',
-    }), {global: true})
+    }), { global: true })
 
     b.plugin(cssModulesify, {
         global: true, // for importing css modules from e.g. react-datepicker.
@@ -114,7 +114,7 @@ async function createBundle({filePath, watch = false, production = false}) {
             .pipe(source('css-modules-output.css')) // pretend the streamed data had this filename.
             .pipe(buffer()) // concatCss & clipEmptyFiles do not support streamed files.
             .pipe(fs.existsSync(cssInputPath) ? addsrc.prepend(cssInputPath) : identity())
-            .pipe(concatCss(cssOutput, {inlineImports: false}))
+            .pipe(concatCss(cssOutput, { inlineImports: false }))
             .pipe(clipEmptyFiles()) // Drop file if no output was produced (e.g. no background.css)
             .pipe(gulp.dest(destination))
     })
@@ -125,7 +125,7 @@ async function createBundle({filePath, watch = false, production = false}) {
             .on('error', error => console.error(error.message))
             .pipe(source(output))
             .pipe(buffer())
-            .pipe(production ? uglify({output: {ascii_only: true}}) : identity())
+            .pipe(production ? uglify({ output: { ascii_only: true } }) : identity())
             .pipe(gulp.dest(destination))
             .on('end', () => {
                 let time = (Date.now() - startTime) / 1000
@@ -163,17 +163,17 @@ gulp.task('copyStaticFiles-watch', gulp.series('copyStaticFiles',
 ))
 
 gulp.task('build-prod', gulp.parallel('copyStaticFiles', async function bundleForProduction() {
-    const ps = sourceFiles.map(filePath => createBundle({filePath, watch: false, production: true}))
+    const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: false, production: true }))
     await Promise.all(ps)
 }))
 
 gulp.task('build', gulp.parallel('copyStaticFiles', async function bundleForDevelopment() {
-    const ps = sourceFiles.map(filePath => createBundle({filePath, watch: false}))
+    const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: false }))
     await Promise.all(ps)
 }))
 
 gulp.task('build-watch', gulp.parallel('copyStaticFiles-watch', async function watchAndBundle() {
-    const ps = sourceFiles.map(filePath => createBundle({filePath, watch: true}))
+    const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: true }))
     await Promise.all(ps)
 }))
 
@@ -183,7 +183,7 @@ gulp.task('build-watch', gulp.parallel('copyStaticFiles-watch', async function w
 const stylelintOptions = {
     failAfterError: false,
     reporters: [
-        {formatter: 'string', console: true},
+        { formatter: 'string', console: true },
     ],
 }
 
@@ -268,8 +268,8 @@ function readApiKeys() {
         return JSON.parse(fs.readFileSync('./.api-keys.json'))
     } catch (err) {
         throw new Error(
-            'Expected to find API keys in .api-keys.json.' +
-            ' For details, well best just read the gulpfile..'
+            'Expected to find API keys in .api-keys.json.'
+            + ' For details, well best just read the gulpfile..'
         )
     }
 }
