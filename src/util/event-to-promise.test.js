@@ -71,12 +71,12 @@ describe('eventToPromise', () => {
                 }).then(resolveHandler)
 
                 await null
-                expect(resolveHandler).not.toBeCalled()
+                expect(resolveHandler).not.toHaveBeenCalled()
 
                 resolveOpts.event.trigger()
 
                 await null
-                expect(resolveHandler).toBeCalledWith({ someKey: 'someValue' })
+                expect(resolveHandler).toHaveBeenCalledWith({ someKey: 'someValue' })
             })
         })
     })
@@ -99,12 +99,12 @@ describe('eventToPromise', () => {
                 }).catch(rejectHandler)
 
                 await null
-                expect(rejectHandler).not.toBeCalled()
+                expect(rejectHandler).not.toHaveBeenCalled()
 
                 rejectOpts.event.trigger()
 
                 await null
-                expect(rejectHandler).toBeCalled()
+                expect(rejectHandler).toHaveBeenCalled()
                 const error = rejectHandler.mock.calls[0][0]
                 expect(error).toBeInstanceOf(Error)
                 expect(error.message).toMatch(/.*something.*/)
@@ -123,18 +123,18 @@ describe('eventToPromise', () => {
         }).then(resolveHandler)
 
         await null
-        expect(resolveHandler).not.toBeCalled()
+        expect(resolveHandler).not.toHaveBeenCalled()
 
         resolveOpts.filter.mockReturnValueOnce(false)
         resolveOpts.event.trigger()
 
         await null
-        expect(resolveHandler).not.toBeCalled()
+        expect(resolveHandler).not.toHaveBeenCalled()
 
         resolveOpts.filter.mockReturnValueOnce(true)
         resolveOpts.event.trigger()
 
         await null
-        expect(resolveHandler).toBeCalled()
+        expect(resolveHandler).toHaveBeenCalled()
     })
 })
