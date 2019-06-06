@@ -43,7 +43,7 @@ logs and stores pages in [PouchDB][], and provides a viewer built with [React][]
 ### Build and run it
 
 1. Clone this repo.
-2. Get [Node/NPM][]≥7.
+2. Get [Node/NPM][]≥8.
 3. Run `make` to install dependencies and compile the source files.
 4. Load it in Firefox or Chromium/Chrome:
     * In Firefox: run `npm run firefox` (or run [web-ext][] directly for more control).
