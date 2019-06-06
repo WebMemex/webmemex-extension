@@ -27,15 +27,15 @@ const DateSelection = ({
             />
         }
         disabledKeyboardNavigation={date !== undefined}
-        dateFormat='DD-MM-YYYY'
+        dateFormat='dd-MM-yyyy'
         placeholderText='jump to date…'
         title='Jump to date…'
         isClearable
-        selected={date && moment(date)}
-        openToDate={(date && moment(date)) || moment()}
-        maxDate={moment()}
+        selected={date && new Date(date)}
+        openToDate={date && new Date(date)}
+        maxDate={new Date()}
         onChange={date => onDateChange(
-            date ? date.endOf('day').valueOf() : undefined,
+            date ? moment(date).endOf('day').valueOf() : undefined,
         )}
         popoverTargetAttachment='bottom right'
         popoverAttachment='top right'

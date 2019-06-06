@@ -1,14 +1,15 @@
 import fs from 'fs'
 import path from 'path'
 import { exec as execCb } from 'child_process'
-import pify from 'pify'
+import { promisify } from 'util'
+
 import streamToPromise from 'stream-to-promise'
 import gulp from 'gulp'
 import addsrc from 'gulp-add-src'
 import clipEmptyFiles from 'gulp-clip-empty-files'
 import concatCss from 'gulp-concat-css'
-import { default as runSequenceCb } from 'run-sequence'
 import identity from 'gulp-identity'
+import indefinitely from 'indefinitely'
 import source from 'vinyl-source-stream'
 import buffer from 'vinyl-buffer'
 import eslint from 'gulp-eslint'
@@ -22,11 +23,9 @@ import postcssPresetEnv from 'postcss-preset-env'
 import uglifyjs from 'uglify-es'
 import uglifyComposer from 'gulp-uglify/composer'
 
-const uglify = uglifyComposer(uglifyjs, console);
+const uglify = uglifyComposer(uglifyjs, console)
 
-// Promisify callback-based apis.
-const runSequence = pify(runSequenceCb)
-const exec = pify((command, callback) => {
+const exec = promisify((command, callback) => {
     // Let exec also display the shell command and its output
     console.log('>>>', command)
     execCb(command, (error, stdout, stderr) => {
@@ -42,7 +41,7 @@ const exec = pify((command, callback) => {
 const staticFiles = {
     'src/manifest.json': 'extension',
     'src/*.html': 'extension',
-    'src/assets/*': 'extension/assets/',
+    'src/assets/**': 'extension/assets/',
     'node_modules/webextension-polyfill/dist/browser-polyfill.js': 'extension/lib',
     'node_modules/semantic-ui-css/semantic.min.css': 'extension/lib/semantic-ui',
     'node_modules/semantic-ui-css/themes/**/*': 'extension/lib/semantic-ui/themes',
@@ -66,20 +65,19 @@ const browserifySettings = {
 // Define babel config here, as .babelrc is already used for converting this gulpfile itself.
 const babelifySettings = {
     presets: [
-        'react',
-        'stage-3',
-        ['env', {
+        '@babel/preset-react',
+        ['@babel/preset-env', {
             targets: {
                 browsers: [
                     'last 2 Firefox versions',
-                    'last 2 Chrome versions'
-                ]
-            }
-        }]
+                    'last 2 Chrome versions',
+                ],
+            },
+        }],
     ],
 }
 
-async function createBundle({filePath, watch = false, production = false}) {
+async function createBundle({ filePath, watch = false, production = false }) {
     const { dir, name } = path.parse(filePath)
     const entries = [path.join('src', filePath)]
     const destination = path.join('extension', dir)
@@ -91,13 +89,13 @@ async function createBundle({filePath, watch = false, production = false}) {
     const cssOutput = `${name}.css`
 
     let b = watch
-        ? watchify(browserify({...watchify.args, ...browserifySettings, entries}))
+        ? watchify(browserify({ ...watchify.args, ...browserifySettings, entries }))
             .on('update', bundle)
-        : browserify({...browserifySettings, entries})
+        : browserify({ ...browserifySettings, entries })
     b.transform(babelify, babelifySettings)
     b.transform(envify({
         NODE_ENV: production ? 'production' : 'development',
-    }), {global: true})
+    }), { global: true })
 
     b.plugin(cssModulesify, {
         global: true, // for importing css modules from e.g. react-datepicker.
@@ -116,7 +114,7 @@ async function createBundle({filePath, watch = false, production = false}) {
             .pipe(source('css-modules-output.css')) // pretend the streamed data had this filename.
             .pipe(buffer()) // concatCss & clipEmptyFiles do not support streamed files.
             .pipe(fs.existsSync(cssInputPath) ? addsrc.prepend(cssInputPath) : identity())
-            .pipe(concatCss(cssOutput, {inlineImports: false}))
+            .pipe(concatCss(cssOutput, { inlineImports: false }))
             .pipe(clipEmptyFiles()) // Drop file if no output was produced (e.g. no background.css)
             .pipe(gulp.dest(destination))
     })
@@ -127,7 +125,7 @@ async function createBundle({filePath, watch = false, production = false}) {
             .on('error', error => console.error(error.message))
             .pipe(source(output))
             .pipe(buffer())
-            .pipe(production ? uglify({output: {ascii_only: true}}) : identity())
+            .pipe(production ? uglify({ output: { ascii_only: true } }) : identity())
             .pipe(gulp.dest(destination))
             .on('end', () => {
                 let time = (Date.now() - startTime) / 1000
@@ -138,10 +136,10 @@ async function createBundle({filePath, watch = false, production = false}) {
             })
     }
 
-    await pify(bundle)()
+    await promisify(bundle)()
 }
 
-gulp.task('copyStaticFiles', () => {
+gulp.task('copyStaticFiles', async () => {
     for (let filename in staticFiles) {
         console.log(`Copying '${filename}' to '${staticFiles[filename]}'..`)
         gulp.src(filename)
@@ -149,31 +147,35 @@ gulp.task('copyStaticFiles', () => {
     }
 })
 
-gulp.task('copyStaticFiles-watch', ['copyStaticFiles'], () => {
-    Object.entries(staticFiles).forEach(([filename, destination]) => {
-        gulp.watch(filename)
-            .on('change', event => {
-                console.log(`Copying '${filename}' to '${staticFiles[filename]}'..`)
-                return gulp.src(filename)
-                    .pipe(gulp.dest(staticFiles[filename]))
-            })
-    })
-})
+gulp.task('copyStaticFiles-watch', gulp.series('copyStaticFiles',
+    async function watchAndCopyStaticFiles() {
+        Object.entries(staticFiles).forEach(([filename, destination]) => {
+            gulp.watch(filename)
+                .on('all', (event, path) => {
+                    console.log(`Copying '${filename}' to '${staticFiles[filename]}'..`)
+                    return gulp.src(filename)
+                        .pipe(gulp.dest(staticFiles[filename]))
+                })
+        })
 
-gulp.task('build-prod', ['copyStaticFiles'], async () => {
-    const ps = sourceFiles.map(filePath => createBundle({filePath, watch: false, production: true}))
-    await Promise.all(ps)
-})
+        await indefinitely
+    }
+))
 
-gulp.task('build', ['copyStaticFiles'], async () => {
-    const ps = sourceFiles.map(filePath => createBundle({filePath, watch: false}))
+gulp.task('build-prod', gulp.parallel('copyStaticFiles', async function bundleForProduction() {
+    const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: false, production: true }))
     await Promise.all(ps)
-})
+}))
 
-gulp.task('build-watch', ['copyStaticFiles-watch'], async () => {
-    const ps = sourceFiles.map(filePath => createBundle({filePath, watch: true}))
+gulp.task('build', gulp.parallel('copyStaticFiles', async function bundleForDevelopment() {
+    const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: false }))
     await Promise.all(ps)
-})
+}))
+
+gulp.task('build-watch', gulp.parallel('copyStaticFiles-watch', async function watchAndBundle() {
+    const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: true }))
+    await Promise.all(ps)
+}))
 
 
 // === Tasks for linting the source code ===
@@ -181,7 +183,7 @@ gulp.task('build-watch', ['copyStaticFiles-watch'], async () => {
 const stylelintOptions = {
     failAfterError: false,
     reporters: [
-        {formatter: 'string', console: true},
+        { formatter: 'string', console: true },
     ],
 }
 
@@ -202,24 +204,24 @@ gulp.task('lint', async () => {
     await streamToPromise(stylelintStream)
 })
 
-gulp.task('lint-watch', ['lint'], callback => {
+gulp.task('lint-watch', gulp.series('lint', async function watchAndLint() {
     gulp.watch(['src/**/*.js', 'src/**/*.jsx'])
-        .on('change', event => {
-            return gulp.src(event.path)
+        .on('change', path => {
+            return gulp.src(path)
                 .pipe(eslint())
                 .pipe(eslint.format())
         })
 
     gulp.watch(['src/**/*.css'])
-        .on('change', event => {
-            return gulp.src(event.path)
+        .on('change', path => {
+            return gulp.src(path)
                 .pipe(stylelint(stylelintOptions))
         })
 
-    // Don't call callback, to wait forever.
-})
+    await indefinitely
+}))
 
-gulp.task('watch', ['build-watch', 'lint-watch'])
+gulp.task('watch', gulp.parallel('build-watch', 'lint-watch'))
 
 
 // === Tasks for packaging the extension; results go into ./dist/{browser} ===
@@ -255,7 +257,8 @@ gulp.task('package-chromium', async () => {
     await exec(buildCrxCommand)
 })
 
-gulp.task('package', ['package-firefox', 'package-chromium'])
+// Run sequentially to keep output cleanly separated.
+gulp.task('package', gulp.series('package-firefox', 'package-chromium'))
 
 
 // === Tasks for publishing the extension ===
@@ -265,8 +268,8 @@ function readApiKeys() {
         return JSON.parse(fs.readFileSync('./.api-keys.json'))
     } catch (err) {
         throw new Error(
-            'Expected to find API keys in .api-keys.json.' +
-            ' For details, well best just read the gulpfile..'
+            'Expected to find API keys in .api-keys.json.'
+            + ' For details, well best just read the gulpfile..'
         )
     }
 }
@@ -287,6 +290,7 @@ gulp.task('publish-amo', async () => {
 })
 
 // Publish to Chrome Web Store
+// TODO use gulp-crx-pack instead of using crx through exec()
 gulp.task('publish-cws', async () => {
     const { ChromeWebStore } = readApiKeys()
     const publishCwsCommand = (
@@ -302,10 +306,5 @@ gulp.task('publish-cws', async () => {
     } catch (err) {}
 })
 
-gulp.task('publish', async () => {
-    // Run sequentially to keep output cleanly separated (a better solution is welcome).
-    await runSequence(
-        'publish-amo',
-        'publish-cws',
-    )
-})
+// Run sequentially to keep output cleanly separated.
+gulp.task('publish', gulp.series('publish-amo', 'publish-cws'))
