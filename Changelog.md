@@ -1,5 +1,15 @@
 # Changelog for webmemex-extension
 
+## 0.3.3 (2019-06-07)
+
+- Add the possibility to programmatically visit and snapshot multiple pages; e.g. all pages that are
+  listed in a table of contents (select the links, right-click and choose "snapshot linked pages").
+- Update freeze-dry to v0.2.3, so that we…
+  - …no longer choke on some invalid URLs (issue #137);
+  - …add the proper character encoding declaration to snapshots;
+  - …keep/make links within the document (e.g. `<a href="#top">`) relative.
+- Update most other dependencies (should not noticeably change much)
+
 ## 0.3.2 (2019-05-16)
 
 - Add an options page with:
