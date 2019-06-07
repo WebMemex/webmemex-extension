@@ -1,6 +1,5 @@
 import { dataURLToBlob } from 'blob-util'
 
-import delay from 'src/util/delay'
 import { whenTabActive } from 'src/util/tab-events'
 
 // Take a screenshot of the tabId, if it is active.
@@ -20,9 +19,6 @@ async function snapNow({ tabId }) {
 // but only as soon as it is active (due to a limitation of the browser API)
 export default async function makeScreenshotOfTabAsap({ tabId }) {
     await whenTabActive({ tabId })
-    // Some delay appears required to not fail. Perhaps the browser needs
-    // to complete some rendering before the screen is captured?
-    await delay(300)
     const imageBlob = await snapNow({ tabId })
     return imageBlob
 }
