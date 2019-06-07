@@ -37,15 +37,15 @@ const selectionMenuItemId = 'snapshotPagesLinkedInSelection'
 
 // Create two new context ('right-click') menu items: one is to be shown when right-clicking a link,
 // the other when right-clicking a selection.
-function setDefaultContextMenuItems() {
-    updateOrCreateContextMenuItem(linkMenuItemId, {
+async function setDefaultContextMenuItems() {
+    await updateOrCreateContextMenuItem(linkMenuItemId, {
         title: 'Snapshot linked page',
         contexts: ['link'],
         visible: true,
         enabled: true,
     })
 
-    updateOrCreateContextMenuItem(selectionMenuItemId, {
+    await updateOrCreateContextMenuItem(selectionMenuItemId, {
         title: 'Snapshot linked pages',
         contexts: ['selection'],
         visible: true,
