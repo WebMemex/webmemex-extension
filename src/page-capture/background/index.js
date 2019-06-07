@@ -1,4 +1,3 @@
-import { dataURLToBlob } from 'blob-util'
 import whenAllSettled from 'when-all-settled'
 
 import delay from 'src/util/delay'
@@ -20,13 +19,11 @@ export async function capturePage({ tabId, needScreenshot = true }) {
     // Read the page's URL
     const { url } = await browser.tabs.get(tabId)
 
-    // Get and store the fav-icon
+    // Get the fav-icon
     const favIconP = getFavIcon({ tabId })
-        .then(async dataUrl => await dataURLToBlob(dataUrl))
 
     // Capture a screenshot.
     const screenshotP = makeScreenshot({ tabId })
-        .then(async dataUrl => await dataURLToBlob(dataUrl))
 
     // Extract the text and metadata
     const pageContentP = extractPageContent()

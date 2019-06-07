@@ -1,6 +1,4 @@
-import { blobToDataURL } from 'blob-util'
-
-// Get a tab's fav-icon (website logo) as a data URL
+// Get a tab's fav-icon (website logo) as a Blob
 async function getFavIcon({ tabId }) {
     const tab = await browser.tabs.get(tabId)
 
@@ -10,8 +8,7 @@ async function getFavIcon({ tabId }) {
 
     const response = await fetch(tab.favIconUrl)
     const blob = await response.blob()
-    const dataUrl = await blobToDataURL(blob)
-    return dataUrl
+    return blob
 }
 
 export default getFavIcon
