@@ -30,5 +30,5 @@ test('extractPageContent', () => {
     expect(data.title).toEqual('Example')
     expect(data.keywords).toEqual(['bogus', 'test', 'example'])
     // (skipping test below, as Node.innerText is not yet implemented in JSDOM)
-    // expect(data.fullText).trim().toEqual('Dummy Text')
+    // expect(data.fullText.trim()).toEqual('Dummy Text')
 })
