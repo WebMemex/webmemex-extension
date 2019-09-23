@@ -2,10 +2,15 @@ import { makeRemotelyCallable } from 'src/util/webextensionRPC'
 
 async function getLinksInSelection() {
     // Get all <a> and <area> elements in the user's current selection.
+    const linkSelectors = 'a[href], area[href]'
     const selection = window.getSelection()
-    const range = selection.getRangeAt(0)
-    const documentFragment = range.cloneContents()
-    const linkElements = Array.from(documentFragment.querySelectorAll('a[href], area[href]'))
+    let linkElements = []
+    for (let i = 0; i < selection.rangeCount; i++) {
+        const range = selection.getRangeAt(i)
+        const documentFragment = range.cloneContents()
+        const linkElementsInFragment = Array.from(documentFragment.querySelectorAll(linkSelectors))
+        linkElements = linkElements.concat(linkElementsInFragment)
+    }
 
     // Get the URLs these elements link to.
     const urls = linkElements
