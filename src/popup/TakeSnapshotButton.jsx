@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon, Menu, Message } from 'semantic-ui-react'
 
-import { remoteFunction } from 'src/util/webextensionRPC'
+import { remoteFunction } from 'webextension-rpc'
 import { absoluteUrlForLocalPage } from 'src/local-page'
 import LinkOpenInTab from './LinkOpenInTab'
 

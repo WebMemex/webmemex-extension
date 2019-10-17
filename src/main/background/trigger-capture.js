@@ -1,4 +1,4 @@
-import { makeRemotelyCallable } from 'src/util/webextensionRPC'
+import { makeRemotelyCallable } from 'webextension-rpc'
 import { capturePage } from 'src/page-capture/background'
 import { storeCaptureResult } from './store-capture-result'
 

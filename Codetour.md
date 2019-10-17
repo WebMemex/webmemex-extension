@@ -15,7 +15,7 @@ this extension consists of the following parts (found in [`extension/`](extensio
 
 The parts communicate in two ways:
 - Messaging through `browser.sendMessage`, usually done implicitly by using a remote procedure call
- ([`util/webextensionRPC.js`](src/util/webextensionRPC.js)).
+ (using [`webextension-rpc`](https://www.npmjs.com/package/webextension-rpc)).
 - Through the in-browser PouchDB database, they get to see the same data, and can react to changes
   made by other parts.
 

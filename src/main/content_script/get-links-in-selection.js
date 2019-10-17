@@ -1,4 +1,4 @@
-import { makeRemotelyCallable } from 'src/util/webextensionRPC'
+import { makeRemotelyCallable } from 'webextension-rpc'
 
 async function getLinksInSelection() {
     // Get all <a> and <area> elements in the user's current selection.

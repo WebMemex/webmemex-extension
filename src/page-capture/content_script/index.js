@@ -1,6 +1,6 @@
 import freezeDry from 'freeze-dry'
 
-import { makeRemotelyCallable } from 'src/util/webextensionRPC'
+import { makeRemotelyCallable } from 'webextension-rpc'
 import { extractPageContent } from './extract-page-content'
 
 function canRunFreezeDry() {

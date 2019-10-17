@@ -2,7 +2,7 @@ import whenAllSettled from 'when-all-settled'
 
 import delay from 'src/util/delay'
 import { whenPageDOMLoaded } from 'src/util/tab-events'
-import { remoteFunction } from 'src/util/webextensionRPC'
+import { remoteFunction } from 'webextension-rpc'
 
 import getFavIcon from './get-fav-icon'
 import makeScreenshot from './make-screenshot'

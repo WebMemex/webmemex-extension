@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import { remoteFunction } from 'src/util/webextensionRPC'
+import { remoteFunction } from 'webextension-rpc'
 import { getPage } from 'src/local-storage'
 import Main from './Main'
 

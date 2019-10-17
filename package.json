@@ -46,6 +46,7 @@
     "semantic-ui-css": "git+https://github.com/Treora/semantic-ui-css.git#488f361",
     "semantic-ui-react": "^0.87.1",
     "webextension-polyfill": "^0.4.0",
+    "webextension-rpc": "^0.1.0",
     "when-all-settled": "^0.1.1"
   },
   "devDependencies": {

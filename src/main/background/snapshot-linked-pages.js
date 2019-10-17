@@ -1,5 +1,5 @@
 import { parallelise, forAwait } from 'src/util/parallel-generator'
-import { remoteFunction } from 'src/util/webextensionRPC'
+import { remoteFunction } from 'webextension-rpc'
 import notify from 'src/util/notify'
 import { capturePage } from 'src/page-capture/background'
 import { autoVisitUrls } from './auto-visit'

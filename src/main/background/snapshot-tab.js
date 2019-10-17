@@ -1,4 +1,4 @@
-import { remoteFunction } from 'src/util/webextensionRPC'
+import { remoteFunction } from 'webextension-rpc'
 import notify from 'src/util/notify'
 import { capturePage } from 'src/page-capture/background'
 import { storeCaptureResult } from './store-capture-result'

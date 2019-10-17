@@ -1,4 +1,4 @@
-import { makeRemotelyCallable } from 'src/util/webextensionRPC'
+import { makeRemotelyCallable } from 'webextension-rpc'
 import { downloadPage } from 'src/local-storage'
 
 import './background/menus-and-shortcuts'
