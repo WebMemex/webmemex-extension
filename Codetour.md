@@ -14,22 +14,24 @@ this extension consists of the following parts (found in [`extension/`](extensio
 - The `html` files, with their resources in corresponding folders, provide the user interface.
 
 The parts communicate in two ways:
-- Messaging through `browser.sendMessage`, usually done implicitly by using a remote procedure call
- (using [`webextension-rpc`](https://www.npmjs.com/package/webextension-rpc)).
-- Through the in-browser PouchDB database, they get to see the same data, and can react to changes
-  made by other parts.
+- through remote procedure calls using [`webextension-rpc`](https://www.npmjs.com/package/webextension-rpc), which is a simple abstraction
+  around `browser.sendMessage`.
+- Through the in-browser [PouchDB](https://pouchdb.com/) database, they get to see the same data,
+  and can react to changes made by other parts.
 
 ## Source organisation
 
-### [`main`](main/)
+### [`src/main/`](src/main/)
 
-The glue between things. Contains the main background script and content script.
+The glue between things. Contains the main background script and content script, and configures
+the high level behaviour of menu options and keyboard shortcuts.
 
 ### [`src/page-capture/`](src/page-capture/): webpage capturing & extraction
 
 This extracts and stores information about the page in a given tab, such as:
-- A full html version of the rendered page, by 'freeze-drying' it.
-- The plain text of the page, mainly for the full-text search.
+- A full html version of the rendered page, including images and other subresources, by
+  [freeze-dry](https://github.com/WebMemex/freeze-dry/)ing it.
+- The plain text of the page, for the full-text search.
 - Metadata, such as its author, title, etcetera.
 - A screenshot and the site's favicon.
 
@@ -40,18 +42,22 @@ content script running inside the tab.
 
 Everything related to managing the pages stored in the database.
 
-### [`src/local-page/`](src/local-page/): display stored pages
+### [`src/local-page/`](src/local-page/) + [`src/local-page.html`](src/local-page.html): display stored pages
 
 Code for displaying the locally stored web pages, making them accessible on their own URL.
 
-### [`src/overview/`](src/overview/): overview
+### [`src/overview/`](src/overview/) + [`src/overview.html`](src/overview.html): overview
 
 The overview is the user interface that opens in a tab of its own. See
 [`src/overview/Readme.md`](src/overview/Readme.md) for more details.
 
-### [`src/popup/`](src/popup/): browser button popup
+### [`src/popup/`](src/popup/) + [`src/popup.html`](src/popup.html): browser button popup
 
-The UI that shows up when pressing the extension's 'browser_action' button.
+The UI that shows up when pressing the extension's toolbar (‘browser_action’) button.
+
+### [`src/options/`](src/options/) + [`src/options.html`](src/options.html): extension settings page
+
+The UI that shows when opening the extension’s preferences.
 
 ### [`src/dev/`](src/dev/): development tools
 
