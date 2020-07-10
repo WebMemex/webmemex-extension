@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Header, List } from 'semantic-ui-react'
 
-import { absoluteUrlForLocalPage } from 'src/local-page'
+import { urlForInternallyStoredPage } from 'src/local-page'
 import { getPagesByUrl } from 'src/local-storage'
+
 import SnapshotListItem from './SnapshotListItem'
 
 export default class SnapshotList extends React.Component {
@@ -41,7 +42,7 @@ export default class SnapshotList extends React.Component {
         const { currentlyViewedUrl } = this.props
         const { previousSnapshots } = this.state
 
-        const isBeingViewed = page => absoluteUrlForLocalPage(page) === currentlyViewedUrl
+        const isBeingViewed = page => currentlyViewedUrl === urlForInternallyStoredPage(page)
 
         return (
             <Menu.Item>

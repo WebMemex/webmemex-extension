@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, Icon, Menu, Message } from 'semantic-ui-react'
 
 import { remoteFunction } from 'webextension-rpc'
-import { absoluteUrlForLocalPage } from 'src/local-page'
-import LinkOpenInTab from './LinkOpenInTab'
+import LinkToSnapshotOpenInTab from './LinkToSnapshotOpenInTab'
 
 const storeActivePage = remoteFunction('storeActivePage')
 
@@ -65,10 +64,10 @@ export default class TakeSnapshotButton extends React.Component {
                 )}
                 {snapshotState === 'success' && (
                     <Button
-                        as={LinkOpenInTab}
+                        as={LinkToSnapshotOpenInTab}
+                        page={snapshottedPage}
                         fluid
                         positive
-                        href={absoluteUrlForLocalPage(snapshottedPage)}
                         target='_blank'
                         title='View the snapshot'
                     >

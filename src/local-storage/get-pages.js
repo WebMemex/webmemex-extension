@@ -2,23 +2,30 @@ import update from 'lodash/fp/update'
 
 import db, { normaliseFindResult, keyRangeForPrefix } from 'src/pouchdb'
 import { revisePageFields } from 'src/page-capture'
+
 import { pageKeyPrefix, convertPageDocId } from '.'
 
 // Post-process result list after any retrieval of pages from the database.
 async function postprocessPagesResult({ pagesResult }) {
-    pagesResult = update('rows', rows => rows.map(
-        update('doc', postProcessPage),
-    ))(pagesResult)
-
+    await Promise.all(pagesResult.rows.map(async row => {
+        row.doc = await postProcessPage(row.doc)
+    }))
     return pagesResult
 }
 
-export const postProcessPage = page => ({
-    // Let the page-capture module augment or revise the document's attributes.
-    ...revisePageFields(page),
-    // The creation time is encoded in the doc._id; expose it for convenience.
-    timestamp: Number.parseInt(convertPageDocId(page._id).timestamp),
-})
+export async function postProcessPage(page) {
+    const finalPage = {
+        // Let the page-capture module augment or revise the document's attributes.
+        ...revisePageFields(page),
+        // The creation time is encoded in the doc._id; expose it for convenience.
+        timestamp: Number.parseInt(convertPageDocId(page._id).timestamp),
+    }
+    if (page.download) {
+        const [downloadItem] = await browser.downloads.search({ id: page.download.id, exists: true })
+        finalPage.download.exists = !!downloadItem
+    }
+    return finalPage
+}
 
 export async function getPage({ pageId }) {
     const page = await db.get(pageId)

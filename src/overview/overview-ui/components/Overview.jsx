@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Image, Input } from 'semantic-ui-react'
+import { Image, Input, Icon, Label } from 'semantic-ui-react'
+
+import { ExtensionUpgradeBanner } from 'src/common-components'
 
 import * as actions from '../actions'
 import { ourState } from '../selectors'
@@ -10,17 +12,38 @@ import ResultList from './ResultList'
 import DateSelection from './DateSelection'
 import styles from './Overview.css'
 
-
 class Overview extends React.Component {
+    constructor(props) {
+        super(props)
+        this.onClickOptions = this.onClickOptions.bind(this)
+    }
+
     componentDidMount() {
         if (this.props.grabFocusOnMount) {
             this.inputQueryEl.focus()
         }
     }
 
+    onClickOptions(event) {
+        event.preventDefault()
+        browser.runtime.openOptionsPage()
+    }
+
     render() {
         return (
             <div>
+                <ExtensionUpgradeBanner />
+                <Label
+                    corner
+                    size='big'
+                    color='blue'
+                    as='a'
+                    href='/options.html'
+                    onClick={this.onClickOptions}
+                    title='WebMemex preferences'
+                >
+                    <Icon name='options' size='massive' />
+                </Label>
                 <div
                     className={styles.queryInputContainer}
                 >

@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon } from 'semantic-ui-react'
-
 import { remoteFunction } from 'webextension-rpc'
 
 const downloadPage = remoteFunction('downloadPage')

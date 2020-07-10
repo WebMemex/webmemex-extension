@@ -1,5 +1,7 @@
 body {
     padding: 2em;
+    max-width: 40em;
+    margin: auto;
 }
 
 h1 {
@@ -8,4 +10,12 @@ h1 {
 
 button + label {
     margin-left: 0.5em;
+}
+
+li {
+    padding: 0.2em;
+}
+
+small {
+    font-style: italic;
 }

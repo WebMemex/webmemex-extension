@@ -46,6 +46,7 @@
         "<all_urls>",
         "contextMenus",
         "downloads",
+        "downloads.open",
         "history",
         "notifications",
         "storage",

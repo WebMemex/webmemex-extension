@@ -5,6 +5,7 @@ import './background/menus-and-shortcuts'
 import './background/trigger-capture'
 import './background/snapshot-linked-pages'
 import './background/snapshot-tab'
+import './background/extension-upgrade'
 
 makeRemotelyCallable({
     downloadPage,

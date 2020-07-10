@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Button, Divider, Icon, Menu, Message } from 'semantic-ui-react'
 
 import shortUrl from 'src/util/short-url'
+import { ExtensionUpgradeBanner } from 'src/common-components'
+
 import TakeSnapshotButton from './TakeSnapshotButton'
 import SnapshotList from './SnapshotList'
 import LinkOpenInTab from './LinkOpenInTab'
@@ -42,6 +44,7 @@ export default class Main extends React.Component {
 
         return (
             <Menu vertical fluid borderless>
+                <ExtensionUpgradeBanner />
                 {canTakeSnapshot && (
                     <TakeSnapshotButton
                         {...this.state}

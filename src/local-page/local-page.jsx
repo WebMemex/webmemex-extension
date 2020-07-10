@@ -4,11 +4,12 @@ import ReactDOM from 'react-dom'
 import { Icon, Image } from 'semantic-ui-react'
 
 import { getPage, getPageHtml, deletePage } from 'src/local-storage'
+import { SaveAsButton, DeleteButton } from 'src/common-components'
 import shortUrl from 'src/util/short-url'
 import niceTime from 'src/util/nice-time'
 
+import { isStoredInternally } from '.'
 import ContentFrame from './ContentFrame'
-import { SaveAsButton, DeleteButton } from 'src/common-components'
 
 const SnapshotChrome = ({ children }) => (
     <div id='bar'>
@@ -76,8 +77,9 @@ async function showPage(pageId) {
                         {niceTime(timestamp)}
                     </time>
                 </span>
-                <SaveAsButton page={page} label />
+                {isStoredInternally(page) && <SaveAsButton page={page} label />}
                 <DeleteButton
+                    page={page}
                     onClick={async () => {
                         await deletePage({ page })
                         window.location.replace(window.location)

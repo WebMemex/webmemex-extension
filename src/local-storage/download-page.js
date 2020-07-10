@@ -1,4 +1,4 @@
-import get from 'lodash/fp/get'
+import { isStoredInternally } from 'src/local-page'
 
 import { getAllPages, getPageBlob } from '.'
 
@@ -11,8 +11,7 @@ export async function downloadAllPages({ folder } = {}) {
     for (const i in pagesResult.rows) {
         const page = pagesResult.rows[i].doc
 
-        // Check if it has a stored page attached at all.
-        if (!get(['_attachments', 'frozen-page.html'])(page)) {
+        if (!isStoredInternally(page)) {
             continue
         }
 
@@ -64,15 +63,21 @@ export async function downloadBlob({ blob, filename, saveAs = false }) {
         saveAs,
         conflictAction: 'uniquify',
     })
+    let downloadId
     try {
-        await tryDownload(filename)
+        downloadId = await tryDownload(filename)
     } catch (err) {
         // Possibly due to punctuation in the filename (Chromium is picky).
         if (err.message.includes('filename')) {
             filename = filename.replace(/['?:~<>*|]/g, '-') // an empirically composed list.
-            await tryDownload(filename)
+            downloadId = await tryDownload(filename)
         }
     }
     // Forget the blob again. Firefox needs a moment; we give it 10s to be on the safe side.
+    // TODO listen to downloads.onChanged instead.
     window.setTimeout(() => URL.revokeObjectURL(url), 1000*10)
+
+    const [downloadItem] = await browser.downloads.search({ id: downloadId })
+
+    return downloadItem
 }

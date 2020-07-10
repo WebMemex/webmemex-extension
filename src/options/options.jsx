@@ -9,8 +9,9 @@ async function render() {
 
     const stats = await getStatistics()
     const props = {
-        numberOfSnapshots: stats.numberOfPages,
-        totalSnapshotSizeInMB: Math.round(stats.totalSizeOfPages / 1024**2),
+        numberOfSnapshots: stats.numberOfSnapshots,
+        numberOfSnapshotsStoredInsideExtension: stats.numberOfSnapshotsStoredInsideExtension,
+        totalSnapshotSizeInsideExtensionInMB: Math.round(stats.totalSnapshotSizeInsideExtension / 1024**2),
     }
 
     ReactDOM.render(

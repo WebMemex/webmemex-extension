@@ -31,13 +31,9 @@ const ResultList = ({
     }
 
     const listItems = searchResult.rows.map(row => (
-        <li
-            key={row.doc._id}
-        >
+        <li key={row.doc._id}>
             <div>
-                <PageAsListItem
-                    doc={row.doc}
-                />
+                <PageAsListItem page={row.doc} />
             </div>
         </li>
     ))

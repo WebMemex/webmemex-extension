@@ -8,7 +8,13 @@ export default class LinkOpenInTab extends React.Component {
     }
 
     async onClick(event) {
-        const { href, tabId } = this.props
+        const { href, tabId, onClick } = this.props
+        if (onClick) {
+            onClick(event)
+            if (event.defaultPrevented) {
+                return
+            }
+        }
         if (event.ctrlKey || event.metaKey || event.button === 1) {
             browser.tabs.create({ url: href })
         } else if (event.shiftKey) {
@@ -37,7 +43,8 @@ export default class LinkOpenInTab extends React.Component {
 }
 
 LinkOpenInTab.propTypes = {
-    href: PropTypes.string,
+    href: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
     tabId: PropTypes.number, // if tabId is undefined, it seems to open in the current tab.
     children: PropTypes.node,
 }
