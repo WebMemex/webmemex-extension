@@ -1,5 +1,5 @@
 {
-  "browser": true,
+  "resolver": "browser-resolve",
   "globals": {
     "browser": {}
   },
