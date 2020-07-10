@@ -34,7 +34,7 @@ export async function updateOrCreateContextMenuItem(id, options) {
 }
 
 // Add all commands to the browser action button's context menu
-for (let commandId in commands) {
+for (const commandId in commands) {
     const options = commands[commandId]
     // Ignore _execute_browser_action, etcetera.
     if (commandId.startsWith('_')) continue
@@ -53,7 +53,7 @@ for (let commandId in commands) {
 // Show checkboxes in the context menu for each of the settings.
 async function updateSettingsInContextMenu() {
     const settingValues = await browser.storage.local.get(...Object.keys(settings))
-    for (let settingId in settings) {
+    for (const settingId in settings) {
         const itemId = `setting_${settingId}`
         const options = {
             ...settings[settingId],

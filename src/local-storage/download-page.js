@@ -24,7 +24,7 @@ export async function downloadAllPages({ folder } = {}) {
     }
     if (failedDownloads) {
         const errorMessages = failedDownloads.map(({ page, error }) =>
-            `${page._id} ("${page.title}"): ${error.message}\n`
+            `${page._id} ("${page.title}"): ${error.message}\n`,
         )
         throw new Error(`Some downloads failed:\n${errorMessages}`)
     }

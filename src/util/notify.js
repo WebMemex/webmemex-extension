@@ -9,7 +9,7 @@ export default async function notify({
     ...otherProps
 } = {}) {
     const notificationId = await browser.notifications.create(
-        { type, iconUrl, title, message, ...otherProps }
+        { type, iconUrl, title, message, ...otherProps },
     )
     notifications.set(notificationId, { onClicked })
 

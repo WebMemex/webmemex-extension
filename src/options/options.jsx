@@ -15,7 +15,7 @@ async function render() {
 
     ReactDOM.render(
         <Main {...props} />,
-        containerElement
+        containerElement,
     )
 }
 

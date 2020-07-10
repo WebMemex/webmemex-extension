@@ -69,7 +69,8 @@ const PageAsListItem = ({ doc, dispatchDeletePage }) => {
                 </div>
             </a>
             <div className={styles.url}>
-                Snapshot of <a
+                Snapshot of
+                <a
                     href={doc.url}
                     title={doc.url}
                 >

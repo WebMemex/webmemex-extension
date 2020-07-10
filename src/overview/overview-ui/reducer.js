@@ -74,7 +74,7 @@ function finishExpandSearch(state, { value: newResult, error, cancelled }) {
 
 function hideResult(state, { id }) {
     return update('searchResult.rows',
-        rows => remove(row => row.id === id)(rows)
+        rows => remove(row => row.id === id)(rows),
     )(state)
 }
 

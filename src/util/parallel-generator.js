@@ -25,7 +25,7 @@ export function parallelise(generatorFunction, parallelism) {
     return async function * parallelGenerator(...args) {
         // Create N generators from generatorFunction (N = parallelism).
         const subGenerators = new Array(parallelism).fill().map(() =>
-            generatorFunction(...args)
+            generatorFunction(...args),
         )
 
         // Merge them into a single generator.
@@ -62,7 +62,7 @@ async function * merge(generators) {
                 // Add the index to return value, so we know which of the Promises won.
                 .map((p, i) => Promise.resolve(p).then(({ value, done }) => ({ i, value, done })))
                 // Omit empty slots (Promise.race would treat them as undefined and let them win).
-                .filter(x => true)
+                .filter(x => true),
         )
         if (done) {
             returnValues[i] = value

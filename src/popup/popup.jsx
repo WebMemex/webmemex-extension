@@ -51,7 +51,7 @@ async function render({ tab } = {}) {
             canTakeSnapshot={canTakeSnapshot}
             shouldBeSnapshottable={shouldBeSnapshottable}
         />,
-        containerElement
+        containerElement,
     )
 }
 

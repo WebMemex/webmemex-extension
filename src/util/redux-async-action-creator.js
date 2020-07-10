@@ -50,7 +50,7 @@ export default function asyncActionCreator(
 
             const removeFromTransactionList = () => {
                 runningTransactions = runningTransactions.filter(
-                    v => (v !== transaction)
+                    v => (v !== transaction),
                 )
             }
 

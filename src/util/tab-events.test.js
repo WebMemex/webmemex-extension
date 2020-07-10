@@ -16,14 +16,14 @@ describe('whenPageDOMLoaded', () => {
     beforeEach(() => {
         browser.tabs = {}
         eventToPromise.default = jest.fn().mockReturnValue(
-            Promise.resolve()
+            Promise.resolve(),
         )
     })
 
     test('should execute script and resolve promise if script executes', async () => {
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                Promise.resolve()
+                Promise.resolve(),
             ),
         }
         await whenPageDOMLoaded({ tabId })
@@ -37,25 +37,21 @@ describe('whenPageDOMLoaded', () => {
         expect.assertions(1)
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                Promise.reject(new Error('Script unable to execute'))
+                Promise.reject(new Error('Script unable to execute')),
             ),
         }
-        try {
-            await whenPageDOMLoaded({ tabId })
-        } catch (err) {
-            expect(err.message).toBe('Script unable to execute')
-        }
+        await expect(whenPageDOMLoaded({ tabId })).rejects.toMatchObject({ message: 'Script unable to execute' })
     })
 
     test('should reject the promise if tab is changed', async () => {
         expect.assertions(1)
         browser.tabs = {
             executeScript: jest.fn().mockReturnValue(
-                new Promise((resolve, reject) => {})
+                new Promise((resolve, reject) => {}),
             ),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
-            Promise.reject(new Error('Tab was changed'))
+            Promise.reject(new Error('Tab was changed')),
         )
         await expect(whenPageDOMLoaded({ tabId })).rejects.toMatchObject({ message: 'Tab was changed' })
     })
@@ -66,7 +62,7 @@ describe('whenPageLoadComplete', () => {
 
     beforeEach(() => {
         eventToPromise.default = jest.fn().mockReturnValue(
-            Promise.resolve()
+            Promise.resolve(),
         )
     })
 
@@ -99,7 +95,7 @@ describe('whenPageLoadComplete', () => {
             }),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
-            Promise.reject(new Error('Tab was changed'))
+            Promise.reject(new Error('Tab was changed')),
         )
         await expect(whenPageLoadComplete({ tabId })).rejects.toMatchObject({ message: 'Tab was changed' })
     })
@@ -108,7 +104,7 @@ describe('whenPageLoadComplete', () => {
 describe('whenTabActive', () => {
     beforeEach(() => {
         eventToPromise.default = jest.fn().mockReturnValue(
-            Promise.resolve()
+            Promise.resolve(),
         )
     })
 
@@ -135,7 +131,7 @@ describe('whenTabActive', () => {
             query: jest.fn().mockReturnValueOnce([{ id: 2 }]),
         }
         eventToPromise.default = jest.fn().mockReturnValue(
-            Promise.reject(new Error('Tab was changed'))
+            Promise.reject(new Error('Tab was changed')),
         )
         await expect(whenTabActive({ tabId: 1 })).rejects.toMatchObject({ message: 'Tab was changed' })
     })

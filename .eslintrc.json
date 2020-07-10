@@ -45,6 +45,8 @@
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
+        "react/jsx-curly-newline": "off",
+        "react/jsx-handler-names": "off",
         "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 0 }],
         "no-unused-vars": "warn",
         "space-before-function-paren": "off",

@@ -37,7 +37,7 @@ export async function filterPagesByQuery({
         // Time when we have to report back with what we got so far, in case we keep searching.
         const reportingDeadline = Date.now() + maxWaitDuration
         do {
-            let batch = await getPagesByDate({
+            const batch = await getPagesByDate({
                 startDate,
                 endDate,
                 limit: batchSize,
@@ -55,7 +55,7 @@ export async function filterPagesByQuery({
 
             // Filter for pages that contain the query words.
             const hits = batchRows.filter(
-                row => pageMatchesQuery({ page: row.doc, query })
+                row => pageMatchesQuery({ page: row.doc, query }),
             )
 
             rows = rows.concat(hits)
@@ -95,6 +95,6 @@ function pageMatchesQuery({ page, query }) {
     // Test if every word in the query is present in at least one text field.
     const queryWords = query.toLowerCase().trim().split(/\s+/)
     return queryWords.every(word =>
-        texts.some(text => text.includes(word))
+        texts.some(text => text.includes(word)),
     )
 }

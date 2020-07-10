@@ -30,14 +30,14 @@ export async function capturePage({ tabId, needScreenshot = true }) {
 
     // Freeze-dry and store the whole page
     const frozenPageP = freezeDry().then(htmlString =>
-        new Blob([htmlString], { type: 'text/html;charset=UTF-8' })
+        new Blob([htmlString], { type: 'text/html;charset=UTF-8' }),
     )
 
     // Wait until freeze-dry has completed; throw if it fails.
     const frozenPage = await frozenPageP
 
     // Wait until every other task has either completed or failed.
-    const [ favIcon, screenshot, pageContent ] = await whenAllSettled([
+    const [favIcon, screenshot, pageContent] = await whenAllSettled([
         favIconP,
         // If a screenshot is not required, we do not wait long for a chance to make one.
         needScreenshot ? screenshotP : Promise.race([screenshotP, delay(500)]),

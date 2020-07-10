@@ -30,5 +30,5 @@ ReactDOM.render(
             {ReduxDevTools && <ReduxDevTools />}
         </div>
     </Provider>,
-    document.getElementById('app')
+    document.getElementById('app'),
 )

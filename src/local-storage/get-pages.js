@@ -7,7 +7,7 @@ import { pageKeyPrefix, convertPageDocId } from '.'
 // Post-process result list after any retrieval of pages from the database.
 async function postprocessPagesResult({ pagesResult }) {
     pagesResult = update('rows', rows => rows.map(
-        update('doc', postProcessPage)
+        update('doc', postProcessPage),
     ))(pagesResult)
 
     return pagesResult
@@ -48,7 +48,7 @@ export async function getPagesByUrl({ url }) {
 
 // Find pages in the given date range (and/or up to the given limit), sorted by time (descending).
 export async function getPagesByDate({ startDate, endDate, limit, skipUntil }) {
-    let selector = {
+    const selector = {
         // Constrain by id (like with startkey/endkey), both to get only the
         // page docs, and (if needed) to filter the pages after/before a
         // given timestamp (this compares timestamps lexically, which only
@@ -68,7 +68,7 @@ export async function getPagesByDate({ startDate, endDate, limit, skipUntil }) {
     let findResult = await db.find({
         selector,
         // Sort them by time, newest first
-        sort: [{ '_id': 'desc' }],
+        sort: [{ _id: 'desc' }],
         // limit, // XXX pouchdb-find seems to mess up when passing a limit...
     })
     // ...so we apply the limit ourselves.

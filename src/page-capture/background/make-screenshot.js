@@ -9,7 +9,7 @@ async function snapNow({ tabId }) {
     const tab = await browser.tabs.get(tabId)
     const imageDataUrl = await browser.tabs.captureVisibleTab(
         tab.windowId,
-        { format: 'png' }
+        { format: 'png' },
     )
     const imageBlob = await dataURLToBlob(imageDataUrl)
     return imageBlob

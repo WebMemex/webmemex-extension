@@ -52,7 +52,7 @@ async function showPage(pageId) {
                 </SnapshotChrome>
                 <div id='page' className='placeholder' />
             </div>,
-            containerElement
+            containerElement,
         )
         throw err
     }
@@ -87,7 +87,7 @@ async function showPage(pageId) {
             </SnapshotChrome>
             <ContentFrame html={html} />
         </div>,
-        containerElement
+        containerElement,
     )
 }
 
