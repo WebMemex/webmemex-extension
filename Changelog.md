@@ -1,5 +1,12 @@
 # Changelog for webmemex-extension
 
+## 0.4.0 (2020-07-14)
+
+- Store snapshots in the downloads folder *by default*; make storing internally optional. (commit fbebd1c)
+- Detect extension upgrade, and notify the user of the new behaviour. (ibid.)
+- Add a ‘snapshot & close’ action to the context (right-click) menu of tabs. (commit 7d88b65)
+- When snapshotting links in a selection, support multiple selections. (commit 780c0cc)
+
 ## 0.3.3 (2019-06-07)
 
 - Add the possibility to programmatically visit and snapshot multiple pages; e.g. all pages that are
