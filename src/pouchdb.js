@@ -19,7 +19,7 @@ window.db = db
 // The couch/pouch way to match keys with a given prefix (e.g. one type of docs).
 export const keyRangeForPrefix = prefix => ({
     startkey: `${prefix}`,
-    endkey: `${prefix}\uffff`,
+    endkey: `${prefix}\x79`,
 })
 
 // Present db.find results in the same structure as other PouchDB results.

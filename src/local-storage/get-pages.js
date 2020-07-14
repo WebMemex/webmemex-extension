@@ -44,7 +44,7 @@ export async function getAllPages() {
 export async function getPagesByUrl({ url }) {
     const findResult = await db.find({
         selector: {
-            _id: { $gte: pageKeyPrefix, $lte: `${pageKeyPrefix}\uffff` },
+            _id: { $gte: pageKeyPrefix, $lte: `${pageKeyPrefix}\x79` },
             url,
         },
     })
@@ -67,7 +67,7 @@ export async function getPagesByDate({ startDate, endDate, limit, skipUntil }) {
                 : pageKeyPrefix,
             $lte: endDate !== undefined
                 ? convertPageDocId({ timestamp: endDate })
-                : `${pageKeyPrefix}\uffff`,
+                : `${pageKeyPrefix}\x79`,
             $lt: skipUntil,
         },
     }
