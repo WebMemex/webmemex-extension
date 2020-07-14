@@ -28,13 +28,13 @@
             "suggested_key": {
                 "default": "Ctrl+Y"
             },
-            "description": "Open memory overview"
+            "description": "See all your snapshots"
         },
         "_execute_browser_action": {
             "suggested_key": {
                 "default": "Alt+M"
             },
-            "description": "Store this page"
+            "description": "Snapshot this page"
         }
     },
     "applications": {

@@ -47,8 +47,9 @@ export default class Main extends React.Component {
                 <ExtensionUpgradeBanner />
                 {canTakeSnapshot && (
                     <TakeSnapshotButton
-                        {...this.state}
+                        autoFocus
                         onSnapshotted={this.updateModificationTime}
+                        key={`${tabId},${tabUrl}`}
                     />
                 )}
                 {isSnapshot && (

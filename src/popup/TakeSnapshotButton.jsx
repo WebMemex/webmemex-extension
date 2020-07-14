@@ -42,6 +42,7 @@ export default class TakeSnapshotButton extends React.Component {
     }
 
     render () {
+        const { onSnapshotted, ...otherProps } = this.props
         const {
             snapshotState,
             errorMessage,
@@ -51,19 +52,20 @@ export default class TakeSnapshotButton extends React.Component {
         return (
             <Menu.Item>
                 {snapshotState === 'initial' && (
-                    <Button fluid primary onClick={this.takeSnapshot}>
+                    <Button {...otherProps} fluid primary onClick={this.takeSnapshot}>
                         <Icon name='camera' />
                         Snapshot this page
                     </Button>
                 )}
                 {snapshotState === 'shooting' && (
-                    <Button fluid primary disabled>
+                    <Button {...otherProps} fluid primary disabled>
                         <Icon name='camera' loading />
                         Taking snapshot...
                     </Button>
                 )}
                 {snapshotState === 'success' && (
                     <Button
+                        {...otherProps}
                         as={LinkToSnapshotOpenInTab}
                         page={snapshottedPage}
                         fluid
