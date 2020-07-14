@@ -20,7 +20,7 @@ export default class LinkToSnapshot extends React.Component {
             }
         }
         const href = urlForSnapshot(page)
-        if (href?.startsWith('file:') && page.download) {
+        if (href && href.startsWith('file:') && page.download) {
             browser.downloads.open(page.download.id)
             event.preventDefault()
         }
@@ -29,7 +29,7 @@ export default class LinkToSnapshot extends React.Component {
     render() {
         const { page, children, as, ...otherProps } = this.props
         const href = urlForSnapshot(page)
-        const LinkElement = as ?? 'a'
+        const LinkElement = as || 'a'
         return (
             <LinkElement
                 {...otherProps}

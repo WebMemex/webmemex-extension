@@ -1,9 +1,9 @@
 export function isStoredInternally(page) {
-    return !!page._attachments?.['frozen-page.html']
+    return !!(page._attachments && page._attachments['frozen-page.html'])
 }
 
 export function isStoredInDownloads(page) {
-    return !!page.download?.exists
+    return !!(page.download && page.download.exists)
 }
 
 export function isSnapshotAvailable(page) {

@@ -46,7 +46,7 @@ export default class Main extends React.Component {
             // If a user has time to read this, we can assume loading has failed.
             title: "Unable to load settings from this extension’s storage.",
         }
-        const { storeInDownloadFolder, storeInternally } = this.state.settings ?? {}
+        const { storeInDownloadFolder, storeInternally } = this.state.settings || {}
         return (
             <div>
                 <h1>WebMemex extension options</h1>
