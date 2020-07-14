@@ -20,10 +20,7 @@ import babelify from 'babelify'
 import envify from 'loose-envify/custom'
 import cssModulesify from 'css-modulesify'
 import postcssPresetEnv from 'postcss-preset-env'
-import uglifyjs from 'uglify-es'
-import uglifyComposer from 'gulp-uglify/composer'
-
-const uglify = uglifyComposer(uglifyjs, console)
+import terser from 'gulp-terser'
 
 const exec = promisify((command, callback) => {
     // Let exec also display the shell command and its output
@@ -125,7 +122,7 @@ async function createBundle({ filePath, watch = false, production = false }) {
             .on('error', error => console.error(error.message))
             .pipe(source(output))
             .pipe(buffer())
-            .pipe(production ? uglify({ output: { ascii_only: true } }) : identity())
+            .pipe(production ? terser({ output: { ascii_only: true } }) : identity())
             .pipe(gulp.dest(destination))
             .on('end', () => {
                 let time = (Date.now() - startTime) / 1000
