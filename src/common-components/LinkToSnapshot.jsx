@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { urlForSnapshot } from 'src/local-page'
+import { urlForSnapshot, isStoredInDownloads } from 'src/local-page'
 
 // This wrapper uses downloads.open() to open downloaded snapshots, because the extension may not
 // be permitted to link to file:// URLs (occurs at least in Firefox 76).
@@ -35,7 +35,7 @@ export default class LinkToSnapshot extends React.Component {
                 {...otherProps}
                 href={href}
                 onClick={this.onClick}
-                title={href ? undefined : `Page not available. Perhaps storing failed?`}
+                title={href ? undefined : 'Page not available.' + (isStoredInDownloads(page) ? ' Note that if you moved/renamed the snapshot, this extension cannot access it anymore.' : '')}
             >
                 {children}
             </LinkElement>
