@@ -1,11 +1,11 @@
 # WebMemex browser extension
 
 This browser extension aspires to turn the browser into an offline-first knowledge management tool.
-It can store web pages you visit on your computer by 'freeze-drying' them: removing scripts and thus
-most interactive behaviour, but inlining all images and stylesheets to let you save the page exactly
-the way you saw it.
+It can store web pages you visit on your computer by [freeze-dry][]ing them: removing scripts and
+thus most interactive behaviour, but inlining all images and stylesheets to let you save the page
+exactly the way you saw it.
 
-Future steps will be to enable you to extract quotes, create notes, and make links between things,
+The long-term goal is to enable you to extract quotes, create notes, and make links between things,
 to really grow your personal web. Ultimately, you should be able to publish (parts of) your web to
 share your knowledge with others, thus turning your browser from a *web viewer* into a *web weaver*.
 
@@ -13,6 +13,7 @@ It is currently tested on Firefox and Chromium. It is published [on Mozilla Addo
 Chrome Web Store][] but it may be outdated as that repository often imposes new constraints).
 
 
+[freeze-dry]: https://github.com/WebMemex/freeze-dry
 [on Mozilla Addons]: https://addons.mozilla.org/en-US/firefox/addon/webmemex/
 [on Chrome Web Store]: https://chrome.google.com/webstore/detail/webmemex/dmkhpphjjbjgalkmaolgngobjlmfggfg
 
