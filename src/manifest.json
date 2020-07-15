@@ -1,6 +1,9 @@
 {
     "name": "WebMemex",
     "version": "0.4.0",
+    "description": "Lets you create snapshots of web pages, and search through them",
+    "homepage_url": "https://webmemex.org",
+    "author": "Gerben",
     "icons": {
         "48": "assets/webmemex-48.png",
         "96": "assets/webmemex-96.png"
