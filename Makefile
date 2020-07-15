@@ -2,7 +2,7 @@
 # people can use `npm run ...` if they prefer, and because npm conveniently
 # expands $PATH for us to find and run tools we install (e.g. gulp).
 
-MIN_NODE_VERSION = 8
+MIN_NODE_VERSION = 10
 
 NPM_ABSENT_MSG = "\n Please install Node/NPM (see https://nodejs.org) \n"
 NODE_VERSION_MSG = "\n Please install/activate Node version ≥ v${MIN_NODE_VERSION} \n"

@@ -9,11 +9,12 @@ Future steps will be to enable you to extract quotes, create notes, and make lin
 to really grow your personal web. Ultimately, you should be able to publish (parts of) your web to
 share your knowledge with others, thus turning your browser from a *web viewer* into a *web weaver*.
 
-It is currently tested and published for [Firefox][] and [Chromium/Chrome][].
+It is currently tested on Firefox and Chromium. It is published [on Mozilla Addons][] (also [on
+Chrome Web Store][] but it may be outdated as that repository often imposes new constraints).
 
 
-[Firefox]: https://addons.mozilla.org/en-US/firefox/addon/webmemex/
-[Chromium/Chrome]: https://chrome.google.com/webstore/detail/webmemex/dmkhpphjjbjgalkmaolgngobjlmfggfg
+[on Mozilla Addons]: https://addons.mozilla.org/en-US/firefox/addon/webmemex/
+[on Chrome Web Store]: https://chrome.google.com/webstore/detail/webmemex/dmkhpphjjbjgalkmaolgngobjlmfggfg
 
 
 ## Contribute
@@ -43,13 +44,13 @@ logs and stores pages in [PouchDB][], and provides a viewer built with [React][]
 ### Build and run it
 
 1. Clone this repo.
-2. Get [Node/NPM][]≥8.
+2. Get [Node/NPM][]≥10.
 3. Run `make` to install dependencies and compile the source files.
-4. Load it in Firefox or Chromium/Chrome:
+4. Load it in Firefox or Chromium/Chrome/Opera/Brave/…:
     * In Firefox: run `npm run firefox` (or run [web-ext][] directly for more control).
       Alternatively, go to `about:debugging`, choose 'Load Temporary Add-on', and pick
       `extension/manifest.json` from this repo.
-    * In Chromium/Chrome: go to Tools→Extensions (`chrome://extensions`), enable 'Developer mode',
+    * In Chromium/…: go to Tools→Extensions (`about:extensions`), enable 'Developer mode',
       click 'Load unpacked extension...', and pick the `extension/` folder from this repo.
 
 ### Automatic recompilation
