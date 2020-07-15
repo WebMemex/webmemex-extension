@@ -21,6 +21,7 @@ import envify from 'loose-envify/custom'
 import cssModulesify from 'css-modulesify'
 import postcssPresetEnv from 'postcss-preset-env'
 import terser from 'gulp-terser'
+import markdownToHtml from '@wulechuan/gulp-markdown-to-html'
 
 const exec = promisify((command, callback) => {
     // Let exec also display the shell command and its output
@@ -42,6 +43,10 @@ const staticFiles = {
     'node_modules/webextension-polyfill/dist/browser-polyfill.js': 'extension/lib',
     'node_modules/semantic-ui-css/semantic.min.css': 'extension/lib/semantic-ui',
     'node_modules/semantic-ui-css/themes/**/*': 'extension/lib/semantic-ui/themes',
+}
+
+const markdownFiles = {
+    'Changelog.md': 'extension',
 }
 
 const sourceFiles = [
@@ -72,6 +77,19 @@ const babelifySettings = {
             },
         }],
     ],
+}
+
+const markdownToHtmlOptions = {
+    conversionPreparations: {
+        shouldNotAutoInsertTOCPlaceholderIntoMarkdown: true,
+    },
+    conversionOptions: {
+        shouldNotBuildHeadingPermanentLinks: true,
+    },
+    manipulationsOverHTML: {
+        htmlTagLanguage: 'en',
+        shouldNotInsertBackToTopAnchor: true,
+    },
 }
 
 async function createBundle({ filePath, watch = false, production = false }) {
@@ -159,17 +177,42 @@ gulp.task('copyStaticFiles-watch', gulp.series('copyStaticFiles',
     }
 ))
 
-gulp.task('build-prod', gulp.parallel('copyStaticFiles', async function bundleForProduction() {
+gulp.task('convertMarkdownFiles', async () => {
+    for (let filename in markdownFiles) {
+        console.log(`Converting '${filename}' to '${markdownFiles[filename]}'..`)
+        gulp.src(filename)
+            .pipe(markdownToHtml(markdownToHtmlOptions))
+            .pipe(gulp.dest(markdownFiles[filename]))
+    }
+})
+
+gulp.task('convertMarkdownFiles-watch', gulp.series('convertMarkdownFiles',
+    async function watchAndConvertMarkdownFiles() {
+        Object.entries(markdownFiles).forEach(([filename, destination]) => {
+            gulp.watch(filename)
+                .on('all', (event, path) => {
+                    console.log(`Converting '${filename}' to '${markdownFiles[filename]}'..`)
+                    return gulp.src(filename)
+                        .pipe(markdownToHtml(markdownToHtmlOptions))
+                        .pipe(gulp.dest(markdownFiles[filename]))
+                })
+        })
+
+        await indefinitely
+    }
+))
+
+gulp.task('build-prod', gulp.parallel('copyStaticFiles', 'convertMarkdownFiles', async function bundleForProduction() {
     const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: false, production: true }))
     await Promise.all(ps)
 }))
 
-gulp.task('build', gulp.parallel('copyStaticFiles', async function bundleForDevelopment() {
+gulp.task('build', gulp.parallel('copyStaticFiles', 'convertMarkdownFiles',  async function bundleForDevelopment() {
     const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: false }))
     await Promise.all(ps)
 }))
 
-gulp.task('build-watch', gulp.parallel('copyStaticFiles-watch', async function watchAndBundle() {
+gulp.task('build-watch', gulp.parallel('copyStaticFiles-watch', 'convertMarkdownFiles-watch', async function watchAndBundle() {
     const ps = sourceFiles.map(filePath => createBundle({ filePath, watch: true }))
     await Promise.all(ps)
 }))

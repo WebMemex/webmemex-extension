@@ -42,7 +42,7 @@ export default class ExtensionUpgradeBanner extends React.Component {
                 <Message.Content>
                     {switchToDefaultToDownload && <MessageAboutDefaultToDownload />}
                     <p>
-                        For a summary of changes, see <a href='https://github.com/WebMemex/webmemex-extension/tree/master/Changelog.md'>the project’s changelog</a>.
+                        For a summary of changes, see <a target='_blank' href={browser.runtime.getURL('/Changelog.html')}>the changelog</a>.
                     </p>
                     <p>
                         <Button onClick={this.dismissBanner}>

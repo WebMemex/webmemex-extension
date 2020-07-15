@@ -55,6 +55,8 @@
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
     "@babel/register": "^7.10.5",
+    "@wulechuan/css-stylus-markdown-themes": "^6.4.12",
+    "@wulechuan/gulp-markdown-to-html": "^2.9.2",
     "babel-jest": "^26.1.0",
     "babelify": "^10.0.0",
     "browserify": "^16.5.1",
