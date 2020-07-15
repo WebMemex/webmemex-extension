@@ -23,7 +23,7 @@ export default class ExtensionUpgradeBanner extends React.Component {
     }
 
     async dismissBanner() {
-        await browser.storage.local.set({ extensionUpdate: undefined })
+        await browser.storage.local.set({ extensionUpdate: null })
     }
 
     render() {
@@ -32,16 +32,13 @@ export default class ExtensionUpgradeBanner extends React.Component {
         }
 
         const { lastSeenVersion } = this.state.extensionUpdate
+        const currentVersion = browser.runtime.getManifest().version
 
-        const switchToDefaultToDownload = (semverCompare(lastSeenVersion, '0.3.4') === -1)
-
-        if (!switchToDefaultToDownload) {
-            return null
-        }
+        const switchToDefaultToDownload = (semverCompare(lastSeenVersion, '0.4.1') === -1) // (this should have been 0.4.0, but in that version this banner was broken)
 
         return (
             <Message info>
-                <Message.Header>This extension has been updated</Message.Header>
+                <Message.Header>This extension has been updated to v{currentVersion}</Message.Header>
                 <Message.Content>
                     {switchToDefaultToDownload && <MessageAboutDefaultToDownload />}
                     <p>

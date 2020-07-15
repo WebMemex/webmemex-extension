@@ -11,5 +11,5 @@ async function onExtensionUpdated({ previousVersion }) {
 }
 
 browser.runtime.onInstalled.addListener(async ({ reason, previousVersion }) => {
-    if (reason === 'updated') await onExtensionUpdated({ previousVersion })
+    if (reason === 'update') await onExtensionUpdated({ previousVersion })
 })
