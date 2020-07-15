@@ -1,5 +1,10 @@
 # Changelog for webmemex-extension
 
+## 0.4.1 (2020-07-15)
+
+- Fix upgrade notification (that should have come with 0.4.0)
+- Include this changelog into the extension.
+
 ## 0.4.0 (2020-07-14)
 
 - Store snapshots in the downloads folder *by default*; make storing internally optional. (commit fbebd1c)
