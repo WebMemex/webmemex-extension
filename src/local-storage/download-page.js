@@ -57,6 +57,14 @@ export function makeFilename({ folder, title, timestamp }) {
 export async function downloadBlob({ blob, filename, saveAs = false }) {
     const url = URL.createObjectURL(blob)
 
+    if (filename && filename.length > 200) {
+        // At least in Firefox on Linux, it appears a long filename (≥233 chars) can fail without throwing an error, so we cut it down already.
+        const i = filename.lastIndexOf('.')
+        const basename = (i !== -1) ? filename.substring(0, i) : filename
+        const extension = (i !== -1) ? filename.substring(i) : ''
+        filename = basename.substring(0, 199 - extension.length) + '…' + extension
+    }
+
     const tryDownload = filename => browser.downloads.download({
         url,
         filename,
@@ -67,9 +75,12 @@ export async function downloadBlob({ blob, filename, saveAs = false }) {
     try {
         downloadId = await tryDownload(filename)
     } catch (err) {
-        // Possibly due to punctuation in the filename (Chromium is picky).
         if (err.message.includes('filename')) {
+            // Possibly due to punctuation in the filename (Chromium is picky).
             filename = filename.replace(/['?:~<>*|]/g, '-') // an empirically composed list.
+            // …or because Firefox chokes on multiple consecutive spaces.
+            filename = filename.replace(/\s+/g, ' ')
+            // Do a second attempt.
             downloadId = await tryDownload(filename)
         }
     }
