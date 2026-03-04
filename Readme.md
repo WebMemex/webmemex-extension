@@ -63,10 +63,10 @@ If you are testing in Firefox through `npm run firefox`/`web-ext`, the extension
 automatically. Otherwise, manually press the reload button in the extension list.
 
 
-[WebExtension]: https://developer.mozilla.org/en-US/Add-ons/WebExtensions
+[WebExtension]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions
 [browserify]: http://browserify.org/
 [PouchDB]: https://pouchdb.com/
 [React]: https://facebook.github.io/react/
 [Redux]: http://redux.js.org/
 [Node/NPM]: https://nodejs.org/
-[web-ext]: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_run
+[web-ext]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/web-ext_command_reference#web-ext_run

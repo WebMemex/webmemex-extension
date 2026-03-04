@@ -4,7 +4,7 @@ A quick introduction to the folders and files in this repo.
 
 ## WebExtension anatomy
 
-To comply with the [anatomy of a WebExtension](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension),
+To comply with the [anatomy of a WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Anatomy_of_a_WebExtension),
 this extension consists of the following parts (found in [`extension/`](extension/) after building):
 
 - The background script (`main/background/index.js`) always runs, in an 'empty invisible tab',
